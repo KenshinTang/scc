@@ -1,0 +1,148 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context="com.yunlinker.fragment.FragmentB">
+
+
+  <com.baidu.mapapi.map.MapView
+      android:id="@+id/bmapView"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:clickable="true" />
+
+  <RelativeLayout
+      android:id="@+id/rlmarqueeView"
+      android:layout_width="match_parent"
+      android:layout_height="30dp"
+      android:layout_marginLeft="10dp"
+      android:layout_marginTop="10dp"
+      android:layout_marginRight="10dp"
+      android:background="@drawable/xml_oval_common_dark_bg"
+      android:paddingLeft="10dp"
+      android:paddingRight="10dp">
+
+    <ImageView
+        android:id="@+id/iv_speaker3"
+        android:layout_width="14dp"
+        android:layout_height="12dp"
+        android:layout_centerVertical="true"
+        android:src="@mipmap/ic_loudspeaker" />
+
+    <com.sunfusheng.marqueeview.MarqueeView
+        android:id="@+id/marqueeView1"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="8dp"
+        android:layout_toRightOf="@+id/iv_speaker3"
+        app:mvTextSize="12sp"
+        app:mvTextColor="@color/gonggao"
+        />
+  </RelativeLayout>
+
+  <RelativeLayout
+      android:id="@+id/rlStatistics"
+      android:layout_width="40dp"
+      android:layout_height="40dp"
+      android:layout_below="@+id/rlmarqueeView"
+      android:layout_alignParentRight="true"
+      android:layout_marginTop="70dp"
+      android:layout_marginRight="10dp"
+      android:background="@drawable/ic_whitebackground"
+      >
+
+    <ImageView
+        android:id="@+id/imgStatistics"
+        android:layout_width="13dp"
+        android:layout_height="13dp"
+        android:src="@mipmap/statistics"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="7dp"
+        />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/imgStatistics"
+        android:layout_centerHorizontal="true"
+        android:textColor="#E30008"
+        android:text="统计"
+        android:textSize="10dp"
+        />
+  </RelativeLayout>
+
+
+  <RelativeLayout
+      android:id="@+id/rlSubstitutecollar"
+      android:layout_width="40dp"
+      android:layout_height="40dp"
+      android:layout_below="@+id/rlStatistics"
+      android:layout_alignParentRight="true"
+      android:layout_marginTop="20dp"
+      android:layout_marginRight="10dp"
+      android:background="@drawable/ic_whitebackground"
+      >
+
+    <ImageView
+        android:id="@+id/imgSubstitutecollar"
+        android:layout_width="13dp"
+        android:layout_height="13dp"
+        android:src="@mipmap/substitutecollar"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="7dp"
+        />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/imgSubstitutecollar"
+        android:layout_centerHorizontal="true"
+        android:textColor="#E30008"
+        android:text="待领"
+        android:textSize="10dp"
+        />
+  </RelativeLayout>
+
+
+
+  <RelativeLayout
+      android:id="@+id/rl_hore"
+      android:layout_width="108dp"
+      android:layout_height="44dp"
+      android:layout_alignParentBottom="true"
+      android:layout_centerHorizontal="true"
+      android:layout_marginBottom="26dp"
+      android:background="@drawable/xml_oval_common_dark"
+      android:visibility="gone"
+      >
+
+    <ImageView
+        android:id="@+id/imghongbao"
+        android:layout_width="20dp"
+        android:layout_height="23dp"
+        android:layout_marginTop="11dp"
+        android:layout_marginLeft="20dp"
+        android:src="@drawable/hore"
+        />
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="发红包"
+        android:textColor="#ffffff"
+        android:layout_toRightOf="@+id/imghongbao"
+        android:layout_marginTop="12dp"
+        android:layout_marginLeft="9dp"
+        android:textSize="15dp" />
+
+
+  </RelativeLayout>
+
+
+
+
+
+</RelativeLayout>

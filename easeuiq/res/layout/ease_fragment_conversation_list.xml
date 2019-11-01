@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:hyphenate="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/common_bg"
+    android:orientation="vertical"
+    >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@color/common_bg"
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:id="@+id/ooo"
+            android:layout_width="385dp"
+            android:layout_height="40dp"
+            android:layout_alignParentLeft="true"
+            android:layout_centerInParent="true"
+            >
+
+            <RelativeLayout
+                android:id="@+id/address_book_see"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_alignParentLeft="true"
+                android:layout_centerInParent="true"
+                android:layout_marginLeft="10dp">
+
+                <ImageView
+                    android:layout_marginTop="4dp"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_centerInParent="true"
+                    android:src="@drawable/lianxiren" />
+            </RelativeLayout>
+
+            <TextView
+                android:id="@+id/jx_chat_and_mail_title_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="12dp"
+                android:maxLength="12"
+                android:text="消息"
+                android:textColor="#000000"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+        <RelativeLayout
+            android:id="@+id/jx_chat_and_mail_title_rl"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="20dp">
+
+            <ImageView
+                android:id="@+id/jx_chat_and_mail_title_right_image"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_centerInParent="true"
+                android:src="@drawable/add" />
+            </RelativeLayout>
+
+        </RelativeLayout>
+
+        <FrameLayout
+            android:id="@+id/fl_error_item"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"></FrameLayout>
+
+
+    </LinearLayout>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.hyphenate.easeui.widget.EaseConversationList
+            android:id="@+id/list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#FFF"
+            android:listSelector="@drawable/ease_mm_listitem_grey"
+            android:cacheColorHint="#00000000"
+            android:divider="@null"
+            android:drawSelectorOnTop="true"
+            hyphenate:cvsListPrimaryTextSize="16sp" />
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <LinearLayout
+            android:id="@+id/ll_no_msg"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:orientation="vertical"
+
+            >
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:src="@drawable/no_msg" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="暂无消息" />
+        </LinearLayout>
+        <LinearLayout
+            android:id="@+id/ll_no_login"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:orientation="vertical"
+
+            >
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:src="@drawable/chat_login" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="30dp"
+                android:text="暂时无法看到消息，请先登录账户" />
+            <Button
+                android:id="@+id/btn_login"
+                android:layout_width="100dp"
+                android:layout_height="40dp"
+                android:layout_marginTop="30dp"
+                android:background="@drawable/ease_login_btn_shape"
+                android:text="登录"
+                android:textColor="#fff"
+                android:textSize="15dp" />
+        </LinearLayout>
+    </FrameLayout>
+    </FrameLayout>
+</LinearLayout>

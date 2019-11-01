@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+
+    >
+
+    <RelativeLayout
+        android:id="@+id/reimage"
+        android:layout_width="match_parent"
+        android:layout_height="400dp"
+        android:background="@drawable/qd_back">
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="20dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/qd_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="2017/1/1"
+                android:textColor="#fff" />
+
+            <TextView
+                android:id="@+id/qd_week"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:text="星期一"
+                android:textColor="#fff" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="50dp"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <com.hyphenate.easeui.jxcontrol.view.CircleImageView
+                android:id="@+id/qd_head"
+                android:layout_width="@dimen/size_avatar"
+                android:layout_height="@dimen/size_avatar"
+                android:src="@drawable/defalutuserhead"
+                app:civ_border_color="#FF4983"
+                app:civ_border_width="1dp" />
+
+            <TextView
+                android:id="@+id/qd_username"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="张三"
+                android:textColor="#fff" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="40dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:text="今日您已完成"
+                    android:textColor="#fff"
+                    android:textSize="20sp" />
+
+                <TextView
+                    android:id="@+id/qd_number"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:text="0次"
+                    android:textColor="#fff"
+                    android:textSize="20sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:text="签到"
+                    android:textColor="#fff"
+                    android:textSize="20sp" />
+            </LinearLayout>
+
+            <RelativeLayout
+                android:id="@+id/qd_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="50dp">
+
+
+
+                <ImageView
+                    android:id="@+id/qd_qd_img1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/qd_btn2" />
+                <TextView
+                    android:id="@+id/qd_qd_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="签到"
+                    android:textSize="25sp"
+                    android:textColor="#f00"
+                    android:layout_centerInParent="true"
+                    />
+
+                <ImageView
+                    android:id="@+id/qd_qd_img2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/qd_btn1" />
+            </RelativeLayout>
+        </LinearLayout>
+
+    </RelativeLayout>
+    <ImageView
+        android:id="@+id/qd_close"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/qd_btn_close"
+        android:layout_centerInParent="true"
+        android:layout_below="@id/reimage"
+        android:layout_marginTop="40dp"
+        />
+</RelativeLayout>

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#eee"
+    android:orientation="vertical" >
+     <include
+         layout="@layout/user_info_title"
+         />
+
+	<RelativeLayout
+		android:layout_width="match_parent"
+		android:layout_height="match_parent">
+		<com.baidu.mapapi.map.MapView android:id="@+id/bmapView"
+			android:layout_width="fill_parent" android:layout_height="fill_parent"
+			android:clickable="true"
+			android:background="#fff"
+			/>
+		<RelativeLayout
+			android:id="@+id/address_go"
+			android:layout_width="match_parent"
+			android:layout_height="80dp"
+			android:orientation="horizontal"
+			android:layout_alignParentBottom="true"
+			android:background="#fff"
+			>
+			<TextView
+				android:id="@+id/txt_address"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:textColor="@android:color/darker_gray"
+				android:textSize="20sp"
+				android:text="地址"
+				android:layout_centerVertical="true"
+				android:layout_marginLeft="10dp"
+				/>
+			<ImageView
+				android:id="@+id/address_go_img"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:src="@drawable/daohang"
+				android:layout_alignParentRight="true"
+				android:layout_centerVertical="true"
+				android:layout_marginRight="10dp"
+				/>
+		</RelativeLayout>
+	</RelativeLayout>
+
+
+</LinearLayout>

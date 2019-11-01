@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:hyphenate="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/common_bg"
+    android:orientation="vertical">
+
+<LinearLayout
+    android:layout_width="match_parent"
+    android:orientation="horizontal"
+    android:layout_height="50dp">
+
+    <ImageView
+        android:id="@+id/im_back"
+        android:src="@drawable/chat_room_back"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:paddingTop="15dp"
+        android:paddingBottom="15dp"
+        android:layout_height="match_parent" />
+
+    <TextView
+        android:id="@+id/jx_chat_and_mail_title_name"
+        android:layout_width="0dp"
+        android:layout_weight="5.00"
+        android:text="通讯录"
+        android:layout_centerInParent="true"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:maxLength="12"
+        android:gravity="center"
+        android:layout_height="match_parent" />
+
+    <ImageView
+        android:id="@+id/jx_chat_and_mail_title_right_image"
+        android:src="@drawable/catact_add_1"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:paddingTop="15dp"
+        android:paddingBottom="15dp"
+        android:layout_height="match_parent" />
+
+</LinearLayout>
+    <include
+        android:id="@+id/search_bar_view"
+        layout="@layout/ease_search_bar_with_padding" />
+
+    <FrameLayout
+        android:id="@+id/content_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" >
+
+        <com.hyphenate.easeui.widget.EaseContactList
+            android:id="@+id/contact_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:drawSelectorOnTop="true"
+            android:listSelector="@drawable/ease_mm_listitem_grey"
+            />
+            <!-- hyphenate:ctsListInitialLetterBg="#abc" -->
+        <LinearLayout
+            android:id="@+id/ll_no_login"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:orientation="vertical"
+
+            >
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:src="@drawable/chat_login" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="30dp"
+                android:text="暂时无法看到消息，请先登录账户" />
+            <Button
+                android:id="@+id/btn_login"
+                android:layout_width="100dp"
+                android:layout_height="40dp"
+                android:layout_marginTop="30dp"
+                android:background="@drawable/ease_login_btn_shape"
+                android:text="登录"
+                android:textColor="#fff"
+                android:textSize="15dp" />
+        </LinearLayout>
+    </FrameLayout>
+
+
+</LinearLayout>

@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/anim_back_view"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:clickable="true"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:id="@+id/anim_container"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:layout_marginLeft="24dp"
+        android:layout_marginRight="24dp"
+        android:paddingTop="48dp"
+        >
+
+        <RelativeLayout
+            android:id="@+id/fl_content_container"
+            android:layout_width="match_parent"
+            android:layout_height="355dp"
+            android:background="@drawable/lhb">
+            
+            <ImageView
+                android:id="@+id/myimage"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:layout_above="@+id/name"
+                android:layout_centerHorizontal="true"
+                android:layout_marginBottom="10dp"
+                android:src="@drawable/img"
+                />
+
+            <TextView
+                android:id="@+id/name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_above="@+id/hongbaodidi"
+                android:gravity="center"
+                android:text="李嘉欣"
+                android:textColor="#FFFFFF"
+                android:textSize="16dp"
+                android:layout_marginBottom="22dp"
+                />
+            <TextView
+                android:id="@+id/hongbaodidi"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_above="@+id/playhongbao"
+                android:layout_marginBottom="35dp"
+                android:text="给你发了一个红包，价值连城"
+                android:gravity="center"
+                android:textColor="#FFFFFF"
+                android:textSize="15dp"
+                />
+
+            <TextView
+                android:id="@+id/playhongbao"
+                android:layout_width="110dp"
+                android:layout_height="110dp"
+                android:background="@mipmap/khb"
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true"
+                android:layout_marginBottom="29dp"
+                android:text="开"
+                android:gravity="center"
+                android:textSize="30sp"
+                android:textColor="#FF6466"/>
+            </RelativeLayout>
+
+        <ImageView
+            android:id="@+id/ic_close"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:src="@mipmap/close"
+            android:layout_below="@+id/fl_content_container" />
+
+    </RelativeLayout>
+
+
+</RelativeLayout>

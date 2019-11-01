@@ -1,0 +1,18 @@
+<resources>
+    <string name="app_name">水车车</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="xin">提示</string>
+    <string name="ban">您还没有登录，请您登录</string>
+    <string name="zhan">取消</string>
+    <string name="sheng">登录</string>
+    <string name="changguan">场馆</string>
+    <string name="dinwei">我的位置</string>
+    <string name="title_activity_main3">Main3Activity</string>
+    <string name="quedin">确定</string>
+    <string name="tixing">无法获取您的当前位置</string>
+    <string name="tixingr">如果您要使用地图相关功能请前往设置修改位置访问权限</string>
+
+
+</resources>

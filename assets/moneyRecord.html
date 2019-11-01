@@ -1,0 +1,524 @@
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width,initial-scale=1.0,user-scalable=no" name="viewport">
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="format-detection" content="telephone=no,email=no,adress=no" />
+
+    <title>收款记录</title>
+
+    <link rel="stylesheet" href="css/g.css">
+    <link rel="stylesheet" href="css/comm.css">
+    <link rel="stylesheet" href="inc/mescroll/mescroll.min.css">
+
+    <style>
+        body {
+            background-color: #F5F5F5;
+        }
+
+
+        .r {
+            color: #E30008;
+        }
+
+        .searchIcon {
+            height: 100%;
+            width: 40px;
+            height: 44px;
+            background: url("img/tbshop/Search.png");
+            background-position: center center;
+            background-repeat: no-repeat;
+            background-size: auto 16px;
+            background-position-x: 10px;
+            float: right;
+        }
+
+        .kuang {
+            background-color: #FCFAFB;
+            border-radius: 8px;
+            width: 48%;
+            box-shadow: 0px 3px 10px #EEEEEE;
+        }
+
+        .bg_ljgxje {
+            background: url("img/tbmain/ljgxje.png");
+            background-repeat: no-repeat;
+            background-size: 13px 13px;
+            background-position: 24% center;
+            padding-left: 15px;
+        }
+
+        .bg_ggsj {
+            background: url("img/tbmain/ggsj.png");
+            background-repeat: no-repeat;
+            background-size: 13px 13px;
+            background-position: 24% center;
+            padding-left: 15px;
+        }
+
+        .f10 {
+            font-size: 10px;
+        }
+
+        .moneyRed {
+            color: #E30008;
+        }
+
+        .color999 {
+            margin-top: 5px;
+        }
+
+        #sinbox {
+            width: 100%;
+            position: absolute;
+            top: 0px;
+            left: 0px;
+            padding: 0px;
+            background-color: white;
+        }
+
+        #sinbox .item {
+            /*padding: 0px 10px;*/
+            line-height: 40px;
+        }
+
+        #sinbox .item span.btn {
+            background: inherit;
+            padding: 5px 20px;
+            border-radius: 3px;
+            color: #222;
+            border: 1px solid #EBEBEB;
+            font-size: 14px;
+            margin-right: 15px;
+        }
+
+        #sinbox .item span.btnp {
+            padding: 5px 15px;
+        }
+
+        #sinbox .item span.cur {
+            color: #E30008;
+            background-color: #FFEBEB;
+            border-color: #E30008;
+        }
+
+        .bg_lred {
+            background-color: #FFEBEB;
+        }
+
+        #sinbox .tb {
+            height: 50px;
+            line-height: 50px;
+        }
+
+        #sinbox .tb .td {
+            width: 50%;
+            float: left;
+            background-color: #FFEBEB;
+            color: #E30008;
+        }
+
+        #sinbox .tb .r {
+            width: 50%;
+            height: 50px;
+            float: left;
+            color: #fff;
+            border-radius: 0px;
+        }
+
+        #sinbox .item .scoll {
+            overflow: hidden;
+            overflow-x: auto;
+            white-space: nowrap;
+            text-align: left;
+        }
+
+        #sinbox .item input {
+            width: 100px;
+        }
+
+        #MainBg,
+        #WTDBOX {
+            top: 64px;
+            z-index: 99;
+        }
+
+        .calendar {
+            background: url("img/tbmine/calend.png") center center no-repeat;
+            background-size: 15px;
+        }
+
+        .lh35 {
+            line-height: 35px;
+        }
+
+        .timeChooseItem {
+            border-bottom: 1px solid #E30008;
+            color: #E30008;
+            padding-bottom: 5px;
+            font-size: 14px;
+        }
+
+        .cellContent {
+            padding: 18px 0px;
+            padding-right: 15px;
+        }
+
+        @media (device-height:568px) and (-webkit-min-device-pixel-ratio:2) {
+            .bg_ljgxje {
+                background: url("img/tbmain/ljgxje.png");
+                background-repeat: no-repeat;
+                background-size: 13px 13px;
+                background-position: 20% center;
+                padding-left: 15px;
+            }
+
+            .bg_ggsj {
+                background: url("img/tbmain/ggsj.png");
+                background-repeat: no-repeat;
+                background-size: 13px 13px;
+                background-position: 20% center;
+                padding-left: 15px;
+            }
+
+            #sinbox .item span.btn {
+                background: inherit;
+                padding: 5px 7%;
+                border-radius: 3px;
+                color: #222;
+                border: 1px solid #EBEBEB;
+                font-size: 14px;
+                margin-right: 15px;
+            }
+
+            #sinbox .item input {
+                width: 32%;
+            }
+        }
+    </style>
+
+</head>
+
+<!--******************************************************************************-->
+
+<body>
+
+    <header class="bottomBorder">
+        <div>
+            <div class="grow1 bg_white">
+                <div class="navBar">
+                    <div class="navBackIcon" onclick="Comm.close()"></div>
+                    <div class="searchIcon" onclick="Comm.showWindow('sinboxTemp',true);ttop()"></div>
+                    <div class="navTitle">收款记录</div>
+                </div>
+            </div>
+        </div>
+    </header>
+    <!--******************************************************************************-->
+
+    <section id="section" class="scroll-y f15">
+        <div class="bg_white flex p15" style="padding-bottom:20px;">
+            <div class="kuang">
+                <div id="allMoney" class="flex_center mart15 bold f16 baseWH" style="margin-left:45px;margin-right:45px;"></div>
+                <div class="flex_center mart15 marb15 f12 col_lgray bg_ljgxje">累计收款(元)</div>
+            </div>
+            <div class="kuang marl20">
+                <div id="allCount" class="flex_center mart15 bold f16 baseWH" style="margin-left:45px;margin-right:45px;"></div>
+                <div class="flex_center mart15 marb15 f12 col_lgray bg_ggsj">收款笔数(笔)</div>
+            </div>
+        </div>
+        <div id="list" class="bg_white mart10 paddl15 paddr15 marb5">
+        </div>
+
+
+        <div class="body" id="box">
+
+            <!--  mask -->
+            <div id="sinbox" wtd="sinboxTemp">
+                <div id="lx" class="item p20">
+                    <div class="colorb5 left">选择类型：</div>
+                    <div class="scoll scollone" id="sco">
+                    </div>
+                </div>
+                <div class="item p20 pt10">
+                    <div class="colorb5 left">时间筛选：</div>
+                    <div class="tleft">
+                        <input readonly id="start" placeholder="开始时间" onclick="datePickerstart.show();"
+                            class="baseH center timeChooseItem" />
+                        <span>&nbsp;至&nbsp;</span>
+                        <input id="end" readonly onclick="datePickerend.show();" placeholder="结束时间"
+                            class="baseH center timeChooseItem" />
+                    </div>
+                </div>
+
+
+                <div class="tb">
+                    <div class="td f18 bg_lred" onclick="reg()">重置</div>
+                    <div class="td f18 r btn bg_trans" onclick="okref()">确定</div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!--******************************************************************************-->
+    <footer class="shared">
+    </footer>
+
+</body>
+
+
+<script type="text/html" id="listTpl">
+    {{each $data as v k}}
+    <div class="paddl15 bg_white ">
+        <div class="cellContent bottomBorder">
+            <div class="label f16 icon_pre icon_phone ">
+                <p>{{v.dictname}}</p>
+                <p class="f12 color999">{{formatDate(v.addTime,'Y-m-d H:i')}}</p>
+            </div>
+            {{if v.state==2}}
+            <span class="f16">-{{priceTp(v.price)}}</span>
+            {{else}}
+            <span class="F2772D f16">+{{priceTp(v.price)}}</span>
+            {{/if}}
+        </div>
+    </div>
+    {{/each}}
+</script>
+<script type="text/javascript" src="js/z.js"></script>
+<script type="text/javascript" src="js/g.js"></script>
+<script type="text/javascript" src="js/comm.js"></script>
+<script type="text/javascript" src="inc/mescroll/mescroll.min.js"></script>
+<script type="text/javascript" src="js/art-template.js"></script>
+<script type="text/javascript" src="js/dict.js"></script>
+<script type="text/javascript" src="js/picker.min.js"></script>
+<script>
+    var userinfo = Comm.db("userinfo");
+    var requestPamrm = {};
+    var merefresh;
+    var html = '';
+    var obj = JSON.parse(Comm.query("obj"));
+    var datePickerstart, merefreshbuy = null,
+        datePickerend, coinType = [],
+        activeText = '',
+        selectType = "",
+        start = "",
+        end = "";
+    var t = Comm.query('type');
+
+    function pageload() {
+        var u = Comm.db('userinfo');
+        u.receiverId = u.storeId;
+        datePickerstart = new Datepicker("开始时间", function (a, b, c) {
+            $("#WTDBOX #start").val(b);
+            start = b;
+        });
+        datePickerend = new Datepicker("结束时间", function (a, b, c) {
+            $("#WTDBOX #end").val(b);
+            end = b;
+        });
+        if (t == 'dp') {
+            addRefresh();
+            return;
+        }
+        AJAX.POST('/api/store/myreceiverInfo', u, function (d) {
+            var data = d.data;
+        })
+        getType();
+        //model.search();
+        //获取余额
+        AJAX.POST('/bussiness/wallet/detail', {
+            bussinessId: userinfo.bussinessId
+        }, function (res) {
+            if (res.code == 1) {
+                $('#balance').html(app.price(res.data.balance))
+            }
+        })
+    }
+
+    //手机端返回到本页面 回调方法
+    function pageresume() {
+    }
+
+    function dpInfo(dd) {
+        $('#lx').addClass('hide');
+        AJAX.POST('/api/store/myreceiverCount', userinfo, function (d) {
+            if (d.code == 1) {
+                var data = d.data;
+                if (data.allMoney == '') data.allMoney = 0;
+                $('#allMoney').html(app.price(data.allMoney));
+                $('#allCount').html(data.allCount);
+            }
+        })
+        if (dd.code == 1) {
+            var data = dd.data;
+            for (var i = 0; i < data.length; i++) {
+                if (data.length - 1 == i) {
+                    html += '<div class="flex_between"><div class="mart20 marb20"><div>' + data[i]
+                        .nickName + '</div><div class="col_lgray f10 mart5">' + data[i].boundTime +
+                        '</div></div><div class="f16 bold">+' + app.price(data[i].money) +
+                        '</div></div>';
+                } else {
+                    html += '<div class="flex_between bottomBorder"><div class="mart20 marb20"><div>' +
+                        data[i].nickName + '</div><div class="col_lgray f10 mart5">' + data[i]
+                        .boundTime + '</div></div><div class="f16 bold">+' + app.price(data[i].money) +
+                        '</div></div>';
+                }
+            }
+            return html;
+        }
+    }
+
+    function addRefresh() {
+        requestPamrm.storeId = userinfo.storeId;
+        if (!merefresh) {
+            merefresh = new MERefresh();
+            //网络请求参数
+            merefresh.refreshOption.refreshUrl = '/api/store/myreceiverlist';
+            merefresh.refreshOption.refreshParm = requestPamrm;
+
+            //页面 <刷新> 的回调
+            merefresh.refreshOption.refresh_cb = function (refresh, d) {
+                if (d.code == 1) {
+                    html = '';
+                    addrData = d.data||[];
+                    refresh.successEndRef(addrData.length, d.totalCount);
+                    refresh.appendHtml(dpInfo(d));
+                } else {
+                    refresh.successEndRef(0, 0);
+                    refresh.MeRefScroll.endUpScroll(true);
+                }
+            };
+            merefresh.configurationDone('section', 'list');
+        } else {
+            merefresh.refreshFunction(merefresh);
+        }
+    }
+
+    function getType() {
+        // $("#sco").append('<span id="btnone" class="btn cur marr5" onclick="scollclick(this,\'\')">全部</span>');
+        var a = {};
+        var data = [{
+            coinface: '',
+            coinname: '分润',
+            type: "-1",
+        }, {
+            coinface: '',
+            coinname: '提现',
+            type: 0,
+        }, {
+            coinface: '',
+            coinname: '消费',
+            type: 1,
+        }]
+        a.data = data;
+        coinType = a.data;
+        for (var i = 0; i < a.data.length; i++) {
+            $("#sco").append('<span id="_cointypeid' + a.data[i].type +
+                '" class="btn marr5"  onclick="scollclick(this,' + a.data[i].type + ')">' + a.data[i].coinname +
+                '</span>')
+        }
+    }
+
+    var model = {
+        data: obj,
+        search: function () {
+            if (!model.mere) {
+                model.mere = new MERefresh('box,list', {
+                    pagesize: 10,
+                    refreshUrl: '/common/wallet/list',
+                    refreshTypeGet: true
+                });
+                model.mere.refreshOption.refreshParm = model.data;
+                //页面 <刷新> 的回调
+                model.mere.refreshOption.refresh_cb = function (refresh, d) {
+                    refresh.successEndRef(d.data.length, d.totalCount);
+                    var h = template('listTpl', d.data||[]);
+                    refresh.appendHtml(h);
+                    model.text();
+                };
+            } else {
+                model.mere.refreshOption.refreshParm = model.data;
+                //重置列表数据
+                model.mere.MeRefScroll.resetUpScroll();
+                //model.mere.MeRefScroll.triggerDownScroll();
+                //隐藏回到顶部按钮
+                model.mere.MeRefScroll.hideTopBtn();
+            }
+        }
+    }
+
+    function record() {
+        if (!model.mere) {
+            model.mere = new MERefresh('box,list', {
+                pagesize: 10,
+                refreshUrl: '/common/wallet/list',
+                refreshTypeGet: true
+            });
+            model.mere.refreshOption.refreshParm = model.data;
+            //页面 <刷新> 的回调
+            model.mere.refreshOption.refresh_cb = function (refresh, d) {
+                var arr = d.data||[];
+                refresh.successEndRef(arr.length, d.totalCount);
+                var h = template('listTpl', arr);
+                refresh.appendHtml(h);
+            };
+        } else {
+            model.mere.refreshOption.refreshParm = model.data;
+            //重置列表数据
+            model.mere.MeRefScroll.resetUpScroll();
+            //model.mere.MeRefScroll.triggerDownScroll();
+            //隐藏回到顶部按钮
+            model.mere.MeRefScroll.hideTopBtn();
+        }
+
+    }
+
+    function okref() {
+        var timeDp = {};
+        timeDp.beginTime = start;
+        timeDp.endTime = end;
+        Comm.db('timeDp', timeDp);
+        Comm.go('searchMoneyRecordResult.html?type=' + t);
+        return;
+
+        Comm.showWindow()
+        model.data.startTime = start;
+        model.data.endTime = end;
+        // model.text()
+        model.search()
+
+    }
+
+    function reg() {
+        $("#WTDBOX #start").val("");
+        $("#WTDBOX #end").val("");
+        selectType = "";
+        scollclick("#btnone", '')
+    }
+
+    function ttop() {
+        start = ""
+        end = ""
+        $("#MainBg,#WTDBOX").css("top", $(".navBar").height());
+        $("#WTDBOX #start").val(start)
+        $("#WTDBOX #end").val(end)
+        if (selectType == "") {
+            scollclick("#btnone", '')
+        } else {
+            scollclick("#_cointypeid" + selectType, selectType)
+        }
+    }
+
+    function scollclick(a, id) {
+        activeText = $(a).html()
+        if (!$("#WTDBOX").find(a).hasClass("cur")) {
+            $("#WTDBOX .scollone span").removeClass("cur")
+            $("#WTDBOX").find(a).addClass("cur")
+            // model.data.billType = id;
+        }
+    }
+</script>
+
+</html>

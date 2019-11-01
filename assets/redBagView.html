@@ -1,0 +1,212 @@
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width,initial-scale=1.0,user-scalable=no" name="viewport">
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="format-detection" content="telephone=no,email=no,adress=no" />
+
+    <title>领红包列表</title>
+
+    <link rel="stylesheet" href="css/g.css">
+    <link rel="stylesheet" href="css/comm.css">
+
+    <style>
+
+        .sectionBgImg {
+            background-image: url("img/Invitation/yqzch.png");
+            background-repeat: no-repeat;
+            background-size: 100% 100%;
+        }
+
+        /*特卖商品 新品推荐*/
+
+        .goods {
+            padding-top: 10px;
+            padding-bottom: 20px;
+        }
+
+        .baseWH{
+            min-height: 15px;
+        }
+
+        .goodsCell {
+            min-width: 50%;
+            max-width: 55%;
+            width: 55%;
+            margin-left: 15px;
+            margin-right: 5px;
+        }
+
+        .goodsFace {
+            border-radius: 5px;
+            padding-top: 124%;
+        }
+
+        .bg_img {
+            background-image: url('img/redbag/chbao.png');
+            background-repeat: no-repeat;
+            background-size: 100% 100%;
+        }
+
+        #maskBg{
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0,0,0,0.5);
+        }
+
+        .meau{
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+        }
+
+    </style>
+
+</head>
+
+<!--******************************************************************************-->
+
+<body>
+
+    <header>
+
+        <div class="navBar iosDeal bg_theme">
+            <div class="navBackIcon" onclick="Comm.close()"></div>
+            <div class="navTitle flex_center col_white">领红包</div>
+        </div>
+
+        <div class="meau">
+            <div class="mItem">发出的红包</div>
+            <div class="mItem">收到的红包</div>
+        </div>
+    </header>
+
+    <section class="sectionBgImg relative">
+
+        <!--sinboxTemp-->
+        <div id="maskBg">
+            <!--图片-->
+            <div style="margin: 10px;margin-top:200px;">
+                <div class="scroll-x">
+                    <div class="goods flex_start f12 marl7 pr15">
+
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </section>
+
+
+
+
+
+    <script src="js/z.js"></script>
+    <script src="js/g.js"></script>
+    <script src="js/comm.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/art-template.js"></script>
+
+    <script type="text/javascript">
+
+        var userinfo = Comm.db('userinfo')||{};
+
+        function pageload() {
+            Comm.position(function (a) {
+                if (a.code == 1) {
+                    UserJWD.updateJWDValue(a);
+                }
+                getRedBagList();
+            })
+        }
+
+
+        //获取红包列表
+        function getRedBagList() {
+            var params = {
+                lng:UserJWD.lng(),
+                lat:UserJWD.lat(),
+                maxlat:UserJWD.lat()+0.5,
+                maxlng:UserJWD.lng()-0.5,
+
+                minlat:UserJWD.lat()-0.5,
+                minlng:UserJWD.lng()+0.5,
+
+                // maxlat:UserJWD.lat()+0.5,
+                // maxlng:UserJWD.lng()+0.5,
+                //
+                // minlat:UserJWD.lat()-0.5,
+                // minlng:UserJWD.lng()-0.5,
+                customerId:userinfo.customerId||'',
+            }
+
+            Comm.loading(1);
+            var apiStr = '/api/rpacket/getRpacketList';
+            SLNetwork('get', apiStr, params, function (data) {
+                Comm.loading();
+                if (data.code == 1) {
+                    nslog(data);
+                    var list = data.data||[];
+
+                    $('.goods').html(template('tp_id_cell',list));
+
+                } else {
+                    Comm.message(data.msg);
+                }
+            });
+        }
+
+
+
+        //领取红包
+        function receiveRedBag(id) {
+
+            var params = {
+                rpacketId:id,
+            }
+            Comm.loading(1);
+            var apiStr = '/api/rpacket/robRpacket';
+            SLNetwork('post', apiStr, params, function (data) {
+                Comm.loading();
+                if (data.code == 1) {
+                    nslog(data);
+                    var model = data.data;
+                    Comm.go('redBagDetail.html?rid='+id);
+                } else {
+                    Comm.message(data.msg);
+                }
+            });
+
+        }
+
+    </script>
+
+</body>
+
+
+<script type="text/html" id="tp_id_cell">
+
+    {{each $data model i}}
+    <div class="goodsCell">
+        <div class="wrap goodsFace">
+            <div class="wrap_ct imgContain bg_img center" onclick="receiveRedBag({{model.rpacketId}})">
+                <div><img src="{{OSS(model.face,'s')}}" onerror="app.herrorimg(this)" style="width:40px;height:40px;border-radius:20px;margin-top:60%;"/></div>
+                <div class="f12 col_white mart5 baseWH">{{model.nickName}}</div>
+                <div class="col_white mart10 ml5 mr5">给你发了一个红包，价值连城,价值连城</div>
+            </div>
+        </div>
+    </div>
+    {{/each}}
+
+</script>
+
+
+</html>

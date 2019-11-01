@@ -1,0 +1,496 @@
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width,initial-scale=1.0,user-scalable=no" name="viewport">
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="format-detection" content="telephone=no,email=no,adress=no" />
+
+    <title>商品管理</title>
+
+    <link rel="stylesheet" href="css/g.css">
+    <link rel="stylesheet" href="css/comm.css">
+    <link rel="stylesheet" href="inc/mescroll/mescroll.min.css">
+
+    <style>
+        body {
+            background-color: #F5F5F5;
+        }
+
+
+        .moreIcon {
+            height: 100%;
+            width: 40px;
+            height: 44px;
+            background: url("img/redbag/more.png");
+            background-position: center center;
+            background-repeat: no-repeat;
+            background-size: auto 16px;
+            background-position-x: 10px;
+            float: right;
+        }
+
+        /*search header*/
+        .headItem {
+            line-height: 44px;
+            height: 44px;
+        }
+
+        .headItem.msg {
+            background-image: url("img/tbhome/xiaoxi.png");
+        }
+
+        .flex1 {
+            flex: 1;
+        }
+
+        .searchBar {
+            height: 30px;
+            margin: 7px 2%;
+            line-height: 30px;
+            border-radius: 3px;
+            text-align: left;
+        }
+
+        .searchBar.lIcon {
+            background-position-x: 15px;
+            padding-left: 35px;
+            background-image: url("img/tbshop/Search.png");
+            color: #A0A0A0;
+        }
+
+        .r {
+            color: #E30008;
+        }
+
+        .p64 {
+            padding: 16px 64px;
+        }
+
+        .cell {
+            padding: 20px 15px;
+            background-color: white;
+        }
+
+        .cellIcon {
+            height: 90px;
+            width: 90px;
+            flex-basis: 90px;
+        }
+
+        .cellRight {
+            height: 90px;
+            padding: 0px 10px;
+            flex: 1;
+        }
+
+        .mv5 {
+            margin: 5px 0px;
+        }
+
+        .f10 {
+            font-size: 10px;
+        }
+
+        .bor_btn {
+            border: solid #EEEEEE 1px;
+            padding: 6px 25px;
+            border-radius: 15px;
+        }
+
+        .storeImg {
+            background: url("img/tbshop/Shop-pic.png") no-repeat center center;
+            background-size: 90px 90px;
+            position: relative;
+        }
+
+        .quan {
+            position: absolute;
+            background: #000;
+            background-color: rgba(0, 0, 0, 0.6);
+            width: 70px;
+            height: 70px;
+            border-radius: 35px;
+            margin-top: 10px;
+            margin-left: 10px;
+        }
+
+        .r_jiantou {
+            background: url("img/tbshop/fenlei.png") no-repeat center right;
+            background-size: 6px 3px;
+            padding-right: 10px;
+        }
+
+        .h_jiantou {
+            background: url("img/tbmain/hhr.png") no-repeat center right;
+            background-size: 6px 3px;
+            padding-right: 10px;
+        }
+
+        .ims {
+            background-repeat: no-repeat;
+            background-size: 100% 100%;
+        }
+    </style>
+
+</head>
+
+<!--******************************************************************************-->
+
+<body>
+
+    <header class="bottomBorder">
+        <div>
+            <div class="grow1 bg_white">
+                <div class="navBar">
+                    <div class="navBackIcon" onclick="Comm.close()"></div>
+                    <div class="moreIcon" onclick="show();"></div>
+                    <div class="navTitle">商品管理</div>
+                </div>
+            </div>
+        </div>
+        <div class="navBar flex_between" style="background-color:#F5F5F5">
+            <div class="headItem flex1 marl15">
+                <input id="keyWords" class="searchBar bg_white lIcon f12" placeholder="请输入商品名称"
+                    style="margin-left:0px;margin-right:0px;width:100%;">
+            </div>
+            <div class="headItem marl15 marr15 col_red" onclick="searchStoreByName()">搜索</div>
+        </div>
+        <div class="flex_between p64 bg_white">
+            <div id="ysj" class="r r_jiantou" onclick="show2();">全部</div>
+            <div id="px" class="h_jiantou" onclick="px();">时间从近到远</div>
+        </div>
+    </header>
+    <!--******************************************************************************-->
+
+    <section id="section" class="mescroll scroll-y">
+        <div id="list"></div>
+    </section>
+
+    <!--******************************************************************************-->
+    <footer class="shared">
+    </footer>
+
+    <script src="js/z.js"></script>
+    <script src="js/g.js"></script>
+    <script src="js/comm.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/picker.min.js"></script>
+    <script src="inc/mescroll/mescroll.min.js"></script>
+
+    <script>
+        var requestPamrm = {};
+        var merefresh;
+        var html = '';
+        var u = Comm.db('userinfo');
+        var isLiansuo = false;
+        var suppliers;
+
+        function edit(i) {
+            Comm.db('storeGoodsId', i);
+            Comm.go('addStore.html');
+        }
+
+        function addRefresh() {
+            requestPamrm.lng = UserJWD.lng();
+            requestPamrm.lat = UserJWD.lat();
+            requestPamrm.storeId = u.storeId;
+            if (!merefresh) {
+                merefresh = new MERefresh();
+                //网络请求参数
+                merefresh.refreshOption.refreshUrl = '/api/store/storegoods';
+                merefresh.refreshOption.refreshParm = requestPamrm;
+
+                //页面 <刷新> 的回调
+                merefresh.refreshOption.refresh_cb = function (refresh, d) {
+                    if (d.code == 1) {
+                        html = '';
+                        addrData = d.data||[];
+                        refresh.successEndRef(addrData.length, d.totalCount);
+                        refresh.appendHtml(serachAjax(d));
+                    } else {
+                        refresh.successEndRef(0, 0);
+                        refresh.MeRefScroll.endUpScroll(true);
+                    }
+                };
+                merefresh.configurationDone('section', 'list');
+            } else {
+                merefresh.refreshFunction(merefresh);
+            }
+        }
+
+        function serachAjax(dd) {
+            if (dd.code == 1) {
+                var data = dd.data;
+                //var img = Comm.OSS.getImgUrl(data.face);
+                if (data.length == 0) {
+                    $('#list').html('');
+                    html += '<div class="flex_center col_lgray" style="margin-top:50%">暂无商品信息!</div>';
+                } else {
+                    //0和4可以编辑
+                    for (var i = 0; i < data.length; i++) {
+                        if (data[i].isEnable != 1) {
+                            html += '<div id="store' + i +
+                                '" class="yxj q marb10" storeGoodsId="' + data[i].storeGoodsId +
+                                '"><div class="cell flex_start bottomBorder"><div id="app' +
+                                i +
+                                '" class="imgContain cellIcon storeImg col_white" style="background:url(' + "'" + Comm
+                                .OSS
+                                .getImgUrl(data[i]
+                                    .face) + "'" +
+                                ');background-size:100% 100%;background-repeat:no-repeat"><div class="quan flex_center flex_item_center">已下架</div></div><div class="cellRight"><div class="f15 bold">' +
+                                data[i].goodsName +
+                                '</div><div class="mv5 f10 col_lgray" style="line-height: 20px;">' +
+                                data[i]
+                                .synopsis +
+                                '</div><div class="evaluate flex_start"><div class="f12 lineSpan col_red"><span>￥</span><span class="money f16 bold">' +
+                                data[i].price +
+                                '</span></div></div></div></div><div id="te' +
+                                i +
+                                '" class="flex bg_white" style="justify-content:flex-end"><div class="hide del m10 bor_btn" style="margin-left:0px" onclick="del(' +
+                                i +
+                                ');">删除</div><div class="m10 bor_btn" style="margin-left:0px" onclick="preventRepeadClickDeal(function () {sj(' +
+                                i +
+                                ')}, 1);">上架</div>'+(isLiansuo ? '' : '<div class="m10 bor_btn" style="margin-left:0px" onclick="edit('+data[i].storeGoodsId+')">编辑</div>')+'</div></div>';
+
+                        } else {
+                            html += '<div id="store' + i +
+                                '" class="ysj q marb10" storeGoodsId="' + data[i].storeGoodsId +
+                                '"><div class="cell flex_start bottomBorder"><div id="app' +
+                                i +
+                                '" class="imgContain cellIcon storeImg col_white" style="background:url(' + "'" + Comm
+                                .OSS
+                                .getImgUrl(data[i]
+                                    .face) + "'" +
+                                ');background-size:100% 100%;background-repeat:no-repeat"></div><div class="cellRight"><div class="f15 bold">' +
+                                data[i].goodsName +
+                                '</div><div class="mv5 f10 col_lgray" style="line-height: 20px;">' +
+                                data[i]
+                                .synopsis +
+                                '</div><div class="evaluate flex_start"><div class="f12 lineSpan col_red"><span>￥</span><span class="money f16 bold">' +
+                                data[i].price +
+                                '</span></div></div></div></div><div id="te' +
+                                i +
+                                '" class="flex bg_white" style="justify-content:flex-end"><div class="hide del m10 bor_btn" style="margin-left:0px" onclick="del(' +
+                                i +
+                                ');">删除</div><div class="m10 bor_btn" onclick="preventRepeadClickDeal(function () {xj(' +
+                                i + ')}, 1);">下架</div>'+(isLiansuo ? '' : '<div class="m10 bor_btn" style="margin-left:0px" onclick="edit('+data[i].storeGoodsId+')">编辑</div>')+'</div></div>';
+                        }
+                    }
+                }
+                return html;
+            }
+        }
+
+        function searchStoreByName() {
+            requestPamrm.keyWords = $('#keyWords').val();
+            requestPamrm.storeId = u.storeId;
+            addRefresh();
+        }
+
+        function pageload() {
+            requestPamrm.sortType = 1;
+            addRefresh();
+            init();
+        }
+
+        function del(i) {
+            var o = {};
+            o = u;
+            o.storeGoodsId = $('#store' + i).attr('storegoodsid');
+            AJAX.POST('/api/store/deletestoregoods', o, function (d) {
+                if (d.code == 1) {
+                    Comm.message('商品删除成功');
+                    addRefresh();
+                } else {
+                    Comm.message(d.msg);
+                }
+            })
+        }
+
+        function xj(i) {
+            var s = 'store';
+            var n = 'app';
+            var e = 'te';
+            var o = {};
+            o.storeGoodsId = $('#store' + i).attr('storegoodsid');
+            o.storeId = Comm.db('userinfo').storeId;
+
+            if (i == 101) {
+                var o = {};
+                o.storeId = Comm.db('userinfo').storeId;
+                AJAX.POST('/api/store/downallstoregoods', o, function (d) {
+                    if (d.code == 1) {
+                        Comm.message('商品全部下架成功');
+                        addRefresh();
+
+                        if (isLiansuo != true) {
+                            $('.del').removeClass('hide');
+                        }
+                    } else {
+                        Comm.message(d.msg);
+                    }
+                })
+                return;
+            }
+            AJAX.POST('/api/store/downstoregoods', o, function (d) {
+                if (d.code == 1) {
+                    Comm.message('商品下架成功');
+                    addRefresh();
+                    if (isLiansuo != true) {
+                        $('.del').removeClass('hide');
+                    }
+                } else {
+                    Comm.message(d.msg);
+                }
+            })
+        }
+
+        function sj(i) {
+            var s = 'store';
+            var n = 'app';
+            var e = 'te';
+            if (i == 101) {
+                var o = {};
+                o.storeId = Comm.db('userinfo').storeId;
+                AJAX.POST('/api/store/upallstoregoods', o, function (d) {
+                    if (d.code == 1) {
+                        Comm.message('商品全部上架成功');
+                        addRefresh();
+                    } else {
+                        Comm.message(d.msg);
+                    }
+                })
+                return;
+            }
+            $('#' + s + i).removeClass('yxj');
+            $('#' + s + i).addClass('ysj');
+            $('#' + n + i).html('');
+            $('#' + e + i).html(
+                '<div class="m10 bor_btn" onclick="xj(' + i + ');">下架</div><div class="m10 bor_btn">编辑</div>'
+            );
+            var o = {};
+            o.storeGoodsId = $('#store' + i).attr('storegoodsid');
+            o.storeId = Comm.db('userinfo').storeId;
+            AJAX.POST('/api/store/upstoregoods', o, function (d) {
+                if (d.code == 1) {
+                    Comm.message('商品上架成功');
+                    addRefresh();
+                } else {
+                    Comm.message(d.msg);
+                }
+            })
+        }
+
+        function show() {
+            suppliers.show();
+        }
+
+        function init() {
+
+            var o = {};
+            o.storeId = u.storeId;
+            AJAX.POST('/api/store/getStoreManageType', o, function (d) {
+                if (d.code == 1 || d.code==2) {
+                    isLiansuo = true;
+                }
+                if (isLiansuo == true) {
+                    _suppliers = [{
+                        i: "1",
+                        text: "全部上架"
+                    }, {
+                        i: "3",
+                        text: "全部下架"
+                    }]
+                } else {
+                    _suppliers = [{
+                        i: "1",
+                        text: "全部上架"
+                    }, {
+                        i: "2",
+                        text: "添加商品"
+                    }, {
+                        i: "3",
+                        text: "全部下架"
+                    }]
+                }
+                suppliers = new Commpicker("更多操作", [_suppliers], function (obj, name, sid) {
+                    if (sid == "1") {
+                        sj(101);
+                        $('#ysj').text('全部');
+                        $('.yxj').removeClass('hide');
+                        $('.ysj').removeClass('hide');
+                    }
+                    if (sid == "2") {
+                        Comm.go('addStore.html?type=add');
+                    }
+                    if (sid == "3") {
+                        xj(101);
+                        $('#ysj').text('全部');
+                        $('.yxj').removeClass('hide');
+                        $('.ysj').removeClass('hide');
+                    }
+                })
+                if (isLiansuo != true) {
+                    $('.del').removeClass('hide');
+                }
+            })
+            _suppliers2 = [{
+                i: "1",
+                text: "全部"
+            }, {
+                i: "2",
+                text: "已上架"
+            }, {
+                i: "3",
+                text: "未上架"
+            }]
+            suppliers2 = new Commpicker("更多操作", [_suppliers2], function (obj, name, sid) {
+                $('#ysj').text(name);
+                if (sid == "1") {
+                    // $('.yxj').removeClass('hide');
+                    // $('.ysj').removeClass('hide');
+                    requestPamrm.isEnble = undefined;
+                    addRefresh();
+                }
+                if (sid == "2") {
+                    // $('.ysj').removeClass('hide');
+                    // $('.yxj').addClass('hide');
+                    requestPamrm.isEnble = 1;
+                    addRefresh();
+                }
+                if (sid == "3") {
+                    // $('.yxj').removeClass('hide');
+                    // $('.ysj').addClass('hide');
+                    requestPamrm.isEnble = 0;
+                    addRefresh();
+                }
+            })
+        }
+
+        function show2() {
+            suppliers2.show();
+        }
+
+        function px() {
+            if ($('#px').text() == '时间从远到近') {
+                $('#px').text('时间从近到远');
+                requestPamrm.sortType = 1;
+                requestPamrm.storeId = u.storeId;
+                addRefresh();
+                return;
+            }
+
+            if ($('#px').text() == '时间从近到远') {
+                $('#px').text('时间从远到近');
+                requestPamrm.sortType = 0;
+                requestPamrm.storeId = u.storeId;
+                addRefresh();
+                return;
+            }
+        }
+    </script>
+
+</body>
+
+</html>

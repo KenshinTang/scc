@@ -1,0 +1,216 @@
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width,initial-scale=1.0,user-scalable=no" name="viewport">
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+    <meta name="format-detection" content="telephone=no,email=no,adress=no"/>
+
+    <title>配置编辑</title>
+
+    <link rel="stylesheet" href="css/g.css">
+    <link rel="stylesheet" href="css/comm.css">
+    <link rel="stylesheet" href="inc/imageBroswer/imageBroswer.css">
+
+
+    <style>
+
+
+
+        input {
+            line-height: 50px;
+            font-size: 20px;
+            width: 100%;
+            padding: 10px;
+            text-align: center;
+        }
+
+        footer {
+            line-height: 50px;
+            text-align: center;
+        }
+
+
+
+    </style>
+
+
+</head>
+
+<!--******************************************************************************-->
+<body>
+
+<header>
+    <div class="navBar bottomShadow">
+        <div class="navTitle">配置</div>
+    </div>
+</header>
+<!--******************************************************************************-->
+
+<section class="center">
+
+    <div class="cell bottomBorder">
+        <div class="desText">number</div>
+        <input type="number" placeholder="number" value="" maxlength="6">
+    </div>
+
+    <div class="cell bottomBorder">
+        <div class="desText">tel</div>
+        <input type="tel" placeholder="tel" value="" maxlength="6">
+    </div>
+
+
+    <div class="cell bottomBorder">
+        <div class="desText">text</div>
+        <input type="text" placeholder="text" value="" maxlength="6">
+    </div>
+
+
+    <div class="cell bottomBorder">
+        <div class="desText">地址</div>
+        <input id="location" type="text" placeholder="192.168.0.86" value="192.168.0.86">
+    </div>
+
+
+    <div class="cell bottomBorder">
+        <div class="desText">test</div>
+        <input type="submit" placeholder="请选择" value="hahaha">
+    </div>
+
+    <div class="cell bottomBorder">
+        <div class="desText">端口</div>
+        <input id="post" type="text" placeholder="8081" value="8081">
+    </div>
+
+    <div class="cell bottomBorder">
+        <div class="desText">端口</div>
+        <input id="folder" type="text" placeholder="App" value="waterCarCar">
+    </div>
+
+    <div class="cell bottomBorder">
+        <div class="desText">主页</div>
+        <input id="home" type="text" placeholder="index" value="index">
+    </div>
+
+
+    <div>
+        <div class="p10 col_theme">注:</div>
+        <div class="descrip p20 col_sub center">
+
+            该包不能用于测试'支付'、'登录'、'分享'
+
+        </div>
+    </div>
+
+    <!--********************************-->
+
+
+</section>
+
+
+<!--******************************************************************************-->
+<footer class="shadow">
+    <div class="col_white bg_theme sureBtn f16" onclick="submitClicked()">确定</div>
+</footer>
+
+
+<script src="js/z.js"></script>
+<script src="js/g.js"></script>
+<script src="js/comm.js"></script>
+<script src="js/art-template.js"></script>
+<script src="inc/imageBroswer/imageBroswer.js"></script>
+
+
+<script>
+
+
+    function pageload() {
+
+        var index = (Comm.db('TestIndex')||0) + 1;
+
+        Comm.db('TestIndex',index);
+
+        Comm.db('DB_Test','@'+index + '次');
+
+        var ss = Comm.db('DB_Test');
+        Comm.message(JSON.stringify(ss));
+
+        setTimeout(function () {
+            Comm.close();
+        },2000);
+
+    }
+
+
+
+    function testM(obj) {
+        obj.value = obj.value.replace(/^(\-)*(\d+)\.(\d\d).*$/, '$1$2.$3')
+    }
+
+
+    function submitClicked() {
+
+        var model = {
+            lo: $('#location').val(),
+            po: $('#post').val() ? (':' + $('#post').val() + '/') : '/',
+            fo: $('#folder').val() + '/',
+            ho: $('#home').val() + '.html',
+        }
+
+        var url = 'http://' + model.lo + model.po + model.fo + model.ho;
+        console.log(url);
+        // window.location.href = url;
+        Comm.go(url);
+    }
+
+
+
+
+
+
+     var dataModel = {
+
+        chainType:'9',
+        headName:'小石头',//负责人
+        headPhone:'13888888888',//联系电话
+        storeName:'',
+        storeCat:'40,50',
+        rebate:'',
+        addr:'',
+        addrId:'',
+        manageType:'2',
+
+         rePhone:'',//非必填
+         addressDetail:'',
+         storeChainId:'',
+
+
+
+         /******************没有的数据******************/
+         cardZ:'',//正面
+         cardF:'',//反面
+         handCard:'',//手持
+         face:'',//店铺闷头照片
+
+
+         licenses:'',//营业执照
+         storeId:'',//店铺编号
+    }
+
+
+
+
+
+</script>
+
+
+<!--
+
+启动应用 - - 记录状态
+
+
+-->
+
+</body>
+
+</html>

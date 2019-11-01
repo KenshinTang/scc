@@ -1,0 +1,111 @@
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width,initial-scale=1.0,user-scalable=no" name="viewport">
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+    <meta name="format-detection" content="telephone=no,email=no,adress=no"/>
+
+    <title>title</title>
+
+    <link rel="stylesheet" href="css/g.css">
+    <link rel="stylesheet" href="css/comm.css">
+
+    <style>
+
+    </style>
+
+</head>
+
+<!--******************************************************************************-->
+<body>
+
+<header>
+    <div class="navBar bottomShadow">
+        <div class="navBackIcon" onclick="Comm.close()"></div>
+        <div class="navTitle">位置</div>
+    </div>
+</header>
+<!--******************************************************************************-->
+
+<section id="container">
+
+    <div id="l-map" class="mainH mainW"></div>
+
+</section>
+
+<!--******************************************************************************-->
+<footer></footer>
+
+<script src="js/z.js"></script>
+<script src="js/g.js"></script>
+<script src="js/comm.js"></script>
+<script src="js/api.js"></script>
+<!--<script src="http://api.map.baidu.com/api?v=3.0&ak=R0d1Iv4YdniK8MUN4snaMZKRAGnI5TGW"></script>-->
+<script src="http://api.map.baidu.com/api?v=3.0&ak=R0d1Iv4YdniK8MUN4snaMZKRAGnI5TGW" type="text/javascript"></script>
+
+<script type="text/javascript">
+
+    var lat = Comm.query('lat');
+    var lng = Comm.query('lng');
+
+
+    // function pageload(){
+    //     if (!lat || !lng) return;
+    //
+    //     var mp = new BMap.Map("container");
+    //     // mp.centerAndZoom(new BMap.Point(lng,lat), 10);
+    //     mp.centerAndZoom(new BMap.Point(116.3964,39.9093), 10);
+    //     mp.enableScrollWheelZoom();
+    //
+    //     var canvasLayer = new BMap.CanvasLayer({
+    //         update: update
+    //     });
+    //
+    //     mp.addOverlay(canvasLayer);
+    // }
+    //
+    //
+    // function update() {
+    //     var ctx = this.canvas.getContext("2d");
+    //
+    //     if (!ctx) {
+    //         return;
+    //     }
+    //
+    //     ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+    //
+    //     var temp = {};
+    //     ctx.fillStyle = "rgba(50, 50, 255, 0.7)";
+    //     ctx.beginPath();
+    //     var data = [
+    //         new BMap.Point(lng,lat),
+    //         new BMap.Point(lng,lat),
+    //         // new BMap.Point(116.321768,39.88748),
+    //         // new BMap.Point(116.494243,39.956539)
+    //     ];
+    //
+    //
+    //
+    //
+    //     for (var i = 0, len = data.length; i < len; i++) {
+    //         var pixel = mp.pointToPixel(data[i]);
+    //         ctx.fillRect(pixel.x, pixel.y, 30, 30);
+    //     }
+    // }
+
+
+
+    // 百度地图API功能
+    var map = new BMap.Map("l-map");
+    var point = new BMap.Point(lng,lat);
+    map.centerAndZoom(point, 12);
+    var marker = new BMap.Marker(point);// 创建标注
+    map.addOverlay(marker);             // 将标注添加到地图中
+    marker.disableDragging();           // 不可拖拽
+
+</script>
+
+</body>
+
+</html>

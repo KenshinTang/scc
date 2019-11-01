@@ -1,0 +1,999 @@
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width,initial-scale=1.0,user-scalable=no" name="viewport">
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="format-detection" content="telephone=no,email=no,adress=no" />
+
+    <title>店铺信息</title>
+
+    <link rel="stylesheet" href="css/g.css">
+    <link rel="stylesheet" href="css/comm.css">
+
+    <style>
+        body {
+            background-color: #F5F5F5;
+        }
+
+
+        .r {
+            color: #E30008;
+        }
+
+        .jiantou {
+            background-image: url("img/tbmine/ckqb.png");
+            background-repeat: no-repeat;
+            background-size: 10px 17px;
+            background-position: right center;
+            padding-right: 15px;
+        }
+
+        .xu {
+            border: dashed 1px #DCDCDC;
+            border-radius: 3px;
+        }
+
+        .m1836 {
+            margin: 18px 32px;
+        }
+
+        .gou {
+            background-image: url("img/tbmain/rzyy.png");
+            background-repeat: no-repeat;
+            background-size: 15px 15px;
+            padding-left: 20px;
+        }
+
+        .box {
+            background-color: #FFFFFF;
+            height: 335px;
+            width: 340px;
+            border-radius: 10px;
+        }
+
+        .select {
+            height: 40px;
+            width: 95px;
+            background-color: #F8F8F8;
+            margin-left: 7px;
+            margin-right: 7px;
+            margin-bottom: 15px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            flex-wrap: nowrap;
+            justify-content: center;
+            align-items: center;
+            font-size: 16px;
+        }
+
+        .btn {
+            margin-top: 20px;
+            margin-left: 15px;
+            margin-right: 15px;
+            height: 40px;
+            width: 120px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            flex-wrap: nowrap;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .bg_jian {
+            background: linear-gradient(#FB5E3D, #E30008);
+            /* 标准的语法 */
+        }
+
+        .bg_hui {
+            background-color: #BCBCBC
+        }
+
+        .sfzImg {
+            height: 113px;
+            width: 164px;
+        }
+
+        .imga {
+            width: 60px;
+            height: 45px;
+        }
+
+        @media (device-height:568px) and (-webkit-min-device-pixel-ratio:2) {
+
+            /* 兼容iphone5 */
+            .m1836 {
+                margin: 14px 22px;
+            }
+        }
+    </style>
+
+</head>
+
+<!--******************************************************************************-->
+
+<body>
+
+
+    <header>
+        <div>
+            <div class="grow1 bg_white">
+                <div class="navBar">
+                    <div class="navBackIcon" onclick="model.clear();Comm.close();"></div>
+                    <div class="marr15"></div>
+                    <div class="navTitle">店铺信息</div>
+                </div>
+            </div>
+        </div>
+    </header>
+    <!--******************************************************************************-->
+
+    <section class="scroll-y f15">
+        <div id="s1" class="bg_white mart10 paddl15 paddr15">
+            <div class="flex_between bottomBorder" onclick="model.show();">
+                <div class="mart20 marb20">*店铺类别</div>
+                <input class="tRight f16 jiantou hide" type="text" id="storeId" name="storeId" placeholder="请选择"
+                    readonly="readonly" />
+                <input class="tRight f16 jiantou" type="text" id="chain_name" name="chain_name" placeholder="请选择"
+                    readonly="readonly" />
+                <input class="tRight f16 jiantou hide" type="text" id="chainType" name="chainType" placeholder="请选择"
+                    readonly="readonly" />
+                <input class="tRight f16 jiantou hide" type="text" id="manageType" name="manageType" value="0"
+                    placeholder="请选择" readonly="readonly" />
+                <input class="tRight f16 jiantou hide" type="text" id="storeChainId" name="storeChainId"
+                    placeholder="请选择" readonly="readonly" />
+            </div>
+        </div>
+        <div id="info" class="bg_white paddl15 paddr15 marb5">
+            <div class="flex_between bottomBorder">
+                <div class="mart20 marb20">*负责人姓名</div>
+                <input class="tRight f15" type="text" id="headName" name="headName" placeholder="请输入" />
+            </div>
+            <div class="flex_between">
+                <div class="mart20 marb20">*联系电话</div>
+                <input class="tRight f15" id="headPhone" name="headPhone" data-reg='m' type="tel" placeholder="请输入"
+                    maxlength="11" />
+            </div>
+        </div>
+        <div class="bg_white paddl15 paddr15">
+            <div class="f16 bold paddt15">*身份证照片</div>
+            <div class="flex_center mart10 marb30">
+                <div id="cardZ" class="addimg xu sfzImg" ;>
+                    <div class="m1836">
+                        <div class="flex_center"><img src="img/tbmain/tjsfz.png" width="40px" height="40px" /></div>
+                        <div class="r flex_center mart15">身份证正面照</div>
+                    </div>
+                </div>
+                <div id="cardF" class="addimg marl15 xu sfzImg">
+                    <div class="m1836">
+                        <div class="flex_center"><img src="img/tbmain/tjsfz.png" width="40px" height="40px" /></div>
+                        <div class="r flex_center mart15">身份证反面照</div>
+                    </div>
+                </div>
+            </div>
+            <div class="flex">
+            </div>
+        </div>
+        <div class="bg_white mart5 paddl15 paddr15">
+            <div class="flex_between flex_item_center bottomBorder">
+                <div>*手持身份证半身照</div>
+                <div id="handCard" class="addimg mart5 marb5 jiantou f16 col_lgray mart10 marb10">请上传
+                </div>
+            </div>
+            <div class="flex_between flex_item_center">
+                <div>营业执照</div>
+                <div id="licenses" class="addimg mart5 marb5 jiantou f16 col_lgray mart10 marb10">请上传
+                </div>
+            </div>
+        </div>
+        <div class="bg_white mart5 paddl15 paddr15">
+            <div class="flex_between flex_item_center bottomBorder">
+                <div>*店铺门头照片</div>
+                <div id="face" class="addimg mart5 marb5 jiantou f16 col_lgray mart10 marb10">请上传</div>
+            </div>
+            <div class="flex_between flex_item_center bottomBorder">
+                <div>*店铺简称</div>
+                <input class="tRight mart20 marb20 f16" id="storeName" name="storeName" type="text" placeholder="请输入" />
+            </div>
+            <div class="flex_between flex_item_center" onclick="Comm.showWindow('sinboxTemp',false);model.show2();">
+                <div>*店铺分类</div>
+                <input class="tRight mart20 marb20 f16 jiantou" id="fenl" name="fenl" type="text" placeholder="请选择"
+                    readonly="readonly" />
+                <input class="hide tRight mart20 marb20 f16 jiantou" id="storeCat" name="storeCat" type="text"
+                    placeholder="请选择" readonly="readonly" />
+            </div>
+        </div>
+        <div class="bg_white mart5 paddl15 paddr15">
+            <div class="flex_between flex_item_center bottomBorder">
+                <div>*让利比例</div>
+                <div class="flex">
+                    <input class="tRight mart20 marb20 f16" id="rebate" name="rebate" type="text" placeholder="请输入" />
+                    <div class="f16 mart20 marb20">%</div>
+                </div>
+            </div>
+            <div class="flex_between flex_item_center bottomBorder">
+                <div>推荐人电话</div>
+                <input class="tRight mart20 marb20 f16" id="rePhone" name="rePhone" type="tel" maxlength="11"
+                    placeholder="请输入" />
+            </div>
+            <div class="flex_between flex_item_center bottomBorder" onclick="model.showAddress();">
+                <div>选择省市区</div>
+                <input id="address" name="address" class="tRight mart20 marb20 jiantou f16" placeholder="请选择"
+                    readonly="readonly">
+                <input class="hide" id="addrId" name="addrId" type="text" readonly="readonly" />
+            </div>
+            <div class="flex_between flex_item_center">
+                <div>*经营所在地址</div>
+                <input class="tRight mart20 marb20 f16" id="addr" name="addr" type="text" placeholder="请输入" />
+            </div>
+        </div>
+        <div id="state3" class="hide bg_white mart5 paddl15 paddr15">
+            <div class="flex_between flex_item_center bottomBorder">
+                <div>*开户名</div>
+                <div class="flex">
+                    <input class="tRight mart20 marb20 f16" id="accountName" name="accountName" type="text"
+                        placeholder="请输入" />
+                </div>
+            </div>
+            <div class="flex_between flex_item_center bottomBorder">
+                <div>*银行卡号</div>
+                <div class="flex">
+                    <input class="tRight mart20 marb20 f16" maxlength="30" id="cardNo" name="cardNo" type="number"
+                        placeholder="请输入" />
+                </div>
+            </div>
+            <div class="flex_between flex_item_center bottomBorder" onclick="model.showBank();">
+                <div>*银行卡类型</div>
+                <input id="typeqqq" name="typeqqq" class="tRight mart20 marb20 jiantou f16" placeholder="请选择"
+                    readonly="readonly">
+                <input id="type" name="type" class="hide" readonly="readonly" />
+            </div>
+            <div id="lhh" class="hide flex_between flex_item_center bottomBorder">
+                <div>*联行号</div>
+                <input class="tRight mart20 marb20 f16" maxlength="12" id="bankNo" name="bankNo" type="text"
+                    placeholder="请输入" />
+            </div>
+            <div class="flex_between flex_item_center">
+                <div>*身份证号码</div>
+                <input class="tRight mart20 marb20 f16" maxlength="18" id="idCard" name="idCard" type="number"
+                    placeholder="请输入" />
+            </div>
+        </div>
+        <div id="xy" class="f12 flex_between m15 hide">
+            <div class="flex">
+                <div id="gou" class="gou" onclick="model.ty()">我已阅读并且同意</div>
+                <div onclick="model.rzxy()">《入驻协议》</div>
+            </div>
+            <div style="color:#E30008">提示：*标注的为必填项</div>
+        </div>
+        <div class="marl15 marr15">
+            <button id="xg" style="width:100%" class="bg_hui marb10 br5 col_white center lh50 f18 mart30 "
+                onclick="model.open1();">审核中
+            </button>
+        </div>
+        <div id="sinbox" wtd="sinboxTemp" class="clickBgImg">
+            <div class="box">
+                <div class="box">
+                    <div class="f16 paddt25">选择店铺分类</div>
+                    <div class="mart30">
+                        <ul id="fltag1" class="flex_center"></ul>
+                        <ul id="fltag2" class="flex_center"></ul>
+                        <ul id="fltag3" class="flex_center"></ul>
+                    </div>
+                    <div class="flex_center">
+                        <div class="btn bg_lgray" onclick="Comm.showWindow()">取消</div>
+                        <div class="btn col_white bg_jian" onclick="model.quer();">确定</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="imgbt"></div>
+    </section>
+
+
+    <style>
+        .alertFrame {
+            width: 80%;
+            margin: auto;
+            border-radius: 10px;
+            overflow: hidden;
+
+        }
+
+        .alertContent {
+            min-width: 280px;
+            min-height: 50px;
+            max-height: 300px;
+            overflow-x: hidden;
+            overflow-y: scroll;
+        }
+    </style>
+
+
+    <div wtd="articalWindow">
+
+        <div class="alertFrame bg_lgray br5 center">
+
+            <div class="alertTt lh50 f18 bottomBorder bg_white"></div>
+
+            <div class="alertContent mt10 mb10 pl10 pr10 bg_white"></div>
+
+            <div class="tab">
+                <div class="bg_trans col_white center lh50 f18" onclick="Comm.showWindow()">关闭
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!--******************************************************************************-->
+    <footer class=" shared">
+    </footer>
+    <script src="js/z.js"></script>
+    <script src="js/g.js"></script>
+    <script src="js/comm.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/picker.min.js"></script>
+    <script src="js/area.js"></script>
+    <script src="js/art-template.js"></script>
+    <script src="inc/upimg/upload.js"></script>
+    <script type="text/javascript" src="js/dict.js"></script>
+
+    <script>
+        var u = Comm.db('userinfo');
+        var storeType = Comm.query('type');
+        var dbT = false;
+        var ddd;
+        var manageTname2;
+        var code;
+        var tyType = false,
+            isPickerShowRSume;
+
+        function pageresume() {
+
+            if (!isPickerShowRSume) {
+                window.location.reload();
+            }
+
+        }
+
+        function pageload() {
+            Comm.loading('加载中,请稍后...');
+            if (storeType != 'shz') {
+                $('#xg').removeClass('bg_hui');
+                $('#xg').addClass('bg_trans');
+                $('#xg').removeAttr('disabled');
+                $('#xg').text('修改');
+                $('#xy').removeClass('hide');
+            }
+            if (tyType == true) {
+                $('#gou').css('background-image', 'url(img/tbmain/rzyy.png);');
+            } else {
+                $('#gou').css('background-image', 'url(img/pay/checkMark_n.png);');
+            }
+            var op = Comm.db('opt');
+            if (op == '' || typeof (op) == 'undefined') {
+                AJAX.GET('/api/store/getStoreRegInfo', function (d) {
+                    Comm.loading();
+                    var data = d.data || {};
+                    if (d.code == 1 || d.code == 2) {
+                        dbT = true;
+                        ddd = data;
+                        if (d.data.type == 0) {
+                            $('#typeqqq').val('私人账户');
+                            $('#bankNo').val('');
+                        }
+                        if (d.data.type == 1) {
+                            $('#typeqqq').val('对公账户');
+                            $('#lhh').removeClass('hide');
+                        }
+                    } else if (d.code == 7) {
+                        Comm.message(d.msg);
+                        setTimeout(function () {
+                            Comm.close();
+                        }, 500);
+
+                        return;
+                    }
+                    var x;
+                    var chainName;
+                    var chainType;
+                    var manageType;
+
+                    for (x in data) {
+                        if (x == 'cardZ' || x == 'cardF' || x == 'handCard' || x == 'face' || x == 'licenses') {
+                            if (x == 'licenses') {
+                                if (data[x] != '') {
+                                    $('#' + x).html(
+                                        '<img src="' + Comm.OSS.getImgUrl(data[x]) +
+                                        '" width="100%" height="100%">'
+                                    );
+                                    if (x == 'handCard' || x == 'face' || x == 'licenses') {
+                                        $('#' + x).addClass('imga');
+                                    }
+                                }
+                            } else {
+                                $('#' + x).html(
+                                    '<img src="' + Comm.OSS.getImgUrl(data[x]) +
+                                    '" width="100%" height="100%">'
+                                );
+                                if (x == 'handCard' || x == 'face' || x == 'licenses') {
+                                    $('#' + x).addClass('imga');
+                                }
+                            }
+                        } else if (x == 'chainType') {
+                            if (data[x] == '普通店') {
+                                AJAX.GET('/api/store/myStoreState', function (a) {
+                                    if (a.data.code == 3) $('#state3').removeClass('hide');
+                                    code = a.data.code;
+                                    if (a.data.code == 1 || a.data.code == 5) {
+                                        $('#chain_name').attr('readonly', true);
+                                        $('#chainName').attr('readonly', true);
+                                        $('#manageTname').attr('readonly', true);
+                                        $('#rePhone').attr('readonly', true);
+                                        $('#address').attr('readonly', true);
+                                        $('#chain_name').removeClass('jiantou');
+                                    }
+                                });
+                                $('#chain_name').val(data[x]);
+                                $('#chainType').val(8);
+                            }
+                        } else if (x == 'categorys' || x == 'storeCat') {
+                            var dd = data[x];
+                            $('#storeCat').val(dd);
+                            model.storeCat = dd;
+                            GDict.init(function () {
+                                var d = GDict.get('chainType');
+                                var data1 = d;
+                                var str = dd;
+                                var s = str.split(',');
+                                var ss = '';
+                                for (var i = 0; i < s.length; i++) {
+                                    if (i == 0) {
+                                        ss += GDict.getName(s[i]);
+                                    } else {
+                                        ss += ',' + GDict.getName(s[i]);
+                                    }
+                                }
+
+                                $('#fenl').val(ss);
+                            })
+                        } else if (x == 'manageType') {
+                            if (data[x] == 0) {} else if (data[x] == 1) {
+                                $('#chain_name').val('连锁店');
+                                manageType = 1;
+                            } else if (data[x] == 2) {
+                                $('#chain_name').val('连锁店');
+                                manageType = 2
+                            } else if (data[x] == 4) {
+                                $('#chain_name').val('连锁总店');
+                                manageType = 4
+                            }
+                            //初始为连锁店时
+                            if ($('#chain_name').val() == '连锁店' || $('#chain_name').val() == '连锁总店') {
+                                $('#info').addClass("mart5");
+                                $('#s1').append(
+                                    '<div id="qq"><div class="flex_between bottomBorder" onclick="model.goType()"><div class="mart20 marb20">选择连锁总店</div><input id="chainName" name="typeName" class="tRight mart20 marb20 f16 jiantou" type="text" placeholder="请选择连锁总店" readonly="readonly" /></div><div id = "dpl" class="flex_between bottomBorder"><div class="mart20 marb20">店铺性质</div><input id="manageTname" class="tRight mart20 marb20 f16 jiantou" type="text" placeholder="请选择店铺性质" readonly="readonly" onclick="model.showJm();"/></div></div>'
+                                );
+                                model.rTname();
+                                $('#dpl').removeClass("bottomBorder");
+                                $('#chainName').val(chainName);
+                                if (manageType == 1) {
+                                    $('#manageTname').val('直营店');
+                                    $('#chainType').val(9);
+                                } else if (manageType == 2) {
+                                    $('#manageTname').val('加盟店');
+                                    $('#chainType').val(9);
+                                }
+                                if ($('#chain_name').val() == '连锁总店') {
+                                    $('#dpl').addClass('hide');
+                                }
+                                AJAX.GET('/api/store/myStoreState', function (a) {
+                                    if (a.data.code == 3) $('#state3').removeClass('hide');
+                                    code = a.data.code;
+                                    if (a.data.code == 1 || a.data.code == 4 || a.data.code == 5) {
+                                        $('#chain_name').attr('readonly', true);
+                                        $('#chainName').attr('readonly', true);
+                                        $('#manageTname').attr('readonly', true);
+                                        $('#rePhone').attr('readonly', true);
+                                        $('#address').attr('readonly', true);
+                                        $('#chain_name').removeClass('jiantou');
+                                        $('#chainName').removeClass('jiantou');
+                                        $('#manageTname').removeClass('jiantou');
+                                    }
+                                });
+                            }
+                        } else if (x == 'chainName') {
+                            chainName = data[x];
+                        } else if (x == 'rebate') {
+                            $('#' + x).val(data[x] / 100);
+                        } else {
+                            $('#' + x).val(data[x]);
+                        }
+                        $('#manageType').val(manageType);
+                    }
+                    Area.init(function () {
+                        $('#address').val(Area.getFullName(data.addrId));
+                    });
+                })
+            } else {
+                Comm.loading();
+                model.rTname();
+            }
+            //初始为连锁总店时
+            if ($('#chain_name').val() == '连锁店' && manageTname2 != '') {
+                $('#info').addClass("mart5");
+                $('#s1').append(
+                    '<div id="qq"><div class="flex_between bottomBorder" onclick="model.goType()"><div class="mart20 marb20">选择连锁总店</div><input id="chainName" name="typeName" class="tRight mart20 marb20 f16 jiantou" type="text" placeholder="请选择连锁总店" readonly="readonly" /></div><div id = "dpl" class="flex_between bottomBorder"><div class="mart20 marb20">店铺性质</div><input id="manageTname" class="tRight mart20 marb20 f16 jiantou" type="text" placeholder="请选择店铺性质" readonly="readonly" onclick="model.showJm();"/></div></div>'
+                );
+                model.rTname();
+                $('#dpl').removeClass("bottomBorder");
+                if (chainName != '' || typeof (chainName) != 'undefined') {
+                    //$('#chainName').val(chainName);
+                }
+                if (manageType == 1) {
+                    $('#manageTname').val('直营店');
+                    $('#chainType').val(9);
+                } else if (manageType == 2) {
+                    $('#manageTname').val('加盟店');
+                    $('#chainType').val(9);
+                }
+            }
+
+            GDict.init(function () {
+                //获取店铺类别
+                var d = GDict.get('chainType');
+                var data = d;
+                model.sup = data;
+                for (var i = 0; i < model.sup.length; i++) {
+                    model._suppliers.push({
+                        i: model.sup[i].dictId,
+                        text: model.sup[i].dictname
+                    });
+                }
+                //获取店铺分类
+                var d2 = GDict.get('storeCategory');
+                var data2 = d2;
+                var ii = 0;
+                var a = 1;
+                for (var i = 0; i < data2.length; i++) {
+                    ii++;
+                    $('#fltag' + a).append('<li name="' + data2[i].dictId + '" class="select">' + data2[i]
+                        .dictname + '</li>');
+                    if (ii == 3) {
+                        ii = 0;
+                        a++;
+                    }
+                }
+            })
+            var am = $('.addimg');
+            am.each(function () {
+                var id = $(this).attr('id');
+                if (model[id]) {
+                    return;
+                }
+                model[id] = {};
+                model[id].uploader = new imgUploader(id);
+                model[id].uploader.id = id;
+                model[id].uploader.success = function () {
+                    var id = this.id;
+                    var cimgUrl = this.imgList.length > 0 ? this.imgList[0] : 'img/error.png';
+                    var imgUrl = Comm.OSS.getImgUrl(cimgUrl);
+                    $('#' + id).html('');
+                    $('#' + id).append('<img src="' + imgUrl + '" width="100%" height="100%"/ >');
+                    if (id != 'cardZ' && id != 'cardF') {
+                        $('#' + id).addClass('imga');
+                        $('#' + id).removeClass('mart20');
+                        $('#' + id).removeClass('marb20');
+                        $('#' + id).addClass('mart10');
+                        $('#' + id).addClass('marb10');
+                    } else {
+                        $('#' + id).addClass('sfzImg');
+                    }
+                }
+
+                model[id].uploader.showBlock = function (isShow) {
+                    isPickerShowRSume = isShow;
+                }
+
+
+
+            });
+        }
+
+        var model = {
+            data: {},
+            sup: {},
+            storeCat: '',
+            _suppliers: [],
+            bankTypeInfo: [{
+                i: 0,
+                text: '私人账户'
+            }, {
+                i: 1,
+                text: '对公账户'
+            }],
+            open1: function () {
+
+                if (storeType == 'shz') {
+                    return;
+                }
+
+                var opt = Check.submit('POST');
+                //opt.rebate=opt.rebate.substring(0,opt.rebate.length-1);
+                if (opt) {
+                    opt.cardType = 1;
+                    var cardZ = $('#cardZ').find('img').attr('src');
+                    var cardF = $('#cardF').find('img').attr('src');
+                    var handCard = $('#handCard').find('img').attr('src');
+                    var licenses = $('#licenses').find('img').attr('src');
+                    var face = $('#face').find('img').attr('src');
+                    if (typeof (licenses) != 'undefined') {
+                        opt.licenses = licenses.replace(Comm.OSS.getImgUrl(''), "");
+                    }
+                    if (cardZ != 'img/tbmain/tjsfz.png' && cardF != 'img/tbmain/tjsfz.png' && typeof (
+                            handCard) !=
+                        'undefined' && typeof (face) != 'undefined') {
+                        opt.cardZ = cardZ.replace(Comm.OSS.getImgUrl(''), "");
+                        opt.cardF = cardF.replace(Comm.OSS.getImgUrl(''), "");
+                        opt.handCard = handCard.replace(Comm.OSS.getImgUrl(''), "");
+                        opt.face = $('#face').find('img').attr('src').replace(Comm.OSS.getImgUrl(''), "");
+                    } else {
+                        Comm.message('请上传图片');
+                        return;
+                    }
+                    if ($('#manageType').val() != '') {
+                        opt.manageType = $('#manageType').val();
+                    } else {
+                        opt.manageType = 0;
+                    }
+                    opt.chainType = $('#chainType').val();
+                    opt.addressDetail = opt.address.replace(" ", "") + opt.addr;
+                    //chainType判断
+                    if (opt.chainType != 9) {
+                        opt.chainType == 8;
+                    }
+                    opt.rebate = opt.rebate * 100;
+                    if (!opt.accountName) {
+                        Comm.message('请填写开户名');
+                        return;
+                    }
+                    if (!opt.cardNo) {
+                        Comm.message('请填写银行卡号');
+                        return;
+                    }
+                    if (!opt.idCard) {
+                        Comm.message('请填写身份证信息');
+                        return;
+                    }
+                    if (!opt.type) {
+                        Comm.message('请选择银行卡类型');
+                        return;
+                    }
+                    if (opt.type == 1 && !opt.bankNo) {
+                        Comm.message('请填写联行号');
+                        return;
+                    }
+                    if (opt.bankNo) {
+                        if (opt.bankNo.length != 12) {
+                            Comm.message('联行号位数不正确');
+                            return;
+                        }
+                    }
+
+                    if (!opt.headName || !opt.headName.length) {
+                        Comm.message('请填写负责人姓名');
+                        return;
+                    }
+
+                    if (!opt.headPhone || !opt.headPhone.length) {
+                        Comm.message('请填写联系电话');
+                        return;
+                    }
+
+                    if (!opt.storeCat || !opt.storeCat.length) {
+                        Comm.message('请选择店铺分类');
+                        return;
+                    }
+
+                    if (!opt.rebate || opt.rebate <= 0) {
+                        Comm.message('请填写正确的让利比例');
+                        return;
+                    }
+
+                    if (!regPrice(opt.rebate)) {
+                        Comm.message('让利比例最多两位小数');
+                        return;
+                    }
+
+                    if (!opt.storeName || !opt.storeName.length) {
+                        Comm.message('请填写店铺名称');
+                        return;
+                    }
+
+                    if (opt.addr == '') {
+                        Comm.message('请输入经营所在地');
+                        return;
+                    }
+                    if (opt.manageType == 4) {
+                        opt.chainType = 9;
+                    }
+                    if (isNaN(opt.cardNo)) {
+                        Comm.message('请输入正确的银行卡信息');
+                        return;
+                    }
+                    if (isNaN(opt.idCard)) {
+                        Comm.message('请输入正确的身份证信息');
+                        return;
+                    }
+
+                    if (tyType == false) {
+                        Comm.message('提交前需要先同意《入驻协议》');
+                        return;
+                    }
+
+
+                    Comm.loading('正在提交...');
+                    AJAX.POST('/api/store/addOpenStore', opt, function (a) { //注册
+                        Comm.loading();
+                        if (a.code == 1) {
+                            Comm.message('提交成功!');
+                            setTimeout(function () {
+                                Comm.go("examine.html?skip=3")
+                            }, 300);
+                        } else {
+                            Comm.message(a.msg);
+                        }
+                    });
+
+
+                }
+            },
+            showAddress: function () {
+                Area.init(function () {
+                    areaPicker = new Areapicker("选择地区", function (obj, name, sid) {
+                        $("#address").val(name);
+                        $("#addrId").val(sid);
+                        $("#address").removeClass('jiantou');
+                    });
+                    areaPicker.show();
+                });
+            },
+            quer: function () {
+                var t = '';
+                var n = '';
+                $(".select").each(function (ii, vv) {
+                    if (vv.className == "select bg_jian col_white") {
+                        t = t + vv.textContent + ',';
+                        n = n + $(this).attr('name') + ',';
+                    }
+                });
+                if (t == '') {
+                    $('#fenl').val('请选择');
+                    $('#storeCat').val('');
+                } else {
+                    t = t.substring(0, t.length - 1);
+                    n = n.substring(0, n.length - 1);
+                    $('#fenl').val(t);
+                    $('#storeCat').val(n);
+                    model.storeCat = n;
+                }
+                Comm.showWindow();
+            },
+            show2: function () {
+                str = $("#fenl").attr('name');
+                arr = str.split(',');
+                if (model.storeCat != '') {
+                    var ms = model.storeCat.split(',');
+                    for (var i = 0; i < ms.length; i++) {
+                        var storeCatDiv = $('li[name="' + ms[i] + '"]');
+                        storeCatDiv.eq(1).addClass("bg_jian");
+                        storeCatDiv.eq(1).addClass("col_white");
+                    }
+                }
+                $(".select").each(function (ii, vv) {
+                    for (var i = 0; i < arr.length; i++) {
+                        if ($(this).attr('name') == arr[i] && ii > $(".select").length / 2 - 1) {
+                            $(this).addClass("bg_jian");
+                            $(this).addClass("col_white");
+                        }
+                    }
+                });
+                $(".select").click(function () {
+                    if ($(this).hasClass("bg_jian")) {
+                        $(this).removeClass("bg_jian");
+                        $(this).removeClass("col_white");
+                        return;
+                    } else {
+                        $(this).addClass("bg_jian");
+                        $(this).addClass("col_white");
+                        return;
+                    }
+                });
+            },
+            clear: function () {
+                Comm.db("opt", null);
+            },
+            show: function () {
+                if (code != 5 && code != 1) {
+                    suppliers = new Commpicker("请选择店铺类型", [this._suppliers], function (obj, name, sid) {
+                        $('#chain_name').val(name);
+                        $('#chainType').val(sid);
+                        if (sid == '9' && $('#qq').length == 0) {
+                            $('#info').addClass("mart5");
+                            $('#s1').append(
+                                '<div id="qq"><div class="flex_between bottomBorder" onclick="model.goType()"><div class="mart20 marb20">选择连锁总店</div><input id="chainName" name="typeName" class="tRight mart20 marb20 f16 jiantou" type="text" placeholder="请选择连锁总店" readonly="readonly" /></div><div id = "dpl" class="flex_between bottomBorder"><div class="mart20 marb20">店铺性质</div><input id="manageTname" class="tRight mart20 marb20 f16 jiantou" type="text" placeholder="请选择店铺性质" readonly="readonly" onclick="model.showJm();"/></div></div>'
+                            );
+                            model.rTname();
+                            $('#dpl').removeClass("bottomBorder");
+                        }
+                        if (sid != '9') {
+                            $('#info').removeClass("mart5");
+                            $('#qq').remove();
+                            $('#dpl').addClass("bottomBorder");
+                        }
+                    })
+                    suppliers.show();
+                }
+            },
+            showBank: function () {
+                bankType = new Commpicker("请选择店铺类型", [this.bankTypeInfo], function (obj, name, sid) {
+                    if (sid == 0) {
+                        $('#lhh').addClass('hide');
+                        $('#bankNo').val('');
+                    }
+                    if (sid == 1) {
+                        $('#lhh').removeClass('hide');
+                    }
+                    $('#type').val(sid);
+                    $('#typeqqq').val(name);
+                })
+                bankType.show();
+            },
+            showJm: function () {
+
+                if (code != 5 && code != 1) {
+                    _jm = [{
+                        i: 2,
+                        text: '加盟店'
+                    }, {
+                        i: 1,
+                        text: '直营店'
+                    }];
+                    jm = new Commpicker("请选择店铺性质", [_jm], function (obj, name, sid) {
+                        $('#manageTname').val(name);
+                        $('#manageType').val(sid);
+                    });
+                    jm.show();
+                }
+            },
+            goType: function () {
+
+                if (code != 5 && code != 1) {
+                    // if (dbT == false) {
+                    //     Comm.db('opt', Check.st());
+                    //     var o = Comm.db('opt');
+                    // } else {
+                    Comm.db('opt', Check.st());
+                    var o = Comm.db('opt');
+                    o.okay.push(['cardZ', ddd.cardZ]);
+                    o.okay.push(['cardF', ddd.cardF]);
+                    o.okay.push(['face', ddd.face]);
+                    o.okay.push(['licenses', ddd.licenses]);
+                    o.okay.push(['handCard', ddd.handCard]);
+                    Comm.db('opt', o);
+                    // }
+                    Comm.go('xzStore.html');
+                }
+            },
+            rTname: function () {
+                if (Comm.db('opt') != null) {
+                    var a = Comm.db('opt');
+                    var o = a.okay;
+                    var input = $('input');
+                    ddd = "{";
+                    for (var i = 0; i < o.length; i++) {
+                        if (i == o.length - 1) {
+                            ddd += '"' + o[i][0] + '"' + ':' + '"' + o[i][1] + '"';
+                        } else {
+                            ddd += '"' + o[i][0] + '"' + ':' + '"' + o[i][1] + '"' + ',';
+                        }
+                        input.each(function () {
+                            if ($(this).attr('name') == o[i][0]) {
+                                $(this).val(o[i][1]);
+                            }
+                        });
+                        if (o[i][0] == 'cardZ' || o[i][0] == 'cardF' || o[i][0] == 'handCard' || o[i][0] ==
+                            'face' || o[i][0] == 'licenses') {
+                            $('#' + o[i][0]).html('<img src="' + Comm.OSS.getImgUrl(o[i][1]) +
+                                '" width="100%" height="100%">');
+                        }
+                        if (o[i][0] == 'handCard' || o[i][0] == 'face' || o[i][0] == 'licenses') {
+                            $('#' + o[i][0]).addClass('imga');
+                        }
+                        if (o[i][0] == 'manageType') {
+                            if (o[i][1] == 0) {
+                                console.log('这是普通店');
+                            } else if (o[i][1] == 1) {
+                                console.log('这是加盟店');
+                                $('#chain_name').val('连锁店');
+                                manageType = 1;
+                            } else if (o[i][1] == 2) {
+                                console.log('这是直营店');
+                                $('#chain_name').val('连锁店');
+                                manageType = 2
+                            }
+                        }
+                        if (o[i][0] == 'storeCategory') {
+                            $('#fenl').val(o[i][1]);
+                            debugger
+                            $('#manageType').val(manageType);
+                        }
+                        if (o[i][0] == 'typeName') {
+                            manageTname2 = o[i][1];
+                            $('#chainName').val(o[i][1]);
+                        }
+                    }
+                    ddd += '}';
+                    ddd = JSON.parse(ddd);
+                }
+            },
+            ty: function () {
+                if (tyType == true) {
+                    $('#gou').css('background-image', 'url(img/pay/checkMark_n.png);');
+                    tyType = false;
+                    return;
+                }
+                if (tyType == false) {
+                    $('#gou').css('background-image', 'url(img/tbmain/rzyy.png);');
+                    tyType = true;
+                    return;
+                }
+            },
+            rzxy: function () {
+                if (!hasGetArtical) {
+                    getArtical(true);
+                    return;
+                }
+                Comm.showWindow('articalWindow');
+                // Comm.go('artical.html?aid=rzxy');
+            }
+        };
+
+
+
+        var hasGetArtical = false;
+
+        function getArtical(show) {
+
+            var parms = {
+                title: '入驻协议'
+            };
+            SLNetwork('post', '/api/article/getArticle', parms, function (a) {
+
+                if (a.code == 1) {
+                    hasGetArtical = true;
+                    var str = a.data.content;
+                    var x = /&lt;/g;
+                    var d = /&gt;/g;
+                    str = str.replace(x, '<');
+                    str = str.replace(d, '>');
+
+                    $('.alertTt').text(a.data.title);
+                    $('.alertContent').html(str);
+                    if (show) {
+                        Comm.showWindow('articalWindow');
+                    }
+                }
+
+            });
+        }
+    </script>
+
+</body>
+
+</html>

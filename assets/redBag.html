@@ -1,0 +1,313 @@
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width,initial-scale=1.0,user-scalable=no" name="viewport">
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="format-detection" content="telephone=no,email=no,adress=no" />
+
+    <title>红包</title>
+
+    <link rel="stylesheet" href="css/g.css">
+    <link rel="stylesheet" href="css/comm.css">
+    <link rel="stylesheet" href="inc/mescroll/mescroll.min.css">
+
+    <style>
+        .hbBj {
+            padding-top: 29.3%;
+            background: url("img/tbmine/hbBg.png") center center no-repeat;
+            background-size: 100%;
+            color: white;
+        }
+
+        .cell {
+            margin: 0px 15px;
+            padding: 15px 0px;
+        }
+
+        .breackLineV {
+            width: 1px;
+            height: 35px;
+            background-color: #F2F2F2;
+        }
+
+        .boxShadow {
+            box-shadow: 2px 0px 10px #E3E3E3, -2px -2px 10px #E3E3E3;
+            /*box-shadow:-10px 0px 10px #3C5159,   !*左边阴影*!*/
+            /*0px -10px 10px #3C5159,  !*上边阴影*!*/
+            /*10px 0px 10px #3C5159,  !*右边阴影*!*/
+            /*0px 10px 10px #3C5159;  !*下边阴影*!*/
+        }
+
+        /*筛选*/
+        #MainBg,
+        #WTDBOX {
+            z-index: 99;
+        }
+
+        /*筛选*/
+        #start{
+            background-color:#FFFFFF;
+        }
+        #end{
+            background-color:#FFFFFF;
+        }
+    </style>
+
+</head>
+
+<!--******************************************************************************-->
+
+<body>
+
+    <header>
+        <div class="navBar">
+            <div class="navBackIcon" onclick="Comm.close()"></div>
+            <div class="navTitle">HB</div>
+        </div>
+    </header>
+    <!--******************************************************************************-->
+
+    <section id="section" class="">
+
+
+        <div class="m10">
+            <div class="wrap hbBj br3">
+
+                <div class="wrap_ct flex_around p20 hb">
+                    <div>
+                        <div class="f12">当前分润号</div>
+                        <div id="thisnum" class="flex_center f18 mt10"></div>
+                    </div>
+
+                    <div>
+                        <div class="f12">总分润排号</div>
+                        <div id="maxNums" class="flex_center f18 mt10"></div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+
+
+        <div class="paddb30">
+            <div class="m10">
+                <div class="boxShadow p20 bg_white br5">
+                    <div class="col_sub f12">分润号</div>
+                    <div class="flex_between mt10">
+                        <div id="mynum" style="width:10%" class="flex_center f18"></div>
+                        <div class="f12 col_sub">距离下次分润还有<span id="nextNum"></span>个号</div>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="m10">
+                <div class="boxShadow p20 bg_white flex_around center br5">
+
+                    <div class="f12">
+                        <div class="col_sub">分润号</div>
+                        <div class="m5"><span id="myAllCount"></span>个</div>
+                        <div><span id="myAllNum"></span>次</div>
+                    </div>
+
+                    <div class="breackLineV"></div>
+
+                    <div class="f12">
+                        <div class="col_sub">已分润</div>
+                        <div class="m5"><span id="myDoCount"></span>个</div>
+                        <div><span id="myDoMoney"></span>元</div>
+                    </div>
+
+                    <div class="breackLineV"></div>
+
+                    <div class="f12">
+                        <div class="col_sub">待分润号</div>
+                        <div class="m5"><span id="myNoCount"></span>个</div>
+                        <div><span id="myNoMoney"></span>元</div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+
+
+
+
+
+
+        <div class="paddl15 paddr15 bg_lgray">
+            <div class="bg_lgray lh40 h40 flex_between">
+                <div class="col_title">&nbsp;</div>
+                <img src="img/tbmine/calend.png" width="15" height="15" alt="" onclick="showFilter();">
+            </div>
+        </div>
+
+        <div id="list">
+
+        </div>
+
+
+    </section>
+
+    <div id="time_filter" wtd="sinboxTemp">
+        <div class="item p20 pt10">
+            <div class="colorb5 left">时间筛选：</div>
+            <div class="tleft">
+                <input type="button" id="start" placeholder="开始时间" onclick="datePickerstart.show();"
+                       class="baseH center timeChooseItem"/>
+                <span>&nbsp;至&nbsp;</span>
+                <input type="button" id="end" onclick="datePickerend.show();" placeholder="结束时间"
+                       class="baseH center timeChooseItem"/>
+            </div>
+        </div>
+
+
+        <div class="tb">
+            <div class="td f18 bg_lred" onclick="filterReset()">重置</div>
+            <div class="td f18 r btn bg_trans" onclick="filterSure()">确定</div>
+        </div>
+    </div>
+
+    <!--******************************************************************************-->
+    <footer></footer>
+
+    <script src="js/z.js"></script>
+    <script src="js/g.js"></script>
+    <script src="js/comm.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/picker.min.js"></script>
+    <script src="inc/mescroll/mescroll.min.js"></script>
+
+    <script>
+        var requestPamrm = {};
+        var html = '';
+        var datePickerstart, datePickerend,merefresh;
+        var start,end;
+
+        function pageload() {
+            initPicker();
+            AJAX.GET('api/customerqueue/getCustomerQueueInfo', function (a) {
+                if (a.code == 1) {
+                    var data = a.data;
+                    for (x in data) {
+                        if (x == 'myDoMoney' || x == 'myNoMoney') {
+                            $('#' + x).html(app.price(data[x]));
+                        } else {
+                            $('#' + x).html(data[x]);
+                        }
+                    }
+                }
+            })
+            addRefresh();
+        }
+
+        function getList(a) {
+            if (a.code == 1) {
+                var data = a.data;
+                if (data.length == 0) {
+                    html+='<div class="flex_center col_lgray" style="margin-top:20%">暂无分润明细</div>';
+                } else {
+                    for (var i = 0; i < data.length; i++) {
+                        html+='<div class="bg_white cell bottomBorder"> <div class="flex_between"><div class="label icon_pre icon_phone ">' +
+                            data[i].customerQueueId + '</div><p class="f12 color999">' + data[i]
+                            .lastTime + '</p></div></div>';
+                    }
+                }
+                return html;
+            }
+        }
+
+        function addRefresh() {
+            requestPamrm.lng = UserJWD.lng();
+            requestPamrm.lat = UserJWD.lat();
+            if (!merefresh) {
+                merefresh = new MERefresh();
+                //网络请求参数
+                merefresh.refreshOption.refreshUrl = '/api/customerqueue/getCustomerQueueList';
+                merefresh.refreshOption.refreshParm = requestPamrm;
+
+                //页面 <刷新> 的回调
+                merefresh.refreshOption.refresh_cb = function (refresh, d) {
+                    if (d.code == 1) {
+                        html = '';
+                        addrData = d.data||[];
+                        refresh.successEndRef(addrData.length, d.totalCount);
+                        refresh.appendHtml(getList(d));
+                    } else {
+                        refresh.successEndRef(0, 0);
+                        refresh.MeRefScroll.endUpScroll(true);
+                    }
+                };
+                merefresh.configurationDone('section', 'list');
+            } else {
+                merefresh.refreshFunction(merefresh);
+            }
+        }
+
+
+        //显示筛选界面
+        function showFilter() {
+            Comm.showWindow('sinboxTemp', true);
+            automaticalTop();
+            $("#WTDBOX #start").val(requestPamrm.beginTime||'');
+            $("#WTDBOX #end").val(requestPamrm.endTime||'');
+        }
+
+        //处理蒙层尺寸
+        function automaticalTop() {
+            $("#MainBg,#WTDBOX").css("top", $(".navBar").height());
+        }
+
+
+        //重置筛选
+        function filterReset() {
+            requestPamrm.beginTime = '';
+            requestPamrm.endTime = '';
+            Comm.showWindow();
+            addRefresh();
+        }
+
+        //确定筛选
+        function filterSure() {
+            requestPamrm.beginTime = start;
+            requestPamrm.beginTime = end;
+            Comm.showWindow();
+            addRefresh();
+        }
+
+
+        function initPicker() {
+            datePickerstart = new Datepicker("开始时间", function (a, b, c) {
+
+                var days = checkDays(b, requestPamrm.endTime);
+                if (days > 0) {
+                    Comm.message('开始时间不得大于结束时间');
+                    return;
+                }
+                $("#WTDBOX #start").val(b);
+                requestPamrm.beginTime = b;
+                start = b;
+
+            });
+            datePickerend = new Datepicker("结束时间", function (a, b, c) {
+                var days = checkDays(requestPamrm.beginTime, b);
+
+                if (days > 0) {
+                    Comm.message('结束时间不得小于开始时间');
+                    return;
+                }
+                $("#WTDBOX #end").val(b);
+                requestPamrm.endTime = b;
+                end = b;
+            });
+        }
+
+
+    </script>
+
+</body>
+
+</html>

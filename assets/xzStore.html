@@ -1,0 +1,253 @@
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width,initial-scale=1.0,user-scalable=no" name="viewport">
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="format-detection" content="telephone=no,email=no,adress=no" />
+
+    <title>选择连锁总店</title>
+
+    <link rel="stylesheet" href="css/g.css">
+    <link rel="stylesheet" href="css/comm.css">
+
+    <style>
+        body {
+            background-color: #F5F5F5;
+        }
+
+
+        /*search header*/
+        .headItem {
+            line-height: 44px;
+            height: 44px;
+        }
+
+        .headItem.msg {
+            background-image: url("img/tbhome/xiaoxi.png");
+        }
+
+        .base80 {
+            min-width: 50px;
+            max-width: 100px;
+        }
+
+        .flex1 {
+            flex: 1;
+        }
+
+        .searchBar {
+            height: 30px;
+            margin: 7px 2%;
+            line-height: 30px;
+            border-radius: 3px;
+            text-align: left;
+        }
+
+        .searchBar.lIcon {
+            background-position-x: 15px;
+            padding-left: 35px;
+            background-image: url("img/tbshop/Search.png");
+            color: #A0A0A0;
+        }
+
+        .r {
+            color: #E30008;
+        }
+
+        .p64 {
+            padding: 16px 64px;
+        }
+
+        /*附近店铺列表*/
+        .recommentShop {
+            padding: 15px 0px;
+        }
+
+        .headTt {
+            padding-left: 15px;
+        }
+
+        .cell {
+            padding: 20px 15px;
+            background-color: white;
+        }
+
+        .cellIcon {
+            height: 90px;
+            width: 90px;
+            flex-basis: 90px;
+        }
+
+        .cellRight {
+            height: 90px;
+            padding: 0px 10px;
+            flex: 1;
+        }
+
+        .breakLine_v {
+            width: 1px;
+            height: 16px;
+            background-color: #EBEBEB;
+        }
+
+        .mv5 {
+            margin: 5px 0px;
+        }
+
+        .f10 {
+            font-size: 10px;
+        }
+
+        .bor_btn {
+            border: solid #EEEEEE 1px;
+            padding: 6px 25px;
+            border-radius: 15px;
+        }
+
+        .storeImg {
+            background: url("img/tbshop/Shop-pic.png") no-repeat center center;
+            background-size: 90px 90px;
+            position: relative;
+        }
+
+        .quan {
+            position: absolute;
+            background: #000;
+            background-color: rgba(0, 0, 0, 0.6);
+            width: 70px;
+            height: 70px;
+            border-radius: 35px;
+            margin-top: 10px;
+            margin-left: 10px;
+        }
+
+        .r_jiantou {
+            background: url("img/tbshop/fenlei.png") no-repeat center right;
+            background-size: 6px 3px;
+            padding-right: 10px;
+        }
+
+        .h_jiantou {
+            background: url("img/tbmain/hhr.png") no-repeat center right;
+            background-size: 6px 3px;
+            padding-right: 10px;
+        }
+    </style>
+
+</head>
+
+<!--******************************************************************************-->
+
+<body>
+
+    <header class="bottomBorder">
+        <div>
+            <div class="grow1 bg_white">
+                <div class="navBar">
+                    <div class="navBackIcon" onclick="Comm.close()"></div>
+                    <div class="navTitle">选择连锁总店</div>
+                </div>
+            </div>
+        </div>
+        <div class="navBar flex_between">
+            <div class="headItem flex1 marl15">
+                <input id="sText" class="searchBar bg_white lIcon f12"
+                    style="margin-left:0px;margin-right:0px;width:100%;" placeholder="选择连锁总店" />
+            </div>
+            <div class="headItem marl15 marr15 col_red" onclick="model.search($('#sText').val());">搜索</div>
+        </div>
+    </header>
+    <!--******************************************************************************-->
+
+    <section class="scroll-y">
+        <div id="storeN" class="bg_white">
+        </div>
+    </section>
+
+    <!--******************************************************************************-->
+    <footer class="shared">
+    </footer>
+
+    <script src="js/z.js"></script>
+    <script src="js/g.js"></script>
+    <script src="js/comm.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/picker.min.js"></script>
+
+    <script>
+        var model = {
+            search: function(a) {
+                var o = {};
+                o.chainName = a;
+                AJAX.POST('/api/store/allStoreChain', o, function (d) {
+                    var data = d.data;
+                    console.log(data);
+                    if (data.length == 0) {
+                        Comm.message('未查询到搜索的总店');
+                    }
+                    if (d.code == 1) {
+                        $('#storeN').html('');
+                        for (var i = 0; i < data.length; i++) {
+                            $('#storeN').append(
+                                '<div id="r' + i + '" name = ' + data[i].storeChainId + ' typename = ' +
+                                data[i].chainName +
+                                ' class="paddt15 paddb15 paddl10 marl15 marr15 bottomBorder" onclick="model.rt(' +
+                                i + ')">' +
+                                data[i].chainName + '</div>');
+                        }
+                    }
+                })
+            },
+            rt: function(i) {
+                var o = Comm.db('opt');
+                var t = 0;
+                var tt = 0;
+                for (let ii = 0; ii < o.okay.length; ii++) {
+                    if (o.okay[ii][0] == 'typeName') {
+                        t = 1;
+                        o.okay[ii][1] = $("#r" + i).attr('typename');
+                    } else if (o.okay[ii][0] == 'storeChainId') {
+                        tt = 1;
+                        o.okay[ii][1] = $("#r" + i).attr('name');
+                    }
+                }
+                if (t == 0) {
+                    o.okay.push(['typeName', $("#r" + i).attr('typename')]);
+                }
+                if (tt == 0) {
+                    o.okay.push(['storeChainId', $("#r" + i).attr('name')]);
+                }
+                Comm.db('opt', o);
+                Comm.db('ref',1);
+                if (t == 0 || tt == 0) {
+                    //Comm.go('myAddStore.html');
+                    Comm.close();
+                }
+                if (tt == 1 || t == 1) {
+                    //Comm.go('storeInfo.html');
+                    Comm.close();
+                }
+            }
+        };
+
+        function pageload() {
+            AJAX.GET('/api/store/allStoreChain', function (d) {
+                if (d.code == 1) {
+                    var data = d.data;
+                    for (var i = 0; i < data.length; i++) {
+                        $('#storeN').append(
+                            '<div id="r' + i + '" name = ' + data[i].storeChainId + ' typename = ' + data[i]
+                            .chainName +
+                            ' class="paddt15 paddb15 paddl10 marl15 marr15 bottomBorder" onclick="model.rt(' +
+                            i + ')">' +
+                            data[i].chainName + '</div>');
+                    }
+                }
+            })
+        }
+    </script>
+
+</body>
+
+</html>

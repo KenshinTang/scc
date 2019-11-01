@@ -1,0 +1,246 @@
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width,initial-scale=1.0,user-scalable=no" name="viewport">
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+    <meta name="format-detection" content="telephone=no,email=no,adress=no"/>
+
+    <title>我的加盟商</title>
+
+    <link rel="stylesheet" href="css/g.css">
+    <link rel="stylesheet" href="css/comm.css">
+
+    <style>
+        body {
+            background-color: #F5F5F5;
+        }
+
+        .kuang {
+            background: url("img/tbmain/beij.png");
+            background-size: 350px 140px;
+            border-radius: 8px;
+            width: 100%;
+        }
+
+        .kuang2 {
+            border-radius: 5px;
+            width: 100%;
+            box-shadow: 0px 2px 6px #3C5159;
+            margin-left: 15px;
+            margin-right: 15px;
+        }
+
+
+        .m40 {
+            margin: 20px 35px;
+        }
+
+        .qb {
+            padding: 15px 20px;
+        }
+
+        .jian {
+            background: url("img/tbmain/hhr.png");
+            background-repeat: no-repeat;
+            background-size: 11px 7px;
+            width: 11px;
+            height: 7px;
+            background-position-y: center;
+        }
+
+        .x90 {
+            transform: rotate(-90deg);
+        }
+
+        .x0 {
+            transform: rotate(0deg);
+        }
+
+
+        .qb {
+            padding: 15px 20px;
+        }
+
+        .jian {
+            background: url("img/tbmain/hhr.png");
+            background-repeat: no-repeat;
+            background-size: 11px 7px;
+            width: 11px;
+            height: 7px;
+            background-position-y: center;
+        }
+
+        .x90 {
+            transform: rotate(-90deg);
+        }
+
+        .x0 {
+            transform: rotate(0deg);
+        }
+
+        .headIcon{
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+        }
+
+
+    </style>
+
+</head>
+
+<!--******************************************************************************-->
+
+<body>
+
+<header>
+    <div>
+        <div class="grow1 bg_white">
+            <div class="navBar">
+                <div class="navBackIcon" onclick="Comm.close()"></div>
+                <div class=""></div>
+                <div class="navTitle">我的加盟商</div>
+            </div>
+        </div>
+    </div>
+</header>
+<!--******************************************************************************-->
+
+<section class="scroll-y">
+
+
+
+</section>
+
+<!--******************************************************************************-->
+<footer class="shared">
+</footer>
+
+<script src="js/z.js"></script>
+<script src="js/g.js"></script>
+<script src="js/comm.js"></script>
+<script src="js/api.js"></script>
+<script src="js/art-template.js"></script>
+
+
+<script>
+    var userinfo = Comm.db('userinfo')||{};
+    function pageload() {
+        getSubPatners();
+    }
+</script>
+
+
+<script>
+
+
+    function getSubPatners() {
+        var params = {
+            partnerId: userinfo.myPartnerId
+        };
+        SLNetwork('get', '/api/partner/myranchisee', params, function (data) {
+            if (data.code == 1) {
+
+                $('section').html(template('tp_id_level', data.data));
+            } else {
+                Comm.message(data.msg);
+            }
+        });
+    }
+
+
+    function showOrHide(i) {
+        var j = 'level';
+        var l = 'subList';
+        if ($("." + j + i).hasClass("x90")) {
+            $("." + j + i).removeClass("x90");
+            $("." + j + i).addClass("x0");
+            $("." + l + i).removeClass("hide");
+            return;
+        }
+        if ($("." + j + i).hasClass("x0")) {
+            $("." + j + i).removeClass("x0");
+            $("." + j + i).addClass("x90");
+            $("." + l + i).addClass("hide");
+            return;
+        }
+    }
+
+</script>
+
+</body>
+
+
+<script type="text/html" id="tp_id_level">
+
+    <div class="bg_white">
+        <div class="flex p15" style="padding-bottom:0px;">
+            <div class="kuang flex_center paddt30 paddb30" style="padding-left:13px;padding-right:13px;">
+                <div class="col_white">
+                    <div class="f12 flex_center">累计收益(元)</div>
+                    <div class="f24 mart20" id="storeIncome">{{priceTp(storeIncome)||'0'}}</div>
+                </div>
+            </div>
+        </div>
+        <div class="flex_center mart10">
+            <div class="bg_white kuang2 flex_center">
+
+                {{each $data.list model i}}
+                <div class="m40">
+                    <div class="f12 col_lgray flex_center">{{model.categoryName||''}}</div>
+                    <div class="flex_center mart15 f16 bold">{{model.storeCount||'0'}}</div>
+                </div>
+                {{/each}}
+
+            </div>
+        </div>
+
+
+        <div class="shopList mart30">
+
+            {{each $data.list model i}}
+            <div class="levelCell">
+
+                <div class="flex flex_between qb bottomBorder topBorder f16" onclick="showOrHide({{i+1}});">
+                    <div class="flex flex_item_center">
+                        <div class="jian x90 level{{i+1}}"></div>
+                        <div class=" marl15">{{model.categoryName}}</div>
+                    </div>
+                    <div>{{model.storeCount||0}}</div>
+                </div>
+
+                <div class="subList{{i+1}} bg_lgray bottomBorder hide">
+
+                    {{each model.data item j}}
+                    <div class="flex_between p15 bottomBorder"
+                         onclick="Comm.go('Franchisee.html?sid={{item.storeId}}')">
+                        <div class="flex_start">
+                            <div class="marl10 marr10 imgCt_cover headIcon">
+                                <img src="{{OSS(item.doorPic,'s')}}" onerror="app.herrorimg(this);"/>
+                            </div>
+                            <div>
+                                <div>{{item.storeName||''}}</div>
+                                <!--<div class="f11 r">让利20%</div>-->
+                            </div>
+                        </div>
+                        <div class="col_lgray f12">累计贡献:￥{{priceTp(item.devoteCount)||0}}</div>
+                    </div>
+                    {{/each}}
+
+                </div>
+            </div>
+            {{/each}}
+
+        </div>
+
+    </div>
+
+
+
+
+
+
+</script>
+
+</html>

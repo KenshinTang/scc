@@ -1,0 +1,448 @@
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width,initial-scale=1.0,user-scalable=no" name="viewport">
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+    <meta name="format-detection" content="telephone=no,email=no,adress=no"/>
+
+    <title>发红包</title>
+
+    <link rel="stylesheet" href="css/g.css">
+    <link rel="stylesheet" href="css/comm.css">
+    <link rel="stylesheet" href="inc/keyboard/slKeyboard.css">
+
+    <style>
+        .w180{
+            width: 150px;
+        }
+
+        .fillter{
+            padding: 0px 15px;
+        }
+
+
+        .inputTt{}
+        .inputTt>input{
+            line-height: 50px;
+            height: 50px;
+            font-size: 16px;
+        }
+
+        .contentArea{padding: 10px;}
+        .contentArea>textarea{
+            font-size: 14px;
+            box-sizing: border-box;
+            width: 100%;
+            height: 80px;
+            line-height: 20px;
+        }
+
+        .addImg{
+            width: 26px;
+            height: 22px;
+        }
+        .indicator{
+            padding-right: 20px;
+            background-image: url("img/generalIcon/iden.png");
+            background-size: 10px auto;
+            background-position: center right;
+        }
+
+
+        /* upimg S*/
+        .up-Img {
+            overflow: hidden;
+            padding: 22px 0;
+        }
+
+        .up-Img .box {
+            background-color: unset;
+            width: 65px;
+            height: 65px;
+            margin-right: 12px;
+            margin-bottom: 12px;
+            float: left;
+            border-radius: 5px;
+            position: relative;
+            line-height: unset;
+        }
+
+        .limitNum {
+            color: #A8A7A7;
+            margin: auto;
+            text-align: center;
+            position: absolute;
+            top: 72%;
+            right: 0px;
+            left: 0px;
+            z-index: 9;
+        }
+
+        .box {
+            width: 65px;
+            height: 65px;
+        }
+
+        .box img {
+            object-fit: cover;
+            width: 100%;
+            height: 100%;
+        }
+
+        .upimg-del {
+            width: 30px;
+            height: 30px;
+            position: absolute;
+            right: -10px;
+            top: -10px;
+            background: 10px center no-repeat url(img/delete.png);
+            background-size: 20px 20px;
+        }
+
+        /* upimg E*/
+        footer button, .footer button, .button, button, .btn {
+            background: transparent;
+        }
+
+        body > footer{
+            z-index: 99;
+        }
+
+
+    </style>
+
+</head>
+
+<!--******************************************************************************-->
+<body>
+
+<header>
+    <div class="navBar">
+        <div class="navBackIcon" onclick="Comm.close()"></div>
+        <div class="navTitle">发红包</div>
+    </div>
+</header>
+<!--******************************************************************************-->
+
+<section class="bg_lgray">
+
+    <div class="m10 ">
+        <div class="flex_between f18 br5 p15 bg_white">
+            <div class="baseWH">总金额</div>
+            <div class="flex_center">
+                <div id="id_money" class="col_red tright w180 baseH" placeholder="请输入金额" onclick="moneyBoard.showKeyBoard();"></div>
+                <div class="ml10">元</div>
+            </div>
+        </div>
+        <div class="f12 col_sub mt5">最多可发<span id="id_remain">0</span>，附近的人可随机领取红包</div>
+    </div>
+
+    <div class="m10 marb20">
+        <div class="flex_between f18 br5 p15 bg_white">
+            <div class="baseWH">红包个数</div>
+            <div class="flex_center">
+                <div id="id_number" class="tright w180 baseH" placeholder="请输入个数" onclick="numberBoard.showKeyBoard();"></div>
+                <div class="ml10">个</div>
+            </div>
+        </div>
+        <div class="f12 col_sub mt5">最多可领的红包数</div>
+    </div>
+    
+    <div class="bg_white">
+        <div class="flex_start p15 bottomBorder">
+            <img src="img/redbag/jzsx.png" alt="" width="16" height="16">
+            <div class="bold f18 ml5">精准筛选</div>
+        </div>
+
+        <div class="fillter lh50">
+            <div class="flex_between indicator bottomBorder" onclick="choosePosition();">
+                <div class="f16">我的位置</div>
+                <div class="col_sub w180 baseWH tright lh20 marg_v10 wordW2" id="id_position">请选择</div>
+            </div>
+
+            <div class="flex_between indicator bottomBorder" onclick="getRangeList();">
+                <div class="f16">服务位置(半径)</div>
+                <div class="col_sub w180 baseWH tright" id="id_areaSize">请选择</div>
+            </div>
+
+
+            <div class="inputTt bottomBorder">
+                <input type="text" id="id_input" placeholder="请输入广告标题">
+            </div>
+
+            <div class="contentArea bottomBorder border br3 mart20">
+                <textarea id="id_tarea" placeholder="请输入广告内容"></textarea>
+
+                <div class="mart10 marl10">
+                    <div class="up-Img">
+                        <div id="imgList"></div>
+                    </div>
+                </div>
+                <div>
+                    <div class="imgContain addImg up-upBtn" id="subbutton">
+                        <img src="img/redbag/sctp.png" alt="" style="height:20px;width:auto">
+                    </div>
+                </div>
+
+            </div>
+
+
+
+
+        </div>
+
+
+    </div>
+
+
+
+
+
+    <div id="keyBoardMoney"></div>
+    <div id="keyBoardNum"></div>
+
+
+</section>
+
+<!--******************************************************************************-->
+<footer class="bg_white">
+    <div class="m10 col_white f16 center lh50 bg_trans br5" onclick="publishRedBag();">塞红包券进红包</div>
+</footer>
+
+<script src="js/z.js"></script>
+<script src="js/g.js"></script>
+<script src="js/comm.js"></script>
+<script src="js/api.js"></script>
+<script src="js/dict.js"></script>
+<script src="inc/upimg/upload.js"></script>
+<script src="js/picker.min.js"></script>
+
+
+<script src="inc/ewm/jquery-1.11.1.js"></script>
+<script src="inc/keyboard/slKeyboard.js"></script>
+
+
+
+
+<script>
+
+    var userinfo = Comm.db('userinfo')||{};
+    var numberBoard=null,moneyBoard=null,areaSizePicker=null,requestParms={};
+
+    var maxImgCount = 8;
+    var upimg = null;
+    var rangeList,rpacketRemain;
+
+
+    function pageload(){
+
+        numberBoard = new SLKeyBoard('keyBoardNum','id_number',false);
+        numberBoard.init('keyBoardNum');
+
+        moneyBoard = new SLKeyBoard('keyBoardMoney','id_money',true);
+        moneyBoard.init();
+
+
+        upimg = new imgUploader("imgList", maxImgCount, "subbutton");
+
+
+        getRemain();
+    }
+
+
+    function pageresume(){
+
+        var chooseP = Comm.db('chooseP');Comm.db('chooseP',null);
+
+        if (chooseP){
+            requestParms.lat = chooseP.lat;
+            requestParms.lng = chooseP.lng;
+            var address = (chooseP.city||'')+(chooseP.dis||'')+(chooseP.detail||'');
+            $('#id_position').text(address);
+        }
+
+    }
+
+
+    //获取本期可用
+    function getRemain() {
+
+        if (!canSendRB()) return;
+
+        var apiStr = '/api/rpacket/getSendRpacketList';//发出的红包统计
+
+        SLNetwork('post', apiStr, {partnerId:userinfo.myPartnerId}, function (data) {
+            if (data.code == 1) {
+                nslog(data);
+                var model = data.data||{};
+                rpacketRemain = model.rpacketRemain
+
+                $('#id_remain').text(app.price(rpacketRemain));
+
+            } else {
+                Comm.message(data.msg);
+            }
+        });
+    }
+
+
+
+    //获取范围
+    function getRangeList() {
+
+        if (!rangeList||!rangeList.length){
+            Comm.loading(1);
+            SLNetwork('get', '/api/dict/getDictByCode', {dictcode:'redboxrange'}, function (data) {
+                Comm.loading();
+                if (data.code == 1) {
+                    var list = data.data||[];
+                    list.forEach(function (a) {
+                        a.i = a.dictId;
+                        a.text = a.dictname;
+                    })
+                    rangeList = list;
+                    showRangePicker();
+                } else {
+                    Comm.message(data.msg);
+                }
+            });
+        } else {
+            showRangePicker();
+        }
+    }
+
+
+    function showRangePicker() {
+        numberBoard.dissmissKeyBoard();
+        moneyBoard.dissmissKeyBoard();
+        if (!areaSizePicker){
+            areaSizePicker = new Commpicker('选择范围(m)', [rangeList], function (a, v, sid) {
+                $('#id_areaSize').text(v);
+                requestParms.range = v;
+            })
+        }
+
+        areaSizePicker.show();
+    }
+
+
+
+
+
+
+
+    //选择位置
+    function choosePosition() {
+        Comm.go('map.html');
+    }
+
+
+
+    function publishRedBag() {
+
+        {
+            // if (config.SLTest && !$('#id_tarea').text().length) {
+            //
+            //     $('#id_money').text('41');
+            //     $('#id_number').text('2');
+            //     $('#id_position').text('成都市武侯区');
+            //     $('#id_areaSize').text('500');
+            //
+            //     $('#id_input').val('广告标题-测试')
+            //     $('#id_tarea').text('广告内容-测试');
+            //
+            //     requestParms.lng = 103.81;//UserJWD.lng();
+            //     requestParms.lat = 30.68;//UserJWD.lat();
+            //     requestParms.range = '500';
+            //     return;
+            // }
+        }
+
+        requestParms.totalmoney = moneyFen($('#id_money').text());
+        requestParms.packetCount = parseInt($('#id_number').text());
+
+        requestParms.title = DealInputText($('#id_input').val());
+        requestParms.ds = $('#id_tarea').val();
+
+        requestParms.imgs = '';
+        if (upimg.imgList.length){
+            requestParms.imgs = upimg.imgList.join(',');
+        }
+
+        requestParms.partnerId = userinfo.myPartnerId;
+
+
+        if(!canSendRB()){
+            Comm.message('您没有发红包的权限');
+            return;
+        } else if (requestParms.totalmoney>rpacketRemain) {
+            Comm.message('您本期最多还可以发'+app.price(rpacketRemain)+'元的红包');
+            return;
+        } else if (!requestParms.totalmoney) {
+            Comm.message('请输入红包金额');
+            return;
+        } else if (!requestParms.packetCount) {
+            Comm.message('请输入红包个数');
+            return;
+        } else if (!requestParms.lat) {
+            Comm.message('请选择红包位置');
+            return;
+        } else if (!requestParms.range) {
+            Comm.message('请选择服务范围');
+            return;
+        }
+
+
+
+        Comm.loading(true);
+        SLNetwork('post','/api/rpacket/saveRpacket',requestParms,function (data) {
+            Comm.loading();
+            if (data.code==1) {
+                nslog(data);
+                Comm.close();
+            } else {
+                Comm.message(data.msg);
+            }
+        });
+    }
+
+
+
+    // //uploader
+    // imgUploader.prototype.del = function (i) {
+    //     var me = this;
+    //     Comm.confirm('您确定要删除该图片？', function (a) {
+    //         if (parseInt(a) > 0) {
+    //             if (me.imgList.length - 1 >= i) {
+    //                 me.imgList.splice(i, 1);
+    //                 me.delimgs(i, 1);
+    //                 var d = document.getElementsByClassName("upimg-del");
+    //                 for (var j = 0; j < me.imgList.length; j++) {
+    //                     d[j].setAttribute("onclick", "imgUploader['subbutton'].del(" + j + ")");
+    //                 }
+    //             }
+    //         }
+    //         me.imgList.length >= me.maximg ? $("#" + me.subbutton).parent().css({
+    //             "opacity": 0,
+    //             "visibility": "hidden"
+    //         }) : $("#" + me.subbutton).parent().css({"opacity": 1, "visibility": "visible"});
+    //         curCount = me.imgList.length;
+    //         me.updateImgCount();
+    //     });
+    // };
+    // imgUploader.prototype.updateImgCount = function () {
+    //     $('.curCount').html(curCount);
+    //     $('.maxCount').html(maxImgCount);
+    // }
+    // imgUploader.prototype.success = function () {
+    //     var me = this;
+    //     curCount = me.imgList.length;
+    //     me.updateImgCount();
+    // };
+
+</script>
+
+</body>
+
+</html>

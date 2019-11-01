@@ -1,0 +1,401 @@
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width,initial-scale=1.0,user-scalable=no" name="viewport">
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="format-detection" content="telephone=no,email=no,adress=no" />
+
+    <title>评价商品</title>
+
+    <link rel="stylesheet" href="css/g.css">
+    <link rel="stylesheet" href="css/comm.css">
+
+    <style>
+        /*头部*/
+        .navTitle {
+            margin: 0px 80px;
+            background: url("img/tbhome/logo.png") center center no-repeat;
+            background-size: auto 20px;
+        }
+
+        .navItemIcon.msg {
+            background-image: url("img/tbhome/xiaoxi.png");
+        }
+
+        .position {
+            background-image: url("img/tbhome/position.png");
+        }
+
+        /*附近店铺*/
+        .threeItem {
+            min-width: 30%;
+            max-width: 32%;
+        }
+
+        .m5 {
+            margin: 5px;
+        }
+
+        .m5h {
+            margin-left: 5px;
+            margin-right: 5px;
+        }
+
+        .threeItemIcon {
+            padding-top: 100%;
+            margin-top: 17px;
+            margin-bottom: 13px;
+        }
+
+
+        /*附近店铺列表*/
+        .recommentShop {
+            padding: 15px 0px;
+        }
+
+        .headTt {
+            padding-left: 15px;
+        }
+
+        .cell {
+            padding: 15px 15px;
+            background-color: white;
+            margin-bottom: 10px;
+        }
+
+        .cellIcon {
+            height: 90px;
+            width: 90px;
+            flex-basis: 90px;
+        }
+
+        .cellRight {
+            height: 90px;
+            padding: 0px 10px;
+            flex: 1;
+        }
+
+        .breakLine_v {
+            width: 1px;
+            height: 16px;
+            background-color: #EBEBEB;
+        }
+
+        .star {
+            width: 50px;
+            height: 10px;
+            background: url("img/tbshop/Star_n.png") repeat-x center center;
+            background-size: 10px auto;
+        }
+
+        .star_get {
+            width: 60%;
+            height: 100%;
+            background: url("img/tbshop/Star.png") repeat-x center center;
+            background-size: 10px auto;
+        }
+
+
+
+        .headItem {
+            line-height: 44px;
+            height: 44px;
+        }
+
+        .headItem.msg {
+            background-image: url("img/tbhome/xiaoxi.png");
+        }
+
+        .new {
+            background-image: url("img/tbmall/xptj.png");
+        }
+
+
+        .lIcon {
+            padding-left: 25px;
+            background-repeat: no-repeat;
+            background-position: left 5px center;
+            background-size: auto 15px;
+            background-image: url(img/tbshop/Place.png);
+        }
+
+
+        .btn1 {
+            height: 40px;
+            width: 160px;
+            background: linear-gradient(#FFDB26, #F6B138);
+            border-radius: 5px;
+        }
+
+        .btn2 {
+            height: 40px;
+            width: 160px;
+            background: linear-gradient(#FB5E3D, #E30008);
+            border-radius: 5px;
+        }
+
+        .btnMar {
+            padding: 8px 18px;
+        }
+
+        .borbred {
+            border-bottom: 2px solid #E30008;
+        }
+
+        .paddb5 {
+            padding-bottom: 5px;
+        }
+
+        .marb8 {
+            margin-bottom: 8px;
+        }
+
+        /* upimg S*/
+        .up-Img {
+            overflow: hidden;
+            padding: 22px 0;
+        }
+
+        .box {
+            background-color: unset;
+            width: 75px;
+            height: 75px;
+            margin-right: 12px;
+            margin-bottom: 12px;
+            float: left;
+            border-radius: 5px;
+            position: relative;
+            line-height: unset;
+        }
+
+        .limitNum {
+            color: #A8A7A7;
+            margin: auto;
+            text-align: center;
+            position: absolute;
+            top: 72%;
+            right: 0px;
+            left: 0px;
+            z-index: 9;
+        }
+
+        .box img {
+            object-fit: cover;
+            width: 100%;
+            height: 100%;
+        }
+
+        .upimg-del {
+            width: 30px;
+            height: 30px;
+            position: absolute;
+            right: -10px;
+            top: -10px;
+            background: 10px center no-repeat url(img/tbmain/delete.png);
+            background-size: 20px 20px;
+        }
+    </style>
+
+</head>
+
+<!--******************************************************************************-->
+
+<body>
+
+    <header>
+
+        <div class="navBar udLine">
+            <div class="headItem navTitles">
+                <div class="navBackIcon" onclick="Comm.close()"></div>
+                <div class="f17" style="padding-right:40px">评价</div>
+            </div>
+        </div>
+
+    </header>
+    <section class="bg_lgray">
+        <!--店铺信息-->
+        <div class="bg_white cell marb10">
+            <div class=" flex_start">
+                <div class="imgContain cellIcon">
+                    <img id="doorPic">
+                </div>
+
+                <div class="cellRight">
+                    <div id="storeName" class="f16 bold marb15 mart10"></div>
+
+
+                    <div class="evaluate flex_start">
+                        <div id="shcaImg" class="flex">
+                            <div id="a" class="flex_item_center flex">
+                            </div>
+                        </div>
+                        <div id="aText" class="f15 marl5"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!--店铺评价-->
+        <div class="bg_white cell" style="margin-bottom:40px">
+            <div class="marb5 f14">商品评价:</div>
+            <textarea id="ds" class="f12" placeholder="请输入评价内容" style="height:80px;width:100%"></textarea>
+
+            <!--<div id="up-Img">-->
+                <!--<div id="imgInfo"></div>-->
+            <!--</div>-->
+            <!--<div>-->
+                <!--<div id="upload" class="">-->
+                    <!--<img src="img/camera.png" width="75px" height="75px" class="marb5">-->
+                <!--</div>-->
+                <!--<div style="clear:both"></div>-->
+            <!--</div>-->
+
+            <div>
+                <div class="mart10 marl10">
+                    <div class="up-Img">
+                        <div id="imgList"></div>
+
+
+                        <div class="btn box">
+                            <div class="up-upBtn" id="subbutton">
+                                <img class="fullImg" src="img/camera.png" height="65" alt="">
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <div>
+
+                </div>
+            </div>
+
+
+        </div>
+        <div class="flex flex_between btnMar" style="padding-top:0px">
+            <button id="pl" class="btn2 col_white f16 flex flex_item_center flex_center" style="width:100%"
+                onclick="model.next()">
+                发表评论</button>
+        </div>
+    </section>
+
+    <script src="js/z.js"></script>
+    <script src="js/g.js"></script>
+    <script src="js/comm.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/api.js"></script>
+    <script src="inc/upimg/upload.js"></script>
+
+    <script type="text/javascript">
+        var PageUpimgModel = {
+            maxImgCount: 6,
+            curCount: 0,
+            upimg: null,
+        };
+        var uploader;
+
+        function pageload() {
+            var o = {};
+            o.storeId = Comm.query('storeId');
+            o.lng = UserJWD.lng();
+            o.lat = UserJWD.lat();
+            //获取店铺详情
+            AJAX.POST('/api/store/storeDetail', o, function (d) {
+                console.log(d);
+                if (d.code == 1) {
+                    $('#storeName').html(d.data.storeName);
+                    $('#doorPic').attr('src', Comm.OSS.getImgUrl(d.data.doorPic));
+                }
+            })
+            model.scoreF();
+            uploader = new imgUploader("imgList", PageUpimgModel.maxImgCount, "subbutton");
+
+            // uploader = new imgUploader("imgInfo", 6, "upload");;
+            // uploader.success = function () {
+            //     var cimgUrl = uploader.imgList.length > 0 ? uploader.imgList[0] : 'img/error.png';
+            //     var imgUrl = Comm.OSS.getImgUrl(cimgUrl);
+            //
+            //     if (uploader.imgList.length) {
+            //         model.imgs = uploader.imgList.join(',');
+            //     }
+            //     // if (model.imgs == '') {
+            //     //     model.imgs = model.imgs + cimgUrl;
+            //     // } else {
+            //     //     model.imgs = model.imgs + ',' + cimgUrl;
+            //     // }
+            // };
+        }
+        var model = {
+            score: 5,
+            imgs: '',
+            scoreF: function () {
+                for (var i = 0; i < 5; i++) {
+                    $('#a').append('<img id="s' + i +
+                        '" src="img/tbmall/shca-1.png" height="17" width="17" class="marr10" onclick="model.chooseScore(' +
+                        i + ')"/>');
+                    $('#aText').html('非常好');
+                }
+            },
+            chooseScore: function (a) {
+                a = a + 1;
+                if (a == 1) {
+                    $('#aText').html('很差');
+                } else if (a == 2) {
+                    $('#aText').html('不太好');
+                } else if (a == 3) {
+                    $('#aText').html('一般');
+                } else if (a == 4) {
+                    $('#aText').html('还不错');
+                } else if (a == 5) {
+                    $('#aText').html('很好');
+                }
+                for (var i = 0; i < a; i++) {
+                    $('#s' + i).attr('src', 'img/tbmall/shca-1.png');
+                }
+                for (var i = 0; i < 5 - a; i++) {
+                    var aa = 4 - i;
+                    $('#s' + aa).attr('src', 'img/tbmall/shca.png');
+                }
+                this.score = a;
+            },
+            next: function () {
+
+                var o = {};
+                o.score = this.score;
+                o.storeId = Comm.query('storeId');
+                o.ds = $('#ds').val();
+                o.imgs = '';
+                if (uploader.imgList && uploader.imgList.length){
+                    o.imgs = uploader.imgList.join(',')
+                }
+                if (o.ds == '') {
+                    Comm.message('请输入评价内容');
+                    $('#pl').removeAttr('disabled');
+                    return;
+                }
+                if(o.ds.length>50){
+                    Comm.message('评论字数过多');
+                    return;
+                }
+                Comm.loading(1);
+                //发起评论
+                AJAX.POST('/api/store/saveStoreevaluate', o, function (d) {
+                    Comm.loading();
+                    if (d.code == 1) {
+                        addNeedRefPage('store');
+                        Comm.db('s', 101);
+                        setTimeout(function () {
+                            Comm.close();
+                        }, 300);
+                    } else {
+                        $('#pl').removeAttr('disabled');
+                        Comm.message(d.msg);
+                    }
+                })
+            }
+        }
+    </script>
+</body>
+
+</html>

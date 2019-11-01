@@ -1,0 +1,490 @@
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width,initial-scale=1.0,user-scalable=no" name="viewport">
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+    <meta name="format-detection" content="telephone=no,email=no,adress=no"/>
+
+    <title>二维码</title>
+
+    <link rel="stylesheet" href="css/g.css">
+    <link rel="stylesheet" href="css/comm.css">
+
+    <style>
+
+        .bgcolor{
+            background-color: #878DB5;
+        }
+
+        .navBar{
+            background-color: rgba(0,0,0,0);
+        }
+        .navBackIcon{
+            background-image: url("img/generalIcon/back_w.png");
+        }
+
+        .contain{
+            padding: 28px;
+            padding-bottom: 0px;
+        }
+        .contentContain{
+            border-radius: 15px;
+            padding: 10px 0px 10px 0px;
+        }
+
+
+        .topOrBottom{
+            height: 30px;
+            border-radius: 15px;
+            background-color: rgba(255, 255, 255, 0.7);
+            margin:0px 30px;
+
+        }
+        .topR{
+            margin-bottom: -15px;
+        }
+        .bottomR{
+            margin-top: -15px;
+        }
+
+        .codeContain{
+            height: 205px;
+            width: 205px;
+            margin: 10px auto;
+            margin-bottom: 30px;
+        }
+
+
+         .leftRadiu{
+             height: 100%;
+             background-color: #878DB5;
+             border-radius: 50%;
+
+             width: 24px;
+             margin-left: -12px;
+         }
+        .rightRadiu{
+            height: 100%;
+            background-color: #878DB5;
+            border-radius: 50%;
+
+            width: 24px;
+            margin-right: -12px;
+        }
+
+        .saveBtn{
+            padding: 0px 10px;
+            min-width: 110px;
+            line-height: 30px;
+            border-radius: 5px;
+            margin: auto;
+            margin-bottom: 15px;
+        }
+
+        .hRadiu{
+            width: 100%;
+            height: 24px;
+        }
+        .lineH{
+            flex: 1;
+            height: 1px;
+        }
+
+        .title,.showBo{
+            display: none;
+        }
+
+
+        .pay .pay{
+            display: block;
+        }
+        .pay .get{
+            display: none;
+        }
+
+
+        .get .pay{
+            display: none;
+        }
+        .get .get{
+            display: block;
+        }
+
+
+
+        .iconContain {
+            width: 40px;
+            height: 40px;
+            border-radius: 20px;
+            overflow: hidden;
+        }
+
+
+    </style>
+
+</head>
+
+<!--******************************************************************************-->
+<body class="bgcolor">
+
+<header>
+    <div class="navBar">
+        <div class="navBackIcon" onclick="Comm.close()"></div>
+        <div class="navTitle col_white"></div>
+    </div>
+</header>
+<!--******************************************************************************-->
+
+<section>
+
+
+    <div class="center contain">
+
+        <div class="topOrBottom topR"></div>
+        <div class="bg_white contentContain">
+            <div class="p15 title pay">向商家付款</div>
+            <div class="p15 title get">扫码向我付款</div>
+
+            <!--<div class="codeContain bg_place" id="qrcode"></div>-->
+            <img alt="" class="codeContain bg_place" id="qrcode">
+
+            <div class="flex_center">
+                <div class="saveBtn bg_trans col_white showBo get mb10" onclick="saveImg();">保存图片</div>
+            </div>
+
+
+            <div class="showBo pay">
+                <div class="hRadiu flex_between">
+                    <div class="leftRadiu"></div>
+                    <div class="lineH bg_lgray"></div>
+                    <div class="rightRadiu"></div>
+                </div>
+
+                <div class="tleft marl20 lh50 h50" id="scanQRCode1" onclick="scanCode();">扫码付款</div>
+            </div>
+
+        </div>
+        
+        
+        <div class="topOrBottom bottomR"></div>
+    </div>
+    
+    <div class="payList m10">
+
+
+        <!--<div class="bg_lgray p10 br5">-->
+            <!--<div class="flex f16 pad10">-->
+                <!--<div class="br3 iconContain imgContain">-->
+                    <!--<img src="http://shuicheche.oss-cn-hangzhou.aliyuncs.com/img/2019-06/pc6mTRjkyJhp.jpg!cc_350x449/120" onerror="app.errorimg(this);">-->
+                <!--</div>-->
+
+                <!--<div class="column paddl10 grow1 flex_between">-->
+                    <!--<div class="f15 lh20 wordW2">三彩2019夏季新款</div>-->
+                    <!--<div class="f15 lh20 wordW2">季新款</div>-->
+                <!--</div>-->
+            <!--</div>-->
+        <!--</div>-->
+
+    </div>
+    
+    
+</section>
+
+<!--******************************************************************************-->
+<footer></footer>
+
+<script src="js/z.js"></script>
+<script src="js/g.js"></script>
+<script src="js/comm.js"></script>
+<script src="js/api.js"></script>
+
+<script src="inc/ewm/jquery-1.11.1.js"></script>
+<script src="inc/ewm/jquery.qrcode.js"></script>
+<script src="inc/ewm/utf.js"></script>
+
+<script src="js/art-template.js"></script>
+<script src="js/wx.js"></script>
+<script src="http://res.wx.qq.com/open/js/jweixin-1.1.0.js"></script>
+
+
+<script>
+
+    /*
+    * type == 'pay' 付款码
+    * type == 'get' 收款码
+    * */
+    var type = Comm.query('type') || 'get';
+    var userinfo = Comm.db('userinfo')||{};
+    console.log(userinfo);
+    var canvas;
+
+    function pageload() {
+
+        var openid = Comm.db('openid');
+        if (Comm.isweixin() && !openid) {
+            var url = config.SLShareBase + "/wxlogin.html?to=" + location.href;
+            url = "https://open.weixin.qq.com/connect/oauth2/authorize?" +
+                "appid=wx3d060683cbc1cbb7" +
+                "&redirect_uri=" + encodeURIComponent(url) +
+                "&response_type=code&scope=snsapi_userinfo&state=123#wechat_redirect";
+            Comm.go(url);
+            return;
+        }
+
+        if (Comm.isweixin()){
+            $('.saveBtn').text('长按二维码保存到手机');
+            $('.saveBtn').removeClass('bg_trans col_white');
+        }
+
+        var showDic = {};
+
+        switch (type) {
+            case 'pay': {//付款
+                $('.navTitle').text('付款码');
+                showDic = {
+                    sid:'',
+                    uid:userinfo.customerId,
+                }
+            }
+                break;
+
+            case 'get': {//收款
+                showDic = {
+                    sid:userinfo.myStoreId,
+                    uid:'',
+                }
+                $('.navTitle').text('收款码');
+            }
+                break;
+
+
+            default:
+                break;
+        }
+
+        checkStateGet();
+        $('.contain').addClass(type);
+
+        /**************************************生成二维码*******************************************/
+
+        var url = '',w=205,h=205;
+        url = JSON.stringify(showDic);
+
+        if (!url) return;
+
+        var qqq = jQuery("#qrcode").qrcode({
+            render: "canvas",      //设置渲染方式，有table和canvas，使用canvas方式渲染性能相对来说比较好
+            text: url,      //扫描二维码后显示的内容,可以直接填一个网址，扫描二维码后自动跳向该链接
+            width: (w),          //二维码的宽度
+            height: (w),         //二维码的高度
+            background: "#ffffff", //二维码的后景色
+            foreground: "#000000", //二维码的前景色
+        });
+
+
+        canvas=qqq.find('canvas').get(0);
+        //如果有循环,此句必不可少 qrcode.find('canvas').remove();
+
+        $('#qrcode').attr('src',canvas.toDataURL('image/jpg'))
+    }
+
+
+
+
+
+    /**************************************状态检查  用户扫店铺二维码*******************************************/
+    function checkStateGet() {
+        if (!userinfo && !userinfo.myStoreId) return;
+
+        var params = {};
+        switch (type) {
+            //mesType = 1:用户扫码  2:商家扫码
+            case 'pay': {//付款 - 商家扫码
+                params.itemId = userinfo.customerId;
+                params.mesType = 2;
+            }
+                break;
+
+            case 'get': {//收款 - 用户扫码
+                params.itemId = userinfo.myStoreId;
+                params.mesType = 1;
+            }
+                break;
+
+
+            default:
+                break;
+        }
+
+        SLNetwork('get', 'api/store/getStorePayMes', params, function (data) {
+            continueCheckGet();
+            if (data.code == 1) {
+                var tmodel = data.data;
+                if (!tmodel) {return;}
+                switch (type) {
+                    case 'pay': {//付款
+                        Comm.go('payComplect.html?type=FK');
+                    }
+                        break;
+
+                    case 'get': {//收款
+                        var cellEle = template('tp_id_cell',tmodel||{});
+                        $('.list').prepend(cellEle);
+                    }
+                        break;
+
+
+                    default:
+                        break;
+                }
+            }
+        });
+    }
+    
+    
+    function saveImg() {
+        preventRepeadClickDeal(function () {
+            var data = canvas.toDataURL('image/jpg');
+            data = data.replace('data:image/png;base64,','');
+            Comm.saveImg(data);
+        },1)
+    }
+
+
+    function continueCheckGet() {
+        var timer = setTimeout(function () {
+            checkStateGet();
+        },2000);
+
+    }
+
+
+    /**************************************状态检查 店铺扫用户二维码*******************************************/
+
+    /**************************************状态检查*******************************************/
+
+
+
+    {
+        switch (type) {
+            case 'pay': {//付款
+
+            }
+                break;
+
+            case 'get': {//收款
+
+            }
+                break;
+
+
+            default:
+                break;
+        }
+
+        // var model = {
+        //     addTime: "2019-06-24 16:35:00",
+        //     customerId: 16,
+        //     isRead: 0,
+        //     mesType: 1,
+        //     money: 100,
+        //     realMoney: 82,
+        //     rebateMoney: 18,
+        //     storeId: 22,
+        //     storePayMesId: 2,
+        // }
+        //
+        // var cellEle = template('tp_id_cell',tmodel);
+        // $('.list').prepend(cellEle);
+
+
+    }
+
+
+
+
+    bindClickedScanf('#scanQRCode1');
+
+    function bindClickedScanf(bindQuery) {
+        if (Comm.isweixin()) {
+            WXMethod.sign(function (d) {
+                wx.config({
+                    debug: false, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
+                    appId: d.appId, // 必填，公众号的唯一标识
+                    timestamp: d.timestamp, // 必填，生成签名的时间戳
+                    nonceStr: d.nonceStr, // 必填，生成签名的随机串
+                    signature: d.signature, // 必填，签名，见附录1
+                    jsApiList: ['qrCode','scanQRCode'] // 必填，需要使用的JS接口列表，所有JS接口列表见附录2
+                });
+
+
+                wx.ready(function () {
+                    // 9.1.2 扫描二维码并返回结果
+                    document.querySelector(bindQuery).onclick = function () {
+                        wx.scanQRCode({
+                            needResult: 1,
+                            desc: 'scanQRCode desc',
+                            success: function (res) {
+
+                                var a = JSON.parse(a.resultStr||'')||{};
+
+                                alert("调用微信jsapi返回的状态:" + a);
+
+                                var uid = a.uid || '';
+                                var sid = a.sid || '';
+
+                                if (sid) { //扫描了商家的二维码
+                                    Comm.go('codeScanPay.html?sid=' + sid + '&type=FK');
+                                } else if (uid) { //扫描了用户的二维码
+                                    //获取用户id
+                                    //如果当前用户是商家 则 商家收款 否则不处理 给用户提示
+                                    if (userinfo && userinfo.myStoreId) { //商家
+                                        //商家收款
+                                        Comm.go('codeScanPay.html?sid=' + userinfo.myStoreId + '&uid=' + uid + '&type=SK');
+                                    } else { //用户、或没有用户信息
+                                        Comm.message('您不是商家，不能发起收款');
+                                    }
+                                } else {
+                                    Comm.message('不能识别的二维码');
+                                }
+                            }
+                        });
+                    };
+                });
+
+
+                //初始化jsapi接口 状态
+                wx.error(function (res) {
+                    alert("调用微信jsapi返回的状态:" + res.errMsg);
+                });
+            })
+        }
+    }
+
+
+</script>
+
+
+
+
+<script type="text/html" id="tp_id_cell">
+
+    <div class="bg_lgray p10 br5">
+        <div class="flex f16 pad10">
+            <div class="br3 iconContain imgContain">
+                <img src="{{OSS(face,'s')}}" onerror="app.errorimg(this);">
+            </div>
+
+            <div class="column paddl10 grow1 flex_between">
+                <div class="f15 lh20 wordW2">{{nickName||''}}</div>
+                <div class="f15 lh20 wordW2">{{priceTp(money||0)}}</div>
+            </div>
+        </div>
+    </div>
+
+</script>
+
+</body>
+
+</html>

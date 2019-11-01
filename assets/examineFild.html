@@ -1,0 +1,196 @@
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width,initial-scale=1.0,user-scalable=no" name="viewport">
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="format-detection" content="telephone=no,email=no,adress=no" />
+
+    <title>审核失败</title>
+
+    <link rel="stylesheet" href="css/g.css">
+    <link rel="stylesheet" href="css/comm.css">
+
+    <style>
+        body {
+            background-image: url("img/tbmain/Background.png");
+            background-repeat: no-repeat;
+            background-size: 100% 100%;
+        }
+
+
+        .navBackIcon {
+            background: url("img/generalIcon/back_w.png");
+            background-position: center center;
+            background-repeat: no-repeat;
+            background-size: auto 16px;
+            background-position-x: 10px;
+        }
+
+        .d1 {
+            width: 90px;
+            height: 90px;
+            /* position: fixed; */
+            margin-top: 14%;
+            background: url("img/tbmain/skz.png");
+            background-size: 90px 90px;
+            background-position: center center;
+            background-repeat: no-repeat;
+        }
+
+        .d2 {
+            /* position: fixed; */
+            margin-top: 40%;
+        }
+
+        .d3 {
+            /* position: fixed; */
+            margin-top: 20px;
+        }
+
+        .d4 {
+            /* position: fixed; */
+            margin-top: 10%;
+            border: solid 1px #BFBFBF;
+            padding: 12px 17px;
+            border-radius: 5px;
+        }
+
+        .navBar{
+            background-color: rgba(0,0,0,0);
+        }
+
+
+    </style>
+
+</head>
+
+<!--******************************************************************************-->
+
+<body>
+
+    <header>
+        <div>
+            <div class="grow1">
+                <div class="navBar">
+                    <div class="navBackIcon" onclick="Comm.close()"></div>
+                    <div class=""></div>
+                    <div id="t" class="navTitle col_white"></div>
+                </div>
+            </div>
+        </div>
+    </header>
+    <!--******************************************************************************-->
+
+    <section class="scroll-y">
+        <div class="flex_center">
+            <div class="d1"></div>
+        </div>
+
+        <div class="flex_center">
+            <div class="f16 bold d2">抱歉，您的审核未通过</div>
+        </div>
+
+        <div class="flex_center">
+            <div class="f12 d3 col_sub999">原因：<span id="yy"></span>
+            </div>
+        </div>
+
+        <div class="flex_center" onclick="modifyInfo();">
+            <div class="f12 d4 col_sub subMitBtn"></div>
+        </div>
+    </section>
+
+    <!--******************************************************************************-->
+    <footer>
+        <div class="flex_center f12 marb15" style="color:#C2C2C2;">客服电话：<div onclick="contactKF();" id="id_kf_tel">
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/z.js"></script>
+    <script src="js/g.js"></script>
+    <script src="js/comm.js"></script>
+    <script src="js/api.js"></script>
+
+    <script>
+        //type==1 店铺申请失败  type==4 店铺修改审核失败
+        //type==2 合伙人申请失败  type==3 合伙人升级申请失败
+        var pageType = Comm.query('type');
+        var userinfo = Comm.db('userinfo')||{};
+
+        function pageload() {
+            showKFText('#id_kf_tel');
+
+            if (pageType == 2) {
+                $('.navTitle').text('申请合伙人');
+                getPatnerReson();
+                $('.subMitBtn').text('修改资料重新提交')
+            } else if (pageType == 3) {
+                $('.navTitle').text('申请合伙人');
+                $('.subMitBtn').text('再次申请');
+            } else if (pageType == 1) {
+                $('.navTitle').text('店铺审核');
+                $('.subMitBtn').text('修改资料重新提交')
+
+                Comm.db('opt', null);
+                AJAX.POST('api/store/myStoreState', userinfo, function (a) {
+                    Comm.loading();
+                    if (a.data.code == 5) {
+                        $('#yy').html(a.data.data);
+                        $('#t').html('修改资料');
+                    } else {
+                        $('#yy').html(a.data.data);
+                    }
+                });
+            } else if (pageType == 4) {
+                $('.navTitle').text('店铺审核');
+                $('.subMitBtn').text('修改资料重新提交')
+
+                Comm.db('opt', null);
+                AJAX.POST('api/store/myStoreState', userinfo, function (a) {
+                    Comm.loading();
+                    if (a.data.code == 5) {
+                        $('#yy').html(a.data.data);
+                        $('#t').html('修改资料');
+                    } else {
+                        $('#yy').html(a.data.data);
+                    }
+                });
+            }
+        }
+
+
+        function getPatnerReson() {
+            var params = {};
+            SLNetwork('get', '/api/partner/getMyPartnerState', params, function (a) {
+                if (a.code == 1) {
+                    var data = a.data;
+                    var partnerState = data.code;
+                    if (partnerState == 6) {
+                        var reson = data.remark || ''
+                        $('#yy').text(reson);
+                    }
+                } else {
+                    Comm.message(data.msg);
+                }
+
+            });
+        }
+
+
+        function modifyInfo() {
+            if (pageType == 2) {
+                Comm.go('Startup.html?modify=1');
+            } else if (pageType == 3) {
+                Comm.go('UpgradedUsers.html');
+            } else if (pageType == 1 || pageType == 4) {
+                Comm.go('storeInfo.html');
+            }
+
+        }
+    </script>
+
+</body>
+
+</html>

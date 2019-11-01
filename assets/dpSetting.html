@@ -1,0 +1,461 @@
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width,initial-scale=1.0,user-scalable=no" name="viewport">
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="format-detection" content="telephone=no,email=no,adress=no" />
+
+    <title>店铺设置</title>
+
+    <link rel="stylesheet" href="css/g.css">
+    <link rel="stylesheet" href="css/comm.css">
+    <link rel="stylesheet" href="inc/mescroll/swiper.min.css">
+
+    <style>
+        body {
+            background-color: #F5F5F5;
+        }
+
+        /*头部*/
+        .navBar {
+            background: unset;
+        }
+
+        .navItemIcon.kf {
+            background-image: url("img/tbmine/kefu.png");
+            background-size: 20px auto;
+        }
+
+        .r {
+            color: #E30008;
+        }
+
+        .jiantou {
+            background-image: url("img/tbmine/ckqb.png");
+            background-repeat: no-repeat;
+            background-size: 10px 17px;
+            background-position: right center;
+            padding-right: 15px;
+        }
+
+        .searchIcon {
+            height: 100%;
+            width: 40px;
+            height: 44px;
+            background: url("img/tbshop/Search.png");
+            background-position: center center;
+            background-repeat: no-repeat;
+            background-size: auto 16px;
+            background-position-x: 10px;
+            float: right;
+        }
+
+        .cell {
+            padding: 15px 15px;
+            background-color: white;
+            margin-bottom: 10px;
+        }
+
+        .btn2 {
+            height: 40px;
+            width: 160px;
+            background: linear-gradient(#FB5E3D, #E30008);
+            border-radius: 5px;
+        }
+
+        .imgK {
+            height: 79px;
+            width: 79px;
+        }
+
+        .dw {
+            position: absolute;
+            top: -9px;
+            right: -9px;
+        }
+
+        /* upimg S*/
+        .up-Img {
+            overflow: hidden;
+            padding: 22px 0;
+        }
+
+        .up-Img .box {
+            background-color: unset;
+            width: 79px;
+            height: 79px;
+            margin-right: 12px;
+            margin-bottom: 12px;
+            float: left;
+            border-radius: 5px;
+            position: relative;
+            line-height: unset;
+        }
+
+        .limitNum {
+            color: #A8A7A7;
+            margin: auto;
+            text-align: center;
+            position: absolute;
+            top: 72%;
+            right: 0px;
+            left: 0px;
+            z-index: 9;
+        }
+
+        .box {
+            width: 65px;
+            height: 65px;
+        }
+
+        .box img {
+            object-fit: cover;
+            width: 100%;
+            height: 100%;
+        }
+
+        .upimg-del {
+            width: 30px;
+            height: 30px;
+            position: absolute;
+            right: -10px;
+            top: -10px;
+            background: 10px center no-repeat url(img/tbmain/delete.png);
+            background-size: 20px 20px;
+        }
+
+        /* upimg E*/
+        footer button,
+        .footer button,
+        .button,
+        button,
+        .btn {
+            background: transparent;
+        }
+
+        body>footer {
+            z-index: 99;
+        }
+    </style>
+
+</head>
+
+<!--******************************************************************************-->
+
+<body>
+
+    <header class="bottomBorder marb10">
+        <div>
+            <div class="grow1 bg_white">
+                <div class="navBar">
+                    <div class="navBackIcon" onclick="Comm.close()"></div>
+                    <div class=""></div>
+                    <div class="navTitle">店铺设置</div>
+                </div>
+            </div>
+        </div>
+    </header>
+    <!--******************************************************************************-->
+
+    <section class="scroll-y">
+        <div class="marb30">
+            <div class="bg_white paddl15 paddr15">
+                <div class="flex_between bottomBorder">
+                    <div class="mart20 marb20 flex_center">是否营业</div>
+                    <div class="flex_center" onclick="preventRepeadClickDeal(function () {model.hh()}, 1)">
+                        <img id="an" name="1" src="img/tbmain/yye.png" width="45px" height="24px" />
+                    </div>
+                </div>
+                <div class="flex_between bottomBorder">
+                    <div class="mart20 marb20 flex_center">营业开始时间</div>
+                    <div class="flex_center" onclick="model.show();"><span id="openTime" class="marr10">10:00</span><img
+                            src="img/tbmall/xjqdk.png" width="6px" height="12px" />
+                    </div>
+                </div>
+                <div class="flex_between bottomBorder">
+                    <div class="mart20 marb20 flex_center">营业结束时间</div>
+                    <div class="flex_center" onclick="model.show2();"><span id="closeTime"
+                            class="marr10">22:00</span><img src="img/tbmall/xjqdk.png" width="6px" height="12px" />
+                    </div>
+                </div>
+                <div class="flex_between bottomBorder">
+                    <div class="mart20 marb20 flex_center">人均价格</div>
+                    <div id="consumption" class="tRight mart20 marb20 f14"></div>
+                </div>
+                <div>
+                    <div class="paddt15 paddb15">店铺轮播图</div>
+                    <div>
+                        <div class="paddb15">
+                            <div class="mart10 marl10">
+                                <div class="up-Img" style="padding-bottom:0px;">
+                                    <div id="lbt"></div>
+                                </div>
+                                <div>
+                                    <div id="upload"
+                                        class="marb10 up-upBtn mart12 fl imgK border marr10 flex_center flex_item_center">
+                                        <div>
+                                            <img src="img/tbmall/jia.png" width="20px" height="20px" class="marb5" />
+                                            <div class="col_lgray"><span id="lbNum">0</span>/5</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div style="clear:both"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!--店铺简介-->
+        <div id="store2" class="bg_white cell" style="margin-bottom:0px;padding-top:0px;">
+            <div class="f16 bold paddt15 marb25">店铺详情</div>
+            <div id="storeds" style="width:100%;line-height:20px;">
+            </div>
+            <div id="img" class="mart10 paddb15 articalDImg"></div>
+        </div>
+
+
+        <div id="btn" class="flex flex_between btnMar cell" style="padding-top:0px;padding-bottom:0px;">
+            <div class="btn2 col_white f16 flex flex_item_center flex_center"
+                style="width:100%;height:50px;margin-bottom:10px;"
+                onclick="preventRepeadClickDeal(function () {Comm.go('dpInfo.html')}, 1)">编辑</div>
+        </div>
+    </section>
+
+    <!--******************************************************************************-->
+    <footer class="shared">
+    </footer>
+
+    <script src="js/z.js"></script>
+    <script src="js/g.js"></script>
+    <script src="js/comm.js"></script>
+    <script src="js/api.js"></script>
+    <script src="inc/upimg/upload.js"></script>
+    <script src="js/picker.min.js"></script>
+    <script src="inc/mescroll/swiper.min.js"></script>
+
+    <script>
+        var uploader;
+        var startDate;
+        var endDate;
+
+        function pageresume() {
+            if (!uploader.show) {
+                window.location.reload();
+            }
+        }
+
+        function pageload() {
+            var u = Comm.db('userinfo');
+            Comm.loading('加载中');
+            AJAX.POST('/api/store/myStoreInfo', u, function (d) {
+                Comm.loading();
+                if (d.code == 1) {
+                    if (d.data.manageType == 4) {
+                        $('#btn').addClass('hide');
+                    }
+                }
+            })
+            uploader = new imgUploader('lbt', 5 - model.lbNum, 'upload');
+
+            AJAX.POST('/api/store/getstoresetting', u, function (a) {
+                var data = a.data;
+                var customer = data;
+                var x;
+                o = data;
+                if (a.code == 1) {
+                    var str = data.storeds;
+                    var xxx = /&lt;/g;
+                    var ddd = /&gt;/g;
+                    var k = /%26nbsp;/g;
+                    str = str.replace(xxx, '<');
+                    str = str.replace(ddd, '>');
+                    str = str.replace(k, ' ');
+                    data.storeds = str;
+                    for (x in data) {
+                        if (x == 'storedsImgs') {
+                            if (data[x] == '' || typeof (data[x]) == "undefined") {
+                                $('#img').append(
+                                    '<div class="col_lgray flex_center flex_item_center" style="height:170px">暂无店铺图片</div>'
+                                );
+                            } else {
+                                var s = data[x].split(',');
+                                for (var i = 0; i < s.length; i++) {
+                                    $('#img').append('<div class="flex_center"><img src="' + Comm.OSS.getImgUrl(
+                                            s[i], 'l') +
+                                        '" style="border-radius:3px" /></div>'
+                                    );
+                                }
+                            }
+                        } else if (x == 'consumption') {
+                            $('#' + x).html(app.price(data[x]));
+                            $('#' + x).val(app.price(data[x]));
+                        } else {
+                            $('#' + x).html(data[x]);
+                            $('#' + x).val(data[x]);
+                        }
+                    }
+                    $('#an').attr('name', data.open);
+                    if ($('#an').attr('name') == 0) {
+                        $('#an').attr("src", "img/tbmain/ztye.png");
+                        $('#an').attr("name", "0");
+                        $('#an').css("transform", "rotate(-180deg)");
+                        return;
+                    } else if ($('#an').attr('name') == 1) {
+                        $('#an').attr("src", "img/tbmain/yye.png");
+                        $('#an').attr("name", "1");
+                        $('#an').css("transform", "rotate(0deg)");
+                        return;
+                    }
+                }
+            })
+            //轮播图获取
+            AJAX.POST('/api/store/mystoreimglist', u, function (a) {
+                var data = a.data;
+                var count = data.split(",").length;
+                var img = data.split(",");
+                if (a.code == 1) {
+                    if (data != '') {
+                        for (var i = 0; i < count; i++) {
+                            uploader.addImgItem(img[i], true);
+                            model.lbNum++;
+                        }
+                        $('#lbNum').html(model.lbNum);
+                    }
+                }
+                uploader.success = function () {
+                    if (model.lbNum < 5) {
+                        var cimgUrl = uploader.imgList[uploader.imgList.length - 1] != '' ? uploader
+                            .imgList[0] :
+                            'img/error.png';
+                        var imgUrl = Comm.OSS.getImgUrl(cimgUrl, 'l');
+                        var d2 = {};
+                        d2.imgs = '';
+                        if (uploader.imgList.length) {
+                            d2.imgs = uploader.imgList.join(',');
+                        }
+                        model.lbNum = uploader.imgList.length;
+                        $('#lbNum').html(model.lbNum);
+                        d2.storeId = Comm.db('userinfo').storeId;
+                        AJAX.POST('/api/store/editstoreimglist', d2, function (d) {
+                            if (d.code == 1) {
+                                Comm.message('轮播图上传成功!');
+                            } else {
+                                Comm.message(d.msg);
+                            }
+                        })
+                    } else {
+                        Comm.message('超过轮播图最大限制数');
+                    }
+                };
+            })
+            init();
+        }
+
+        function init() {
+            h = [];
+            for (let index = 0; index < 25; index++) {
+                var i;
+                if (index < 10) {
+                    i = '0' + index;
+                } else {
+                    i = index;
+                }
+                h.push({
+                    i: index,
+                    text: i
+                });
+            }
+            m = []
+            for (let index = 0; index < 60; index++) {
+                var i;
+                if (index < 10) {
+                    i = '0' + index;
+                } else {
+                    i = index;
+                }
+                m.push({
+                    i: index,
+                    text: i
+                });
+            }
+            startDate = new Commpicker("营业开始时间", [h, m], function (obj, name, sid) {
+                name = name.replace('-', ':')
+                $('#openTime').text(name);
+                model.save($('#an').attr("name"), $('#openTime').text(), $('#closeTime').text());
+            })
+            endDate = new Commpicker("营业结束时间", [h, m], function (obj, name, sid) {
+                name = name.replace('-', ':')
+                $('#closeTime').text(name);
+                model.save($('#an').attr("name"), $('#openTime').text(), $('#closeTime').text());
+            })
+        }
+        var model = {
+            lbNum: 0,
+            del: function (i) {
+                var d2 = {};
+                d2.imgs = '';
+                if (uploader.imgList.length) {
+                    d2.imgs = uploader.imgList.join(',');
+                }
+                d2.storeId = Comm.db('userinfo').storeId;
+                this.lbNum--;
+                AJAX.POST('/api/store/editstoreimglist', d2, function (d) {
+                    if (d.code == 1) {
+                        Comm.message('删除成功!');
+                    } else {
+                        Comm.message(d.msg);
+                    }
+                })
+
+            },
+            show: function () {
+                startDate.show();
+            },
+
+            show2: function () {
+                endDate.show();
+            },
+
+            hh: function () {
+                //关
+                if ($('#an').attr("src") == "img/tbmain/yye.png") {
+                    $('#an').attr("src", "img/tbmain/ztye.png");
+                    $('#an').attr("name", "0");
+                    $('#an').css("transform", "rotate(-180deg)");
+                    this.save($('#an').attr("name"), $('#openTime').text(), $('#closeTime').text());
+                    return;
+                }
+                //开
+                if ($('#an').attr("src") == "img/tbmain/ztye.png") {
+                    $('#an').attr("src", "img/tbmain/yye.png");
+                    $('#an').attr("name", "1");
+                    $('#an').css("transform", "rotate(0deg)");
+                    this.save($('#an').attr("name"), $('#openTime').text(), $('#closeTime').text());
+                    return;
+                }
+            },
+
+            save: function (open, openTime, closeTime) {
+                var storeId = Comm.db('userinfo').storeId;
+                var o = {
+                    storeId,
+                    open,
+                    openTime,
+                    closeTime
+                };
+                AJAX.POST('/api/store/storeUpdate', o, function (d) {
+                    if (d.code == 1) {
+                        var data = d.data;
+                        Comm.message('已保存店铺设置');
+                    }
+                })
+            }
+        }
+    </script>
+
+</body>
+
+</html>

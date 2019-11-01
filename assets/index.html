@@ -1,0 +1,55 @@
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width,initial-scale=1.0,user-scalable=no" name="viewport">
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="format-detection" content="telephone=no,email=no,adress=no" />
+
+    <title>水车车</title>
+
+    <link rel="stylesheet" href="css/g.css">
+    <link rel="stylesheet" href="css/comm.css">
+
+</head>
+
+<!--******************************************************************************-->
+
+<body>
+
+    <!--******************************************************************************-->
+
+    <!--******************************************************************************-->
+</body>
+
+
+<script src="js/z.js"></script>
+<script src="js/g.js"></script>
+<script src="js/comm.js"></script>
+<script src="js/api.js"></script>
+
+<script>
+
+
+
+    function pageload() {
+
+        var openid = Comm.db('openid');
+
+        if (Comm.isweixin() && !openid){
+            var url = config.SLShareBase + "/wxlogin.html?to=" + location.href;
+            url = "https://open.weixin.qq.com/connect/oauth2/authorize?" +
+                "appid=wx3d060683cbc1cbb7" +
+                "&redirect_uri=" + encodeURIComponent(url) +
+                "&response_type=code&scope=snsapi_userinfo&state=123#wechat_redirect";
+            Comm.go(url);
+
+        } else {
+            location.href = 'tabPage1.html';
+        }
+    }
+
+
+</script>
+
+</html>

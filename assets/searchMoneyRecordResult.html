@@ -1,0 +1,371 @@
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width,initial-scale=1.0,user-scalable=no" name="viewport">
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="format-detection" content="telephone=no,email=no,adress=no" />
+
+    <title>查询结果</title>
+
+    <link rel="stylesheet" href="css/g.css">
+    <link rel="stylesheet" href="css/comm.css">
+
+    <style>
+        .cellContent {
+            padding: 18px 0px;
+            padding-right: 15px;
+        }
+
+        .hbBj {
+            padding-top: 29.3%;
+            background: url("img/tbmine/hbBg.png") center center no-repeat;
+            background-size: 100%;
+            color: white;
+        }
+
+        .searchIcon {
+            height: 100%;
+            width: 40px;
+            height: 44px;
+            background: url("img/tbshop/Search.png");
+            background-position: center center;
+            background-repeat: no-repeat;
+            background-size: auto 16px;
+            background-position-x: 10px;
+            float: right;
+        }
+
+        #sinbox {
+            width: 100%;
+            position: absolute;
+            top: 0px;
+            left: 0px;
+            padding: 0px;
+            background-color: white;
+        }
+
+        #sinbox .item {
+            /*padding: 0px 10px;*/
+            line-height: 40px;
+        }
+
+        #sinbox .item span.btn {
+            background: inherit;
+            padding: 5px 20px;
+            border-radius: 3px;
+            color: #222;
+            border: 1px solid #EBEBEB;
+            font-size: 14px;
+            margin-right: 15px;
+        }
+
+        #sinbox .item span.btnp {
+            padding: 5px 15px;
+        }
+
+        #sinbox .item span.cur {
+            color: #E30008;
+            background-color: #FFEBEB;
+            border-color: #E30008;
+        }
+
+        .bg_lred {
+            background-color: #FFEBEB;
+        }
+
+        #sinbox .tb {
+            height: 50px;
+            line-height: 50px;
+        }
+
+        #sinbox .tb .td {
+            width: 50%;
+            float: left;
+            background-color: #FFEBEB;
+            color: #E30008;
+        }
+
+        #sinbox .tb .r {
+            width: 50%;
+            height: 50px;
+            float: left;
+            color: #fff;
+            border-radius: 0px;
+        }
+
+        #sinbox .item .scoll {
+            overflow: hidden;
+            overflow-x: auto;
+            white-space: nowrap;
+            text-align: left;
+        }
+
+        #sinbox .item input {
+            width: 100px;
+        }
+
+        #MainBg,
+        #WTDBOX {
+            top: 64px;
+            z-index: 99;
+        }
+
+        .calendar {
+            background: url("img/tbmine/calend.png") center center no-repeat;
+            background-size: 15px;
+        }
+
+        .lh35 {
+            line-height: 35px;
+        }
+
+        .timeChooseItem {
+            border-bottom: 1px solid #E30008;
+            color: #E30008;
+            padding-bottom: 5px;
+            font-size: 14px;
+        }
+
+        .cellContent {
+            padding: 18px 0px;
+            padding-right: 15px;
+        }
+
+        @media (device-height:568px) and (-webkit-min-device-pixel-ratio:2) {
+            .bg_ljgxje {
+                background: url("img/tbmain/ljgxje.png");
+                background-repeat: no-repeat;
+                background-size: 13px 13px;
+                background-position: 20% center;
+                padding-left: 15px;
+            }
+
+            .bg_ggsj {
+                background: url("img/tbmain/ggsj.png");
+                background-repeat: no-repeat;
+                background-size: 13px 13px;
+                background-position: 20% center;
+                padding-left: 15px;
+            }
+
+            #sinbox .item span.btn {
+                background: inherit;
+                padding: 5px 7%;
+                border-radius: 3px;
+                color: #222;
+                border: 1px solid #EBEBEB;
+                font-size: 14px;
+                margin-right: 15px;
+            }
+
+            #sinbox .item input {
+                width: 32%;
+            }
+        }
+    </style>
+
+</head>
+
+<!--******************************************************************************-->
+
+<body>
+
+    <header>
+        <div class="navBar">
+            <div class="navBackIcon" onclick="Comm.db('timeDp', null);Comm.close()"></div>
+            <div class="searchIcon" onclick="Comm.showWindow('sinboxTemp',true);ttop()"></div>
+            <div class="navTitle">查询结果</div>
+        </div>
+    </header>
+    <!--******************************************************************************-->
+
+    <section>
+
+
+        <div class="wrap hbBj">
+            <div class="wrap_ct flex_center">
+
+                <div class="center">
+                    <div id="allMoney" class="f30 mart30"></div>
+                    <div class="mt10 marb30">合计(元)</div>
+                </div>
+
+            </div>
+        </div>
+
+
+        <div class="paddl15 paddr15 bg_lgray">
+            <div class="bg_lgray lh40 flex_between">
+                <div class="col_lgray f12"><span id="beginTime"></span><span id="timeText">至</span><span
+                        id="endTime"></span></div>
+                <div><span>收款笔数:</span><span class="col_red marl10"><span id="allCount"></span>笔</span></div>
+            </div>
+        </div>
+
+        <div id="list">
+
+
+
+        </div>
+        <div class="body" id="box">
+
+            <!--  mask -->
+            <div id="sinbox" wtd="sinboxTemp">
+                <div id="lx" class="item p20">
+                    <div class="colorb5 left">选择类型：</div>
+                    <div class="scoll scollone" id="sco">
+                    </div>
+                </div>
+                <div class="item p20 pt10">
+                    <div class="colorb5 left">时间筛选：</div>
+                    <div class="tleft">
+                        <input readonly id="start" placeholder="开始时间" onclick="datePickerstart.show();"
+                            class="baseH center timeChooseItem" />
+                        <span>&nbsp;至&nbsp;</span>
+                        <input id="end" readonly onclick="datePickerend.show();" placeholder="结束时间"
+                            class="baseH center timeChooseItem" />
+                    </div>
+                </div>
+
+
+                <div class="tb">
+                    <div class="td f18 bg_lred" onclick="reg()">重置</div>
+                    <div class="td f18 r btn bg_trans" onclick="okref()">确定</div>
+                </div>
+            </div>
+
+        </div>
+
+    </section>
+
+    <!--******************************************************************************-->
+    <footer></footer>
+
+    <script src="js/z.js"></script>
+    <script src="js/g.js"></script>
+    <script src="js/comm.js"></script>
+    <script src="js/api.js"></script>
+    <script type="text/javascript" src="inc/mescroll/mescroll.min.js"></script>
+    <script type="text/javascript" src="js/art-template.js"></script>
+    <script type="text/javascript" src="js/dict.js"></script>
+    <script type="text/javascript" src="js/picker.min.js"></script>
+
+    <script>
+        var t = Comm.query('type');
+        var userinfo = Comm.db('userinfo') || {};
+        var timeDp = Comm.db('timeDp');
+        var datePickerstart;
+        var datePickerend;
+        var selectType = "";
+
+        function ttop() {
+            start = ""
+            end = ""
+            $("#MainBg,#WTDBOX").css("top", $(".navBar").height());
+            $("#WTDBOX #start").val(start)
+            $("#WTDBOX #end").val(end)
+            if (selectType == "") {
+                scollclick("#btnone", '')
+            } else {
+                scollclick("#_cointypeid" + selectType, selectType)
+            }
+        }
+
+        function okref() {
+            var timeDp = {};
+            timeDp.beginTime = start;
+            timeDp.endTime = end;
+            Comm.db('timeDp', timeDp);
+            window.location.reload();
+            //Comm.go('searchMoneyRecordResult.html?type=' + t);
+            return;
+
+            Comm.showWindow()
+            model.data.startTime = start;
+            model.data.endTime = end;
+            // model.text()
+            model.search()
+
+        }
+
+        function scollclick(a, id) {
+            activeText = $(a).html()
+            if (!$("#WTDBOX").find(a).hasClass("cur")) {
+                $("#WTDBOX .scollone span").removeClass("cur")
+                $("#WTDBOX").find(a).addClass("cur")
+                // model.data.billType = id;
+            }
+        }
+
+        function reg() {
+            $("#WTDBOX #start").val("");
+            $("#WTDBOX #end").val("");
+            selectType = "";
+            scollclick("#btnone", '')
+        }
+
+        function pageload() {
+            $('#lx').addClass('hide');
+            datePickerstart = new Datepicker("开始时间", function (a, b, c) {
+                $("#WTDBOX #start").val(b);
+                start = b;
+            });
+            datePickerend = new Datepicker("结束时间", function (a, b, c) {
+                $("#WTDBOX #end").val(b);
+                end = b;
+            });
+            if (t == 'dp') {
+                dpInfo();
+            }
+        }
+
+        function dpInfo() {
+            if (timeDp.beginTime == '') {
+                $('#timeText').html('');
+            } else {
+                if (timeDp.endTime == '') {
+                    $('#endTime').html('现在');
+                } else {
+                    $('#endTime').html(timeDp.endTime);
+                }
+            }
+            $('#beginTime').html(timeDp.beginTime);
+            userinfo.beginTime = timeDp.beginTime;
+            userinfo.endTime = timeDp.endTime;
+            AJAX.POST('/api/store/myreceiverCount', userinfo, function (d) {
+                if (d.code == 1) {
+                    var data = d.data;
+                    if (data.allMoney == '') data.allMoney = 0;
+                    $('#allMoney').html(app.price(data.allMoney));
+                    $('#allCount').html(data.allCount);
+                }
+            })
+            AJAX.POST('/api/store/myreceiverlist', userinfo, function (d) {
+                if (d.code == 1) {
+                    var data = d.data;
+                    for (var i = 0; i < data.length; i++) {
+                        if (data.length - 1 == i) {
+                            $('#list').append(
+                                '<div class="paddl15 bg_white "><div class="cellContent bottomBorder"><div class="label f16 icon_pre icon_phone "><p class="bold">' +
+                                data[i]
+                                .nickName + '</p><p class="f12 col_lgray mart10">' + data[i].boundTime +
+                                '</p></div><span class="moneyRed f18 bold">+' + app.price(data[i].money) +
+                                '</span></div></div>');
+                        } else {
+                            $('#list').append(
+                                '<div class="paddl15 bg_white "><div class="cellContent bottomBorder"><div class="label f16 icon_pre icon_phone "><p class="bold">' +
+                                data[i]
+                                .nickName + '</p><p class="f12 col_lgray mart10">' + data[i].boundTime +
+                                '</p></div><span class="moneyRed f18 bold">+' + app.price(data[i].money) +
+                                '</span></div></div>');
+                        }
+                    }
+                }
+            })
+        }
+    </script>
+
+</body>
+
+</html>

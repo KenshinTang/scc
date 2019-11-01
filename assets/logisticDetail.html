@@ -1,0 +1,194 @@
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width,initial-scale=1.0,user-scalable=no" name="viewport">
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+    <meta name="format-detection" content="telephone=no,email=no,adress=no"/>
+
+    <title>物流详情</title>
+
+    <link rel="stylesheet" href="css/g.css">
+    <link rel="stylesheet" href="css/comm.css">
+
+    <style>
+        .iconContain {
+            width: 60px;
+            height: 60px;
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .col_999{
+            color: #999999;
+        }
+        .col_AE{
+            color: #AEAEAE;
+        }
+
+
+        .lineV{
+            flex-basis: 35px;
+        }
+
+      
+
+        .record{
+            position: relative;
+        }
+
+        .tel,.latest .detail{
+            color: #EB3B17;
+        }
+
+        .latest .info{
+            padding-top: 0px;
+        }
+        .info{
+            /*padding-top: 12px;*/
+            padding-bottom: 15px;
+        }
+
+
+        /*timeline*/
+        .timeline_Line{
+            position: absolute;
+            height: 100%;
+            left: 12px;
+            top: 4px;
+            background-color: #DEDEDE;
+            width: 1px;
+        }
+        .point{
+            position: absolute;
+            left: 9px;
+            top: 0;
+            width: 6px;
+            height: 6px;
+            background-color: #DEDEDE;
+            border-radius: 5px;
+        }
+
+        .latest .point{
+            position: absolute;
+            left: 7px;
+            top: 0;
+            width: 10px;
+            height: 10px;
+            background-color: #DEDEDE;
+            border-radius: 5px;
+            background-image: url("img/generalIcon/agree_y.png");
+            background-size: 9px 9px;
+        }
+
+    </style>
+
+</head>
+
+<!--******************************************************************************-->
+<body>
+
+<header>
+    <div class="navBar bottomShadow">
+        <div class="navBackIcon" onclick="Comm.close()"></div>
+        <div class="navTitle">物流详情</div>
+    </div>
+</header>
+<!--******************************************************************************-->
+
+<section>
+
+    <div class="p15">
+        <div class="flex_start f16 pad10">
+            <div class="br3 iconContain imgContain">
+                <img src="http://47.107.105.217:8080/images/3d2b4671-0e47-4665-a237-47b23fab8be1.jpg">
+            </div>
+
+            <div class="column paddl10 grow1 col_999 f13" style="width:100%;">
+                <div class="">
+                    物流单号:
+                    <span>568342984</span>
+                </div>
+                <div class="">
+                    物流名称:
+                    <span>xxx快递</span>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="linebod"></div>
+
+    <div class="logisticList timeline p20">
+
+
+            <div class="latest record flex_between pb15">
+
+                <div class="lineV"></div>
+                <div class="timeline_Line"></div>
+                <img src="img/generalIcon/agree_y.png" alt="" class="point">
+
+                <div class="flex1 bottomBorder info">
+                    <div class="detail">
+                        蜂巢快递  已签收  感谢使用圆通快递，期待再次
+                        为您服务
+                        <span class="tel">15947656372</span>
+                    </div>
+                    <div class="f12 col_AE mt5">2019-03-01 11:16</div>
+                </div>
+            </div>
+
+
+
+
+        <div class="record flex_between pb15">
+            <div class="lineV"></div>
+            <div class="timeline_Line"></div>
+            <div class="point"></div>
+
+            <div class="flex1 bottomBorder info">
+                <div class="detail">
+                    四川省成都市武侯区四部公司  派件人:程路  派件
+                    中派件员电话:
+                    <span class="tel">15947656372</span>
+                </div>
+                <div class="f12 col_AE mt5">2019-03-01 11:16</div>
+            </div>
+        </div>
+
+        <div class="record flex_between pb15">
+            <div class="lineV"></div>
+            <div class="timeline_Line"></div>
+            <div class="point"></div>
+
+            <div class="flex1 bottomBorder info">
+                <div class="detail">
+                    成都市双流区转运中心  已发出
+                </div>
+                <div class="f12 col_AE mt5">2019-03-01 11:16</div>
+            </div>
+        </div>
+
+    </div>
+
+
+
+
+</section>
+
+<!--******************************************************************************-->
+<footer></footer>
+
+<script src="js/z.js"></script>
+<script src="js/g.js"></script>
+<script src="js/comm.js"></script>
+<script src="js/api.js"></script>
+
+<script>
+
+</script>
+
+</body>
+
+</html>

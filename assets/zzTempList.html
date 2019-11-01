@@ -1,0 +1,112 @@
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width,initial-scale=1.0,user-scalable=no" name="viewport">
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+    <meta name="format-detection" content="telephone=no,email=no,adress=no"/>
+
+    <title>人员列表</title>
+
+    <link rel="stylesheet" href="css/g.css">
+    <link rel="stylesheet" href="css/comm.css">
+
+    <link rel="stylesheet" href="inc/mescroll/mescroll.min.css">
+
+    <style>
+
+    </style>
+
+</head>
+
+<!--******************************************************************************-->
+<body>
+
+<header>
+    <div class="navBar bottomShadow">
+        <div class="navBackIcon" onclick="Comm.close()"></div>
+        <div class="navTitle">列表</div>
+    </div>
+</header>
+<!--******************************************************************************-->
+
+<section class="page mescroll chatroom" id="refreshId0">
+
+    <div class="list bg_white paddl10 paddr10">
+        <ul id="id_list0">
+            <!--列表-->
+        </ul>
+    </div>
+
+
+</section>
+
+<!--******************************************************************************-->
+<footer></footer>
+
+<script type="text/javascript" src="js/z.js"></script>
+<script type="text/javascript" src="js/g.js"></script>
+<script type="text/javascript" src="js/comm.js"></script>
+<script type="text/javascript" src="inc/mescroll/mescroll.min.js"></script>
+
+<script type="text/javascript" src="js/api.js"></script>
+<script type="text/javascript" src="js/art-template.js"></script>
+
+<script>
+
+
+    function showDebugLog() {
+        var ss = Comm.db('DB_Test');
+        if (ss){
+            Comm.message(JSON.stringify(ss));
+        } else {
+            Comm.message('没有获取到 DB_Test')
+        }
+
+        setTimeout(function () {
+            Comm.go('zzTemp.html')
+        },3000);
+    }
+
+    function pageresume(){
+        showDebugLog();
+    }
+
+
+
+    function pageload() {
+        // model.init();
+        showDebugLog();
+    }
+
+
+</script>
+
+
+<script type="text/html" id="tp_id_cell">
+
+    {{each $data as model i}}
+    <div class="chatcell paddb15 paddt15 bottomBorder clearfix">
+        <div class="leftView">
+            <img class="iconImg" src="{{model.face}}" onerror="this.onerror='';src='img/error.png'" alt="">
+        </div>
+        <div class="rightView">
+
+            <div class="paddb5 paddt5">
+                <div class="chat_name bold f16 wordWrap">{{model.title}}</div>
+            </div>
+
+            <div class="chat_content wordWrap">
+                <div class="chat_subtitle f12 wordWrap col_sub">{{model.subtitle}}</div>
+            </div>
+
+        </div>
+    </div>
+    {{/each}}
+
+</script>
+
+
+</body>
+
+</html>

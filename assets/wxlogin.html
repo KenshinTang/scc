@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>微信授权中...</title>
+    <meta content="width=device-width,initial-scale=1.0,user-scalable=no" name="viewport">
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="format-detection" content="telephone=no,email=no,adress=no" />
+    <link rel="stylesheet" href="css/g.css" />
+    <link rel="stylesheet" href="css/comm.css" />
+    <style>
+
+    </style>
+</head>
+
+<body>
+
+<!--<div class="testSpaceItem" onclick="testMethod()">Item - - Auth</div>-->
+
+<!--<div id="href" class="testSpaceItem">Text show</div>-->
+
+
+
+
+
+
+    <script src="js/z.js"></script>
+    <script src="js/g.js"></script>
+    <script src="js/comm.js"></script>
+    <script src="http://res.wx.qq.com/open/js/jweixin-1.4.0.js"></script>
+    <script src="js/wx.js?v=3.0"></script>
+    <script>
+        var to = Comm.query('to')
+        var code = Comm.query('code');
+        var wxdata = null;
+        WXMethod.config(['chooseWXPay'], function() {});
+
+
+        function testMethod() {
+            alert('12313');
+        }
+
+
+
+        function pageload() {
+            //微信登录入口
+            if (Comm.isweixin()) {
+                if (code != "" && code != null) {
+                    var access_token = Comm.db('access_token');
+                    var openid = Comm.db('openid');
+                    if (access_token && openid) {
+                        getwxOpenIdToken(openid,access_token);
+                    } else {
+                        WXMethod.getTK(code, function(d) {
+                            getwxOpenIdToken(d.openid,d.access_token);
+                        })
+                    }
+                }
+            }
+
+        }
+
+
+        function getwxOpenIdToken(oid,tk) {
+            $("#href").val('openid = '+ oid + "&token =" + tk);
+            Comm.db('access_token',tk);
+            Comm.db('openid',oid);
+            Comm.goself('tabPage1.html');
+        }
+
+
+
+
+
+    </script>
+</body>
+
+</html>

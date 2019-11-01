@@ -1,0 +1,86 @@
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width,initial-scale=1.0,user-scalable=no" name="viewport">
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+    <meta name="format-detection" content="telephone=no,email=no,adress=no"/>
+
+    <title>title</title>
+
+    <link rel="stylesheet" href="css/g.css">
+    <link rel="stylesheet" href="css/comm.css">
+
+    <style>
+        img{
+            max-width: 100% !important;
+            height: auto !important;
+            object-fit: contain;
+        }
+
+    </style>
+
+</head>
+
+<!--******************************************************************************-->
+<body>
+
+<header>
+    <div class="navBar bottomShadow">
+        <div class="navBackIcon" onclick="Comm.close()"></div>
+        <div class="navItemIcon marr10" onclick="share();"></div>
+        <div class="navTitle"></div>
+    </div>
+</header>
+<!--******************************************************************************-->
+
+<section class="p10 scroll-y">
+
+</section>
+
+<!--******************************************************************************-->
+<footer></footer>
+
+<script src="js/z.js"></script>
+<script src="js/g.js"></script>
+<script src="js/comm.js"></script>
+<script src="js/api.js"></script>
+
+<script>
+
+    var aid = Comm.query('aid');
+    var ainfo = {};
+    config.notDeal = true;
+
+    
+    function pageload() {
+        getAdverDetail();
+    }
+
+    function share() {
+        pageShare(ainfo.adName);
+    }
+    
+    
+    function getAdverDetail() {
+        var params = {
+            advertId:aid
+        }
+        SLNetwork('get','/api/advert/detail',params,function (data) {
+            if (data.code==1) {
+                var html = data.data.content;
+                ainfo = data.data;
+                $('.navTitle').text(data.data.adName);
+                $('section').html(html);
+                nslog(data);
+            } else {
+                Comm.message(data.msg);
+            }
+        });
+    }
+
+</script>
+
+</body>
+
+</html>

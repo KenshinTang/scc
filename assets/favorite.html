@@ -1,0 +1,504 @@
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width,initial-scale=1.0,user-scalable=no" name="viewport">
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="format-detection" content="telephone=no,email=no,adress=no" />
+
+    <title>我的收藏</title>
+
+    <link rel="stylesheet" href="css/g.css">
+    <link rel="stylesheet" href="css/comm.css">
+    <link rel="stylesheet" href="inc/mescroll/mescroll.min.css">
+
+    <style>
+        .page {
+            display: none;
+        }
+
+        .segItem {
+            color: #717171;
+            line-height: 25px;
+        }
+
+        .segItem.active {
+            color: #E30008;
+            border-bottom: 2px solid #E30008;
+        }
+
+        .cellSel {
+            width: 30px;
+            height: 30px;
+        }
+
+        .check {
+            background-image: url("img/generalIcon/agree_n.png");
+        }
+
+        .active.check {
+            background-image: url("img/tbmain/rzyy.png");
+        }
+
+
+        /*收藏的商品cell*/
+        .cellIcon {
+            height: 90px;
+            width: 90px;
+            flex-basis: 90px;
+        }
+
+        .cellRight {
+            height: 90px;
+            padding: 0px 10px;
+            flex: 1;
+        }
+
+        .stateV {
+            position: absolute;
+            width: 70px;
+            height: 70px;
+            line-height: 70px;
+            color: white;
+            border-radius: 50%;
+
+            text-align: center;
+            top: 10px;
+            left: 10px;
+            z-index: 1;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+
+
+        .breakLine_v {
+            width: 1px;
+            height: 16px;
+            background-color: #EBEBEB;
+        }
+
+        .star {
+            width: 50px;
+            height: 10px;
+            background: url("img/tbshop/Star_n.png") repeat-x center center;
+            background-size: 10px auto;
+        }
+
+        .star_get {
+            width: 60%;
+            height: 100%;
+            background: url("img/tbshop/Star.png") repeat-x left center;
+            background-size: 10px auto;
+        }
+
+        .benefit {
+            width: auto;
+            border-radius: 10px 1px;
+            padding: 2px 8px;
+        }
+
+        .mv5 {
+            margin: 5px 0px;
+        }
+
+        .lIcon.distance {
+            background-image: url("img/tbhome/position.png");
+        }
+
+
+
+        /*footer*/
+        .bottomBar {
+            height: 55px;
+            padding: 0px 10px;
+            line-height: 40px;
+            text-align: center;
+        }
+
+        .del {
+            width: 105px;
+            height: 40px;
+            font-size: 16px;
+        }
+
+        .bg_g_jb {
+            background: linear-gradient(to right, #7ACC52, #68AF47)
+        }
+    </style>
+
+</head>
+
+<!--******************************************************************************-->
+
+<body>
+
+
+    <header>
+        <div class="navBar bottomShadow">
+            <div class="navBackIcon" onclick="Comm.close()"></div>
+            <div class="navItem mr10 edit" onclick="pageEdit()">编辑</div>
+            <div class="navTitle">我的收藏</div>
+        </div>
+
+        <!--选项卡 -->
+        <div class="segBar flex_around pad_v10">
+            <div class="flex_center segItem active" style="padding-left:10%;padding-right:10%">商品</div>
+            <div class="flex_center segItem" style="padding-left:10%;padding-right:10%">店铺</div>
+        </div>
+    </header>
+
+
+
+    <section class="bg_lgray">
+
+        <!--收藏的商品-->
+        <div class="page mescroll" id="refreshId0">
+            <div id="id_list0">
+
+
+
+            </div>
+        </div>
+
+
+        <!--收藏的店铺-->
+        <div class="page mescroll" id="refreshId1">
+            <div id="id_list1">
+
+
+
+            </div>
+        </div>
+
+
+    </section>
+
+    <footer>
+
+        <div class="flex_between p10 bottomBar hide">
+            <div id="q" class="lIcon sall check">全选</div>
+            <div class="del bg_trans col_white br5" onclick="deleteSubmit()">删除</div>
+        </div>
+
+    </footer>
+
+
+    <script src="js/z.js"></script>
+    <script src="js/g.js"></script>
+    <script src="js/comm.js"></script>
+    <script src="js/api.js"></script>
+    <script src="inc/mescroll/mescroll.min.js"></script>
+    <script src="js/art-template.js"></script>
+
+
+
+    <script type="text/javascript">
+        var pageRefArr = [],
+            curPageIdx = 0;
+
+
+        function pageload() {
+            showWithPageIndex(curPageIdx);
+
+            //点击商品、店铺切换
+            clickList('.segBar', '.segItem', function (o, idx) {
+                editComplectUI();
+                showWithPageIndex(idx);
+            });
+        }
+
+
+
+        /************************************************/
+        //点击编辑
+        function pageEdit() {
+            if ($('.edit').text() == '编辑') {
+
+                $('.edit').text('完成');
+                $('.bottomBar').removeClass('hide');
+                $('.cellSel').removeClass('hide');
+                isEdit = true;
+                Comm.resizeSection();
+            } else {
+                editComplectUI();
+            }
+
+        }
+
+
+        function editComplectUI() {
+            $('.edit').html('编辑');
+            $('.bottomBar').addClass('hide');
+            $('.cellSel').addClass('hide');
+            isEdit = false;
+            selectedAll(false);
+            Comm.resizeSection();
+        }
+
+
+        function selectedAll(istrue) {
+            if (istrue) {
+                $('.check').addClass('active');
+            } else {
+                $('.check').removeClass('active');
+            }
+        }
+
+        //初始化选择事件
+        function initCheck() {
+            checkBoxChoose('body', '.check', function (t, idx) {
+                var sall = $(t).hasClass('sall');
+                if (sall) {
+                    var isSall = $(t).hasClass('active');
+                    selectedAll(isSall);
+                } else {
+                    checkSall();
+                }
+            })
+        }
+
+        //检查是否全选
+        function checkSall() {
+
+            var checkSel = '#refreshId0 ';
+            var activeSel = '#refreshId0 ';
+            if (curPageIdx == 1) {
+                checkSel = '#refreshId1 ';
+                activeSel = '#refreshId1 ';
+            }
+
+            if ($(checkSel + '.cellSel').length == $(activeSel + '.cellSel.active').length) {
+                selectedAll(true);
+            } else {
+                $('.sall').removeClass('active');
+            }
+        }
+
+
+        function deleteSubmit() {
+            var checkSel = '#refreshId0 ';
+            var activeSel = '#refreshId0 ';
+            if (curPageIdx == 1) {
+                checkSel = '#refreshId1 ';
+                activeSel = '#refreshId1 ';
+            }
+
+            var list = $(activeSel + '.cellSel.active') || [];
+            if (!list.length) {
+                Comm.message('请选择要删除的商品')
+                return;
+            }
+
+
+            var arr = [];
+            list.forEach(function (e) {
+                arr.push($(e).attr('sid'))
+            });
+
+            nslog(arr);
+            var params = {
+                itemIds: arr.join(','),
+                itemType: curPageIdx + 1,
+            }
+            SLNetwork('post', '/api/customerFav/cancelBatch', params, function (data) {
+                if (data.code == 1) {
+
+                    list.parent().remove();
+                    selectedAll(false);
+
+                } else {
+                    Comm.message(data.msg);
+                }
+            });
+
+
+        }
+
+
+
+        /************************************************/
+
+
+
+
+        function showWithPageIndex(pageIndex) {
+            curPageIdx = pageIndex;
+            curPageIdx = pageIndex;
+            $('.page').removeClass('show');
+            $($('.page')[pageIndex]).addClass('show');
+
+            $('.segBar .segItem').removeClass('active');
+            $($('.segBar .segItem')[pageIndex]).addClass('active');
+
+            addrefresh(pageIndex)
+        }
+
+
+        function addrefresh(idx) {
+
+            var merefresh = pageRefArr[idx];
+            if (!merefresh) {
+                merefresh = new MERefresh();
+                merefresh.refreshOption.refreshUrl = '/api/customerfavdao/collectList';
+                merefresh.refreshOption.noMoreSize = 10;
+                var requestState = idx + 1;
+                merefresh.refreshOption.refreshParm = {
+                    itemType: requestState
+                }
+
+                //页面 <刷新> 的回调
+                merefresh.refreshOption.refresh_cb = function (refresh, d) {
+                    var list = d.data || [];
+                    if (d.data && !d.data.length) {
+                        refresh.successEndRef(0, 0);
+                    } else {
+                        refresh.successEndRef(list && list.length, d.totalCount||0);
+                    }
+
+                    if (d.code == 1) {
+
+                        var html = '';
+                        if (curPageIdx == 0) {
+                            html = template('tp_id_goods', list);
+                        } else if (curPageIdx == 1) {
+
+                            list.forEach(function (a) {
+                                a.widthPer = Number(a.score) / 5 * 100;
+                            });
+                            console.log(list);
+
+                            html = template('tp_id_shop', list);
+                        }
+
+                        merefresh.appendHtml(html);
+                        editComplectUI();
+                        initCheck();
+                    } else {
+                        Comm.message(d.msg);
+                    }
+                };
+                merefresh.configurationDone('refreshId' + idx, 'id_list' + idx);
+                pageRefArr[idx] = merefresh;
+            } else {
+
+            }
+        }
+
+
+
+        function cellClicked(cellType, itemId,enable) {
+
+            console.log('cellType == ' + cellType + 'itemId = ' + itemId);
+
+            if (!itemId || isEdit || enable != 1) return;
+
+            switch (cellType) {
+                case 1: {
+                    Comm.go('goodsDetail.html?gid=' + itemId);
+                }
+                break;
+            case 2: {
+                Comm.go('store.html?storeId=' + itemId);
+            }
+            break;
+
+            default:
+                break;
+
+            }
+
+        }
+    </script>
+
+
+    <!--商品-->
+    <script type="text/html" id="tp_id_goods">
+        {{each $data model i}}
+        <div class="goodsCell flex_start p10 bg_white mt10" onclick="cellClicked(1,{{model.goodsId}},{{model.enable}})">
+            <div class="check lIcon cellSel hide" sid="{{model.goodsId}}"></div>
+
+            <div class="imgContain cellIcon relative">
+                <img src="{{OSS(model.faceImg,'s')}}" class="br5" onerror="app.errorimg(this);">
+                {{if model.enable != 1}}
+                <div class="stateV">已下架</div>
+                {{/if}}
+            </div>
+
+            <div class="cellRight flex flexItem_v flexItem_between">
+                <div>
+                    <div class="f16 bold wordW2">{{model.goodsName||''}}</div>
+                    <div class="mv5">
+                        <span class="f12 col_lgray">已售:{{model.salesCount}}件</span>
+                    </div>
+                </div>
+
+
+                <div class="evaluate flex_start">
+                    <div class="f12 lineSpan">
+                        <span class="col_red bold f14">￥{{priceTp(model.price)}}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {{/each}}
+    </script>
+
+    <!--店铺-->
+    <script type="text/html" id="tp_id_shop">
+        {{each $data model i}}
+        <div class="cell flex_start p10 mt10 bg_white" onclick="cellClicked(2,{{model.storeId}},{{model.enable}})">
+
+            <div class="check lIcon cellSel hide" sid="{{model.storeId}}"></div>
+
+            <div class="imgContain cellIcon relative">
+                <img src="{{OSS(model.doorPic,'s')}}" onerror="app.errorimg(this);">
+                {{if model.enable != 1}}
+                <div class="stateV">已禁用</div>
+                {{/if}}
+            </div>
+
+            <div class="cellRight flex flexItem_v flexItem_around">
+
+                <div class="f16 bold wordW">{{model.storeName||''}}</div>
+
+
+                <div class="mv5">
+                    {{if model.rebate}}
+                    <!--<span class="f12 col_white benefit bg_g_jb">让利{{model.rebate/100}}%</span>-->
+                    <span class="f12 col_white benefit bg_g_jb">付款返红包券</span>
+                    {{/if}}
+                </div>
+
+                <div>
+                    <div class="evaluate flex_start">
+                        <div class="star bg_place">
+                            <div class="star_get" style="width: {{model.widthPer||0}}%"></div>
+                        </div>
+
+                        <div class="f12 lineSpan">
+                            <span class="col_red ml5">{{model.score}}分</span>
+                            <span class="col_lgray f14">丨</span>
+                            <!-- <img src="" alt="" class="breakLine_v"> -->
+                            {{if model.consumption}}
+                            <span class="col_sub">{{priceTp(model.consumption)||0}}</span>
+                            <span class="col_sub">/人</span>
+                            {{/if}}
+                        </div>
+                    </div>
+
+                    <div class="f12 col_sub flex_between mt5">
+                        <div class="">地点：{{model.addr||''}}</div>
+                        <!--<div class="lIcon distance">3.5km</div>-->
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+        {{/each}}
+    </script>
+
+
+
+</body>
+
+</html>

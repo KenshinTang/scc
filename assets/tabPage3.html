@@ -1,0 +1,559 @@
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width,initial-scale=1.0,user-scalable=no" name="viewport">
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="format-detection" content="telephone=no,email=no,adress=no" />
+
+    <title>商城</title>
+
+    <link rel="stylesheet" href="css/g.css">
+    <link rel="stylesheet" href="css/comm.css">
+    <link rel="stylesheet" href="inc/side/side.css">
+    <link rel="stylesheet" href="inc/mescroll/mescroll.min.css">
+
+
+    <style>
+        /*头部*/
+        .navTitle {
+            margin: 0px 30%;
+            background: url("img/tbhome/logo.png") center center no-repeat;
+            background-size: auto 20px;
+        }
+
+        .navItemIcon.msg {
+            background-image: url("img/tbhome/xiaoxi.png");
+            background-size: auto 19px;
+        }
+
+        .position {
+            background-image: url("img/tbhome/position.png");
+        }
+
+        section .banner li {
+            border-radius: 10px;
+            height: 100%;
+        }
+
+        /*快捷入口*/
+        .quickItemIcon {
+            width: 50px;
+            height: 50px;
+            border-radius: 25px;
+        }
+
+        .quickItem {
+            width: 25%;
+            padding-top: 5px;
+            padding-bottom: 10px;
+        }
+
+        /*广告*/
+        .adver {
+            padding-top: 22.9%;
+        }
+
+        /*特卖商品 新品推荐*/
+        .special {
+            background-image: url("img/tbmall/tmsp.png");
+        }
+
+        .new {
+            background-image: url("img/tbmall/xptj.png");
+        }
+
+        .mline {
+            text-decoration: line-through;
+        }
+
+        .goodsCell {
+            min-width: 25%;
+            max-width: 25%;
+            width: 25%;
+            margin: 7px;
+        }
+
+        .goodsTitle {
+            line-height: 18px;
+            height: 36px;
+            margin-top: 7px;
+            margin-bottom: 3px;
+        }
+
+        .goodsFace {
+            padding-top: 100%;
+            border-radius: 3px;
+
+        }
+
+        /*推荐商品*/
+        .rcm_head {
+            padding-top: 10px;
+            padding-bottom: 15px;
+            background: url("img/tbmall/tjsp.png") no-repeat center center;
+            background-size: 130px auto;
+        }
+
+        /*search header*/
+        .headItem {
+            line-height: 44px;
+            height: 44px;
+        }
+
+        .headItem.msg {
+            background-image: url("img/tbhome/xiaoxi.png");
+        }
+
+        .base80 {
+            min-width: 50px;
+            max-width: 100px;
+        }
+
+        .flex1 {
+            flex: 1;
+        }
+
+        .searchBar {
+            height: 30px;
+            margin: 7px 2%;
+            line-height: 30px;
+            border-radius: 15px;
+            text-align: left;
+        }
+
+        .searchBar.lIcon {
+            background-position-x: 15px;
+            padding-left: 35px;
+            background-image: url("img/tbshop/sousuo.png");
+
+            color: #A8ADBA;
+        }
+
+        .hasNew {
+            line-height: 30px;
+            float: right;
+            font-size: 20px;
+        }
+
+        #box1::-webkit-scrollbar,
+        #box2::-webkit-scrollbar {
+            width: 0px;
+            height: 0px;
+            visibility: hidden;
+            display: none;
+        }
+
+        .hideBar {
+            padding-bottom: 10px;
+            margin-bottom: -10px;
+            overflow: hidden;
+        }
+    </style>
+
+</head>
+
+<!--******************************************************************************-->
+
+<body>
+
+    <header>
+
+        <div class="navBar flex_between">
+            <div class="headItem flex1" onclick="Comm.go('searchPage.html?type=goods')">
+                <div class="searchBar bg_lgray lIcon">
+                    请输入商品名称
+                </div>
+            </div>
+            <div class="headItem navItemIcon msg marr10" onclick="if (needLoginCheck(true)) return;Comm.go('msg.html')">
+                <div class="hasNew col_red hide">•</div>
+            </div>
+        </div>
+
+    </header>
+    <!--******************************************************************************-->
+
+    <section class="bg_lgray mescroll" id="refreshId">
+
+        <!--<div class="testSpaceItem border" onclick="Comm.go('zzTemp.html')">点我进入测试</div>-->
+
+
+        <div class="bg_white">
+
+            <div class="p15 paddb5 banner pt0">
+                <div class="wrap">
+                    <div class="wrap_ct br5">
+                        <div class="mainW mainH br5 ohide bg_lgray" id="id_banner">
+                            <ul class="list fullImg side_ul br5 ohide" id="id_side">
+
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <!--快捷入口-->
+            <div class="quickEnter">
+                <div class="flex_wrap pt10 quickEnterList">
+
+                </div>
+            </div>
+
+        </div>
+
+        <div class="mainW p15 bg_white FPShow hide">
+            <div class="wrap adver" onclick="Comm.go('goodsList.html?type=FP')">
+                <div class="wrap_ct">
+                    <img id="id_img_fp" class="mainH mainW" onerror="this.src='img/tbmall/huich.png';onerror=null;">
+                </div>
+            </div>
+
+        </div>
+
+        <!--特卖商品-->
+        <div class="m15 p5 bg_white br5 contain_TeMai_show hide">
+            <div class="flex_between marg_v5">
+                <div class="lIcon bold col_theme special">特卖商品</div>
+                <div class="col_sub" onclick="Comm.go('goodsList.html?type=TM')">
+                    <span>查看更多</span>
+                    <span><img src="img/generalIcon/iden.png" width="6" alt=""></span>
+                </div>
+            </div>
+
+
+            <div class="ohide">
+                <div class="scroll-x hideBar" id="box1">
+                    <div class="goods flex_start f12 contain_TeMai">
+
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+
+
+        <!--新品推荐-->
+        <div class="m15 p5 bg_white br5 contain_XinPin_show hide">
+            <div class="flex_between marg_v5">
+                <div class="lIcon bold col_theme special">新品推荐</div>
+                <div class="col_sub" onclick="Comm.go('goodsList.html?type=XP')">
+                    <span>查看更多</span>
+                    <span><img src="img/generalIcon/iden.png" width="6" alt=""></span>
+                </div>
+            </div>
+
+
+            <div class="ohide">
+                <div class="scroll-x hideBar" id="box2">
+                    <div class="goods flex_start f12 contain_XinPin">
+
+
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+
+        <!--推荐商品-->
+
+        <div class="recomment">
+            <div class="rcm_head bold center f18">推荐商品</div>
+
+            <div class="goodsList p10 flex_wrap f12 contain_Tuijian">
+
+
+            </div>
+        </div>
+        <div class="listId"></div>
+
+
+    </section>
+
+
+    <!--******************************************************************************-->
+    <footer class="shared"></footer>
+
+    <script src="js/z.js"></script>
+    <script src="js/g.js"></script>
+
+    <script src="js/api.js"></script>
+    <script src="js/dict.js"></script>
+
+    <script src="js/art-template.js"></script>
+    <script src="inc/side/side.js"></script>
+    <script src="inc/mescroll/mescroll.min.js"></script>
+
+    <script src="js/comm.js"></script>
+
+
+    <script>
+        Foot.init();
+        var pageData = {},
+            merefresh;
+        var userinfo = Comm.db('userinfo') || {};
+
+        function pageload() {
+            getPageNetWork();
+            addRefresh();
+        }
+
+        function getPageNetWork() {
+            getBanner();
+            hasNewMessage();
+            getQuickEnterItems();
+            getGoods(1, '.contain_TeMai', 'tp_id_XinPin_TeMai');
+            getGoods(2, '.contain_XinPin', 'tp_id_XinPin_TeMai');
+            getRecommended();
+        }
+
+
+        function pageresume() {
+            if (!app.isLogin()) {
+                clearUserData();
+            }
+            hasNewMessage();
+        }
+
+
+        function getQuickEnterItems() {
+
+            GDict.init(function () {
+                var arr = GDict.get('goodsCategory');
+                arr = arr.slice(0, 7);
+                var eleList = template('tp_id_quick', arr);
+                $('.quickEnterList').html(eleList);
+            })
+        }
+
+
+        //获取顶部广告
+        function getBanner() {
+            var params = {
+                postion: 30
+            }
+            SLNetwork('get', '/api/advert/apiList', params, function (data) {
+                if (data.code == 1) {
+                    var showArr = data.data || [];
+                    if (!showArr.length) {
+                        $('.banner').addClass('hide');
+                        return;
+                    }
+                    $('.banner').removeClass('hide');
+                    showArr.sort(function (a, b) {
+                        return a.orderIndex - b.orderIndex;
+                    });
+
+                    var banner = template('tp_bannerId', showArr);
+                    $('#id_side').html(banner);
+                    new Side('id_banner', true);
+                } else {
+                    Comm.message(data.msg);
+                }
+            });
+
+            params.postion = 31;
+
+            SLNetwork('get', '/api/advert/apiList', params, function (data) {
+                if (data.code == 1) {
+                    var showArr = data.data || [];
+                    if (showArr.length) {
+                        var model = showArr[0];
+                        var imgUrl = Comm.OSS.getImgUrl(model.falce, 'l');
+                        $('#id_img_fp').attr('src', imgUrl);
+                    } else {
+
+                    }
+
+                } else {
+
+                }
+            });
+
+            if (userinfo.isPoor == 1) {
+                $('.FPShow').removeClass('hide');
+            }
+        }
+
+
+        //获取特卖商品和新品推荐
+        //type == 1特卖 2新品 3热门 4特价
+        function getGoods(type, contentQuery, tpId) {
+
+            // $(contentQuery + '_show').removeClass('hide');
+            // var elementHtml = template(tpId, [{}, {}, {}, {}, {}, {}, {}, {}, {}]);
+            // $(contentQuery).html(elementHtml);
+            // return;
+
+
+            var params = {
+                tagType: type, //1特卖 2新品 3热门 4特价
+                isOrderIndex: 1,
+                pagesize: 8,
+            }
+            SLNetwork('get', '/api/shoppingMall/goods/list', params, function (data) {
+                if (data.code == 1) {
+                    var showArr = data.data || [];
+                    if (showArr.length) {
+                        $(contentQuery + '_show').removeClass('hide');
+                        var elementHtml = template(tpId, showArr);
+                        $(contentQuery).html(elementHtml);
+                    }
+                } else {
+                    Comm.message(data.msg);
+                }
+            });
+        }
+
+
+        //获取推荐商品
+        function getRecommended() {
+            var params = {
+                isOrderIndex: 1,
+            };
+            SLNetwork('get', '/api/shoppingMall/goods/randomGoods', params, function (data) {
+                if (data.code == 1) {
+                    var showArr = data.data || [];
+                    if (!app.isLogin()) {
+                        showArr.isLogin = false;
+                    }
+                    var elementHtml = template('tp_id_TuiJian', showArr);
+                    $('.contain_Tuijian').html(elementHtml);
+
+                } else {
+                    Comm.message(data.msg);
+                }
+            });
+        }
+
+
+        function hasNewMessage() {
+
+            if (app.isLogin()) {
+                AJAX.GET('/api/message/messIsRead', function (a) {
+                    console.log(a);
+                    if (a.code == 1) {
+                        if (a.data > 0) {
+                            $('.hasNew').removeClass('hide');
+                        } else {
+                            $('.hasNew').addClass('hide');
+                        }
+                    }
+                })
+            }
+        }
+
+
+        function addRefresh() {
+            if (!merefresh) {
+                merefresh = new MERefresh();
+                merefresh.refreshOption.needFootRefresh = false;
+                merefresh.refreshOption.refresh_cb_doNothing = function () {
+                    getPageNetWork();
+                };
+                merefresh.configurationDone('refreshId', 'listId');
+            }
+        }
+    </script>
+
+
+    <script type="text/html" id="tp_id_quick">
+        {{each $data model i}}
+        <div class="center quickItem" tid="{{model.dictId}}"
+            onclick="Comm.go('goodsList.html?type=PT&ftid={{model.dictId}}');">
+            <img src="{{OSS(model.remark,'s')}}" class="quickItemIcon " onerror="app.errorimg(this);">
+            <div class="f12 mart10">{{model.dictname}}</div>
+        </div>
+        {{/each}}
+        <div class="pt10 center quickItem" onclick="Comm.go('goodsClass.html');">
+            <img src="img/tbmall/other.png" class="quickItemIcon ">
+            <div class="f12 mart10">更多</div>
+        </div>
+    </script>
+
+
+    <!--广告-->
+    <script type="text/html" id="tp_bannerId">
+        {{each $data model i}}
+        <li class="imgCt_cover br5 ohide" onclick="showAdver('{{model.advertId}}');">
+            <img src="{{OSS(model.falce,'l')}}" class="bannerImg" alt="" onerror="app.errorimg(this);">
+        </li>
+        {{/each}}
+    </script>
+
+
+    <!--新品推荐-->
+    <script type="text/html" id="tp_id_XinPin_TeMai">
+        {{each $data model i}}
+        <div class="goodsCell bg_white" onclick="Comm.go('goodsDetail.html?gid={{model.goodsId}}');">
+            <div class="wrap goodsFace">
+                <div class="wrap_ct imgContain ">
+                    <img src="{{OSS(model.faceImg,'s')}}" alt="" onerror="app.errorimg(this)">
+                </div>
+            </div>
+
+            <div class="goodsTitle line2">{{model.goodsName}}</div>
+            <div class="flex_between">
+                <div class="col_theme">¥{{priceTp(model.price)}}</div>
+                <!--<div class="col_sub mline">¥{{priceTp(model.oldprice)}}</div>-->
+            </div>
+        </div>
+        {{/each}}
+    </script>
+
+
+    <!--推荐商品-->
+    <script type="text/html" id="tp_id_TuiJian">
+        {{each $data model i}}
+        <div class="rcm_goodsCell" onclick="Comm.go('goodsDetail.html?gid={{model.goodsId}}');">
+
+            <div class="wrap rcm_goodsFace">
+                <div class="wrap_ct imgContain ">
+                    <img src="{{OSS(model.faceImg,'m')}}" alt="" onerror="app.errorimg(this)">
+                </div>
+            </div>
+
+            <div class="p5 bg_white">
+                <div class="goodsTitle line2">{{model.goodsName}}</div>
+                <div class="flex_wrap h40">
+
+                    {{if model.specialTag == '1'}}
+                    <div class="label">特卖</div>
+                    {{/if}}
+
+                    {{if model.newTag == 1}}
+                    <div class="label">新品</div>
+                    {{/if}}
+
+                    {{if model.hotTag == 1}}
+                    <div class="label">热门</div>
+                    {{/if}}
+
+                    {{if model.offersTag == 1}}
+                    <div class="label">特价</div>
+                    {{/if}}
+
+                    {{if model.isPoor == '1' || $data.isLogin==false}}
+                    <div class="label">扶贫</div>
+                    {{/if}}
+
+                </div>
+                <div class="flex_start">
+                    <div class="col_theme">¥{{priceTp(model.price)}}</div>
+                    <!--<div class="col_sub mline ml5">¥{{priceTp(model.oldprice)}}</div>-->
+                </div>
+            </div>
+        </div>
+        {{/each}}
+    </script>
+
+    <script type="text/html" id="tp_id_2">
+
+    </script>
+
+
+</body>
+
+</html>

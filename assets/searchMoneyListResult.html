@@ -1,0 +1,425 @@
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width,initial-scale=1.0,user-scalable=no" name="viewport">
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="format-detection" content="telephone=no,email=no,adress=no" />
+
+    <title>明细查询结果</title>
+
+    <link rel="stylesheet" href="css/g.css">
+    <link rel="stylesheet" href="css/comm.css">
+    <link rel="stylesheet" href="inc/mescroll/mescroll.min.css">
+
+    <style>
+        .cellContent {
+            padding: 18px 0px;
+            padding-right: 15px;
+        }
+
+        .hbBj {
+            padding-top: 29.3%;
+            background: url("img/tbmine/hbBg.png") center center no-repeat;
+            background-size: 100%;
+            color: white;
+        }
+
+        .navItemIcon {
+            background-image: url('img/tbshop/Search.png');
+            background-size: 20px;
+        }
+
+        #sinbox {
+            width: 100%;
+            position: absolute;
+            top: 0px;
+            left: 0px;
+            padding: 0px;
+            background-color: white;
+        }
+
+        #sinbox .item {
+            /*padding: 0px 10px;*/
+            line-height: 40px;
+        }
+
+        #sinbox .item span.btn {
+            background: inherit;
+            padding: 5px 20px;
+            border-radius: 3px;
+            color: #222;
+            border: 1px solid #EBEBEB;
+            font-size: 14px;
+            margin-right: 15px;
+        }
+
+        #sinbox .item span.btnp {
+            padding: 5px 15px;
+        }
+
+        #sinbox .item span.cur {
+            color: #E30008;
+            background-color: #FFEBEB;
+            border-color: #E30008;
+        }
+
+        .bg_lred {
+            background-color: #FFEBEB;
+        }
+
+        #sinbox .tb {
+            height: 50px;
+            line-height: 50px;
+        }
+
+        #sinbox .tb .td {
+            width: 50%;
+            float: left;
+            background-color: #FFEBEB;
+            color: #E30008;
+        }
+
+        #sinbox .tb .r {
+            width: 50%;
+            height: 50px;
+            float: left;
+            color: #fff;
+            border-radius: 0px;
+        }
+
+        #sinbox .item .scoll {
+            overflow: hidden;
+            overflow-x: auto;
+            white-space: nowrap;
+            text-align: left;
+        }
+
+        #sinbox .item input {
+            width: 100px;
+        }
+
+        #MainBg,
+        #WTDBOX {
+            top: 64px;
+            z-index: 99;
+        }
+
+        .calendar {
+            background: url("img/tbmine/calend.png") center center no-repeat;
+            background-size: 15px;
+        }
+
+        .lh35 {
+            line-height: 35px;
+        }
+
+        .timeChooseItem {
+            border-bottom: 1px solid #E30008;
+            color: #E30008;
+            padding-bottom: 5px;
+            font-size: 14px;
+        }
+
+        .cellContent {
+            padding: 18px 0px;
+            padding-right: 15px;
+        }
+    </style>
+
+</head>
+
+<!--******************************************************************************-->
+
+<body>
+
+    <header>
+        <div class="navBar">
+            <div class="navBackIcon" onclick="Comm.close()"></div>
+            <div class="navItemIcon marr10" onclick="ttop();"></div>
+            <div class="navTitle">查询结果</div>
+        </div>
+    </header>
+    <!--******************************************************************************-->
+
+    <section id="refreshId" class="mescroll">
+        <!--  mask -->
+        <div id="sinbox" wtd="sinboxTemp">
+            <div class="item p20 clearfix">
+                <div class="colorb5 left">选择类型：</div>
+                <div class="scoll scollone" id="sco">
+                </div>
+            </div>
+            <div class="item p20 pt10">
+                <div class="colorb5 left">时间筛选：</div>
+                <div class="tleft">
+                    <input readonly id="start" placeholder="开始时间" onclick="datePickerstart.show();"
+                        class="baseH center timeChooseItem" />
+                    <span>&nbsp;至&nbsp;</span>
+                    <input id="end" readonly onclick="datePickerend.show();" placeholder="结束时间"
+                        class="baseH center timeChooseItem" />
+                </div>
+            </div>
+
+
+            <div class="tb">
+                <div class="td f18 bg_lred" onclick="reg()">重置</div>
+                <div class="td f18 r btn bg_trans" onclick="okref()">确定</div>
+            </div>
+        </div>
+
+
+        <div class="wrap hbBj">
+            <div class="wrap_ct flex_center">
+
+                <div class="center">
+                    <div id="totalMoney" class="f30"></div>
+                    <div class="mt10"><span id="mxText"></span>(元)</div>
+                </div>
+
+            </div>
+        </div>
+
+
+        <div class="paddl15 paddr15 bg_lgray">
+            <div class="bg_lgray lh40 flex_between">
+                <div class="col_title f12"><span id="beginTime"></span><span id="timeHtml">至</span><span
+                        id="endTime"></span><span id="mxContent"></span></div>
+                <div class="baseWH calendar"></div>
+            </div>
+        </div>
+
+        <div id="id_list">
+
+        </div>
+
+    </section>
+
+    <!--******************************************************************************-->
+    <footer></footer>
+
+    <script type="text/javascript" src="js/z.js"></script>
+    <script type="text/javascript" src="js/g.js"></script>
+    <script type="text/javascript" src="js/comm.js"></script>
+    <script type="text/javascript" src="inc/mescroll/mescroll.min.js"></script>
+    <script type="text/javascript" src="js/art-template.js"></script>
+    <script type="text/javascript" src="js/dict.js"></script>
+    <script type="text/javascript" src="js/picker.min.js"></script>
+
+    <script>
+        var userinfo = Comm.db("userinfo");
+        var requestModel = Comm.db('requestModel');
+        var merefresh;
+        var datePickerstart, datePickerend, coinType = [],
+            filterParms = {};
+
+
+        //点击search按钮
+        function ttop() {
+            Comm.showWindow('sinboxTemp', true);
+            $("#MainBg,#WTDBOX").css("top", $(".navBar").height());
+            $("#WTDBOX #start").val(filterParms.beginTime)
+            $("#WTDBOX #end").val(filterParms.endTime);
+
+            scollclick("#_cointypeid" + filterParms.selectType, filterParms.selectType)
+        }
+
+        function initPicker() {
+            datePickerstart = new Datepicker("开始时间", function (a, b, c) {
+                $("#WTDBOX #start").val(b);
+                filterParms.beginTime = b;
+            });
+            datePickerend = new Datepicker("结束时间", function (a, b, c) {
+                $("#WTDBOX #end").val(b);
+                filterParms.endTime = b;
+            });
+        }
+        // var model = {
+        //     data: {
+        //         consumeType: 1,
+        //         receiverType: 4,
+        //         receiverId: userinfo.customerId,
+        //     },
+        //     search: function () {
+        //         if (!model.mere) {
+        //             model.mere = new MERefresh('refreshId,id_list', {
+        //                 pagesize: 10,
+        //                 refreshUrl: '/api/concumelog/getconcumelogList',
+        //                 refreshTypeGet: true
+        //             });
+        //             model.mere.refreshOption.refreshParm = model.data;
+        //             //页面 <刷新> 的回调
+        //             model.mere.refreshOption.refresh_cb = function (refresh, d) {
+        //                 refresh.successEndRef(d.data.length, d.totalCount);
+        //                 var h = template('listTpl', d.data);
+        //                 refresh.appendHtml(h);
+        //             };
+        //         } else {
+        //             model.mere.refreshOption.refreshParm = model.data;
+        //             //重置列表数据
+        //             model.mere.MeRefScroll.resetUpScroll();
+        //             //model.mere.MeRefScroll.triggerDownScroll();
+        //             //隐藏回到顶部按钮
+        //             model.mere.MeRefScroll.hideTopBtn();
+        //         }
+        //     }
+        // }
+        //点击弹框重置
+        function reg() {
+            $("#WTDBOX #start").val("");
+            $("#WTDBOX #end").val("");
+            filterParms.beginTime = '';
+            filterParms.endTime = '';
+            scollclick("#btnone", '')
+        }
+        //点击弹框确定
+        function okref() {
+            Comm.showWindow();
+            requestModel.actType = filterParms.actType;
+            requestModel.beginTime = filterParms.beginTime;
+            requestModel.consumeAct = filterParms.consumeAct;
+            requestModel.endTime = filterParms.endTime;
+            requestModel.selectType = filterParms.selectType;
+            if (typeof (requestModel.actType) == 'undefined') {
+                requestModel.actType = '';
+            }
+            if (typeof (requestModel.selectType) == 'undefined') {
+                requestModel.selectType = '';
+            }
+            if (typeof (requestModel.beginTime) == 'undefined') {
+                requestModel.beginTime = '';
+            }
+            if (typeof (requestModel.endTime) == 'undefined') {
+                requestModel.endTime = '';
+            }
+            addrefresh();
+            // var parms = app.assign(filterParms, model.data);
+            // debugAlert(parms);
+            // return;
+            // Comm.db('requestModel', requestModel);
+            return;
+        }
+
+        function pageload() {
+            initPicker();
+            getType();
+            // model.search();
+            $('#beginTime').html(requestModel.beginTime);
+            $('#endTime').html(requestModel.endTime);
+            addrefresh();
+        }
+
+        //填充筛选弹框的类型
+        function getType() {
+            var a = {};
+            var data = [{
+                coinface: '',
+                coinname: '分润',
+                type: 12,
+            }, {
+                coinface: '',
+                coinname: '提现',
+                type: 8,
+            }, {
+                coinface: '',
+                coinname: '消费',
+                type: 100,
+            }]
+            a.data = data;
+            coinType = a.data;
+            for (var i = 0; i < a.data.length; i++) {
+                $("#sco").append('<span id="_cointypeid' + a.data[i].type +
+                    '" class="btn marr5"  onclick="scollclick(this,' + a.data[i].type + ')">' + a.data[i].coinname +
+                    '</span>')
+            }
+        }
+        //点击分润、提现、消费。。筛选
+        function scollclick(a, id) {
+            if (!$("#WTDBOX").find(a).hasClass("cur")) {
+                $("#WTDBOX .scollone span").removeClass("cur")
+                $("#WTDBOX").find(a).addClass("cur")
+            }
+            filterParms.selectType = id;
+            filterParms.consumeAct = '';
+            filterParms.actType = '';
+            if (id == 100) {
+                filterParms.consumeAct = 1;
+            } else {
+                filterParms.actType = id;
+            }
+        }
+
+        ////////////////////////////////获取列表信息////////////////////////////////
+
+        //添加刷新控件
+        function addrefresh() {
+
+            if (typeof (requestModel.beginTime) == 'undefined') {
+                $('#timeHtml').html('');
+            }
+            if (typeof (requestModel.actType) == 'undefined') {
+                $('#mxText').html('全部明细');
+                $('#mxContent').html('明细');
+            }
+            if (typeof (requestModel.consumeAct) != 'undefined') {
+                $('#mxText').html('消费');
+                $('#mxContent').html('累计消费');
+            }
+            if (requestModel.actType == 12) {
+                $('#mxText').html('分润');
+                $('#mxContent').html('累计分润');
+            }
+            if (requestModel.actType == 8) {
+                $('#mxText').html('提现');
+                $('#mxContent').html('累计提现');
+            }
+
+            if (!merefresh) {
+                merefresh = new MERefresh();
+                merefresh.refreshOption.refreshUrl = '/api/concumelog/getconcumelogList';
+                merefresh.refreshOption.noMoreSize = 2;
+                merefresh.refreshOption.refreshParm = requestModel;
+
+                //页面 <刷新> 的回调
+                merefresh.refreshOption.refresh_cb = function (refresh, data) {
+                    var list = data.data || [];
+                    refresh.successEndRef(data.data.length || 0, data.totalCount || 0);
+
+                    if (data.code == 1) {
+                        $('#id_list').html(template('tp_id_cell', list));
+                        var totalMoney = 0;
+                        for (var i = 0; i < list.length; i++) {
+                            totalMoney += Number(list[i].money);
+                        }
+                        $('#totalMoney').html(app.price(totalMoney));
+                    } else {
+                        Comm.message(data.msg);
+                    }
+
+                };
+                merefresh.configurationDone('refreshId', 'id_list');
+            } else {
+                merefresh.MeRefScroll.resetUpScroll();
+            }
+        }
+    </script>
+
+
+    <script type="text/html" id="tp_id_cell">
+        {{each $data model i}}
+        <div class="paddl15 bg_white ">
+            <div class="cellContent bottomBorder">
+                <div class="label f16 icon_pre icon_phone ">
+                    <p class="bold">
+                        {{fromType(model.actType)}}{{if model.actType==8}}{{if model.state==1}}(审核中){{/if}}{{if model.state==2}}(审核通过){{/if}}{{if model.state==3}}(审核失败){{/if}}{{/if}}
+                    </p>
+                    <p class="f12 color999">{{formatDate(model.addTime,'Y-m-d H:i')}}</p>
+                </div>
+                <span class="moneyRed f18 bold">{{getSymbol(model.consumeAct)}} {{priceTp(model.money)}}</span>
+            </div>
+        </div>
+        {{/each}}
+    </script>
+</body>
+
+</html>

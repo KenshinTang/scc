@@ -1,0 +1,252 @@
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width,initial-scale=1.0,user-scalable=no" name="viewport">
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="format-detection" content="telephone=no,email=no,adress=no" />
+
+
+    <title>添加银行卡账户</title>
+
+    <link rel="stylesheet" href="css/g.css">
+    <link rel="stylesheet" href="css/comm.css">
+
+    <style>
+        .bind {
+            padding: 0px 10px;
+        }
+
+        .input {
+            height: 40px;
+            font-size: 15px;
+            line-height: 40px;
+            margin-left: 10px;
+        }
+
+        .name {
+            width: 80px;
+        }
+    </style>
+
+</head>
+
+<!--******************************************************************************-->
+
+<body>
+
+    <header>
+        <div class="navBar bottomShadow">
+            <div class="navBackIcon" onclick="Comm.close()"></div>
+            <div class="navTitle">绑定银行卡账户</div>
+        </div>
+    </header>
+    <!--******************************************************************************-->
+
+    <section class="bg_lgray">
+
+
+
+    </section>
+
+    <!--******************************************************************************-->
+    <footer></footer>
+
+    <script src="js/z.js"></script>
+    <script src="js/g.js"></script>
+    <script src="js/comm.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/dict.js"></script>
+    <script src="js/picker.min.js"></script>
+    <script src="js/art-template.js"></script>
+
+    <script>
+        var bankPicker = null;
+        var typePicker = null;
+        var userinfo = Comm.db('userinfo') || {};
+        var requestTempModel = {};
+
+        function pageload() {
+            requestTempModel.type = userinfo.type; //类型
+            requestTempModel.bankNo = userinfo.bankNo || ''; //行号
+            // requestTempModel.type = 1
+            // requestTempModel.bankNo = '23123132'; //行号
+            requestTempModel.cardBack = userinfo.cardBack && userinfo.cardBack ? userinfo.cardBack : ''; //银行id
+            requestTempModel.cardNo = userinfo.cardNo || ''; //卡号
+            requestTempModel.accountName = userinfo.accountName || ''; //
+            var html = template('tp_id', userinfo);
+            $('section').html(html);
+            initPickerOptions();
+        }
+
+
+        function initPickerOptions() {
+
+            GDict.init(function () {
+                var arr = GDict.get('cardBack');
+                var showArr = [];
+                var showTypeArr = [];
+                showTypeArr.push({
+                    text: '个人账户',
+                    i: 0
+                });
+                showTypeArr.push({
+                    text: '对公账户',
+                    i: 1
+                });
+                for (var i = 0; arr && i < arr.length; i++) {
+                    var model = arr[i];
+                    var bank = {
+                        text: model.dictname || '银行名',
+                        i: model.dictId
+                    }
+                    if (userinfo.cardBack == model.dictId) {
+                        requestTempModel.cardBack = model.dictId;
+                        $('#id_bankName').val(model.dictname);
+                        userinfo.bname = model.dictname;
+                    }
+
+                    showArr.push(bank);
+                }
+                bankPicker = new Commpicker("选择银行", [showArr], function (a, v, sid) {
+                    $('#id_bankName').val(v);
+                    requestTempModel.cardBack = sid;
+                });
+
+                typePicker = new Commpicker("选择银行类型", [showTypeArr], function (a, v, sid) {
+                    $('#type').val(v);
+                    if (sid == 1) {
+                        $('#bankDiv').removeClass('hide');
+                        $('#bankNoDiv').removeClass('hide');
+                        $('#bankName').removeClass('hide');
+                    } else {
+                        $('#bankName').addClass('hide');
+                        //$('#bankDiv').addClass('hide');
+                        $('#bankNoDiv').addClass('hide');
+                    }
+                    requestTempModel.type = sid;
+                });
+                var html = template('tp_id', userinfo);
+                $('section').html(html);
+                $('#bankNoDiv').removeClass('hide');
+                $('#bankDiv').removeClass('hide');
+                if (requestTempModel.type == 1) {
+                    $('#type').val('对公账户');
+                } else {
+                    $('#type').val('个人账户');
+                    $('#bankName').addClass('hide');
+                    $('#bankNoDiv').addClass('hide');
+                }
+                $('#bankNo').val(requestTempModel.bankNo);
+            });
+
+        }
+
+
+        //
+        function showPicker() {
+            bankPicker && bankPicker.show();
+        }
+
+
+        function showTypePicker() {
+            typePicker && typePicker.show();
+        }
+
+        function submitClicked() {
+
+
+            var apistr = '/api/customer/editCustomerBlankInfo'; //用户修改银行卡信息
+
+            requestTempModel.cardNo = $('#id_kahao').val();
+            requestTempModel.accountName = $('#id_huzhu').val();
+            requestTempModel.bankNo = $('#bankNo').val();
+
+
+            // debugAlert(requestTempModel);
+            // return;
+
+            if (requestTempModel.type == 1 && requestTempModel.cardBack <= 0) {
+                Comm.message('请选择银行');
+                return;
+            }
+
+            if (!requestTempModel.cardNo || !requestTempModel.accountName) {
+                Comm.message('请将资料填写完整');
+                return;
+            } else if (requestTempModel.cardNo.length < 10) {
+                Comm.message('请填写正确的银行卡号');
+                return;
+            }
+
+            if (isNaN(requestTempModel.cardNo)) {
+                Comm.message('输入的银行卡信息有误');
+                return;
+            }
+            if (!requestTempModel.accountName.match(/^[\u4e00-\u9fa5]+$/)) {
+                Comm.message("输入的账户姓名有误");
+                return;
+            }
+            Comm.loading('正在保存...');
+            SLNetwork('post', apistr, requestTempModel, function (data) {
+                Comm.loading();
+                if (data.code == 1) {
+                    nslog(data);
+                    userinfo.type = requestTempModel.type;
+                    userinfo.bankNo = requestTempModel.bankNo;
+                    userinfo.cardNo = requestTempModel.cardNo;
+                    userinfo.cardBack = requestTempModel.cardBack;
+                    userinfo.accountName = requestTempModel.accountName;
+
+                    Comm.db('userinfo', userinfo);
+                    Comm.message('保存成功');
+                    setTimeout(function () {
+                        Comm.close();
+                    }, 600);
+
+                } else {
+                    Comm.message(data.msg);
+                }
+            });
+        }
+    </script>
+
+
+    <script type="text/html" id="tp_id">
+        <div class="flex_start lh50 bg_white bind bottomBorder">
+            <div class="name">银行卡类型</div>
+            <input class="input" type="text" readonly placeholder="选择银行卡类型" value="{{type||''}}" id="type"
+                onclick="showTypePicker();">
+        </div>
+        <div id="bankName" class="flex_start lh50 bg_white bind bottomBorder">
+            <div class="name">银行名</div>
+            <input class="input" type="text" readonly placeholder="选择银行" value="{{bname||''}}" id="id_bankName"
+                onclick="showPicker();">
+        </div>
+        <div id="bankNoDiv" class="hide flex_start lh50 bg_white bind bottomBorder">
+            <div class="name">行号</div>
+            <input class="input" type="text" placeholder="填写行号" value="{{bankNo||''}}" id="bankNo" maxlength="20"
+                minlength="5">
+        </div>
+
+        <div id="bankDiv" class="hide flex_start lh50 bg_white bind bottomBorder">
+            <div class="name">银行卡号</div>
+            <input class="input" type="text" placeholder="填写账户号" value="{{cardNo||''}}" maxlength="20" minlength="5"
+                id="id_kahao">
+        </div>
+
+        <div class="flex_start lh50 bg_white bind bottomBorder">
+            <div class="name">户主名</div>
+            <input class="input" type="text" placeholder="填写户主名" value="{{accountName||''}}" id="id_huzhu">
+        </div>
+
+
+        <div class="f12 col_lgray m15">绑定工商银行卡、提现不需手续费！</div>
+
+        <div class="m20 lh40 center bg_trans col_white submit br5 f16" onclick="submitClicked();">保 存</div>
+    </script>
+
+
+</body>
+
+</html>

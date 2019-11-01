@@ -1,0 +1,274 @@
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width,initial-scale=1.0,user-scalable=no" name="viewport">
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+    <meta name="format-detection" content="telephone=no,email=no,adress=no"/>
+
+    <title>我的合伙人</title>
+
+    <link rel="stylesheet" href="css/g.css">
+    <link rel="stylesheet" href="css/comm.css">
+
+    <style>
+        body {
+            background-color: #F5F5F5;
+        }
+
+        header {
+            background-image: url('img/tbmain/BackgroundMyParther.png');
+            background-repeat: no-repeat;
+            background-size: 100% 100%;
+        }
+
+        /*头部*/
+        .navBar {
+            background: rgba(0,0,0,0);
+        }
+
+        .navBackIcon {
+            background-image: url('img/generalIcon/back_w.png');
+        }
+
+        .qb {
+            padding: 15px 20px;
+        }
+
+        .jian {
+            background: url("img/tbmain/hhr.png");
+            background-repeat: no-repeat;
+            background-size: 11px 7px;
+            width: 11px;
+            height: 7px;
+            background-position-y: center;
+        }
+
+        .x90 {
+            transform: rotate(-90deg);
+        }
+
+        .x0 {
+            transform: rotate(0deg);
+        }
+
+        .headIcon{
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            overflow: hidden;
+        }
+
+
+
+        .totle{
+            padding: 20px;
+            padding-bottom: 30px;
+        }
+
+        .totleGet {
+            background: url("img/tbmain/ljje.png");
+            background-repeat: no-repeat;
+            border-radius: 8px;
+            background-size: 100% 100%;
+            width: 208px;
+            height: 46px;
+            margin: auto;
+        }
+
+
+
+
+    </style>
+
+</head>
+
+<!--******************************************************************************-->
+
+<body>
+
+<header>
+    <div class="navBar">
+        <div class="navBackIcon" onclick="Comm.close()"></div>
+        <div class=""></div>
+        <div class="navTitle col_white">我的合伙人</div>
+    </div>
+
+    <div class="flex_center col_white" style="align-items: baseline;padding-top:44px;padding-bottom:44px;">
+        <span style="font-size:40px" id="partnerCount">0</span>
+        <span class="f12">人</span>
+    </div>
+</header>
+
+<!--******************************************************************************-->
+
+<section class="scroll-y">
+    <div class="bg_white">
+        <div class="totle">
+            <div class="flex_center totleGet col_white">
+                <div class="mt10">累计收益:￥</div>
+                <div class="mt10 partnerIncome">0</div>
+            </div>
+        </div>
+
+
+
+        <div class="levelList">
+
+        </div>
+    </div>
+</section>
+
+<!--******************************************************************************-->
+<footer class="shared">
+</footer>
+
+<script src="js/z.js"></script>
+<script src="js/g.js"></script>
+<script src="js/comm.js"></script>
+<script src="js/api.js"></script>
+<script src="js/art-template.js"></script>
+
+
+
+
+<script>
+
+    var pageModel = {};
+    var userinfo = Comm.db('userinfo')||{};
+
+    function pageload() {
+        getPartnerInfo();
+        getSubPatners();
+    }
+
+
+
+
+    function showOrHide(i) {
+        var j = 'level';
+        var l = 'subList';
+        if ($("." + j + i).hasClass("x90")) {
+            $("." + j + i).removeClass("x90");
+            $("." + j + i).addClass("x0");
+            $("." + l + i).removeClass("hide");
+            return;
+        }
+        if ($("." + j + i).hasClass("x0")) {
+            $("." + j + i).removeClass("x0");
+            $("." + j + i).addClass("x90");
+            $("." + l + i).addClass("hide");
+            return;
+        }
+    }
+
+
+
+    function getPartnerInfo() {
+        var parms = {
+            partnerId:userinfo.myPartnerId
+        }
+        SLNetwork('get', '/api/partner/mypartner', parms, function (data) {
+            if (data.code == 1) {
+                var model = data.data;
+                $('#partnerCount').text(model.partner.partnerCount);
+                $('.partnerIncome').text(model.partner.partnerIncome / 100);
+
+            } else {
+                Comm.message(data.msg);
+            }
+        });
+    }
+
+
+    function getSubPatners() {
+        var params = {
+            partnerId: userinfo.myPartnerId
+        };
+        SLNetwork('get', '/api/partner/myrecommendpartner', params, function (data) {
+            if (data.code == 1) {
+                pageModel = data.data;
+                var list = dealWithData();
+                $('.levelList').html(template('tp_id_level',list));
+            } else {
+                Comm.message(data.msg);
+            }
+        });
+    }
+
+
+    function dealWithData() {
+
+        var tModelDic = {};
+        var levelArr = pageModel.levelList||[];
+        var dataArr = pageModel.dataList||[];
+        for (var i = 0; i < levelArr.length; i++) {
+            var model = levelArr[i];
+            if (!model) continue;
+            model.list = [];
+            var catogory = model.categroy||'';
+
+            tModelDic[catogory] = model;
+        }
+
+        for (var i = 0; i < dataArr.length; i++) {
+            var model = dataArr[i];
+            if (!model) continue;
+            var catogory = model.categroy||'';
+            tModelDic[catogory].list.push(model);
+        }
+        console.log(levelArr);
+
+        return levelArr;
+
+    }
+
+
+
+</script>
+
+
+
+<script type="text/html" id="tp_id_level">
+
+    {{each $data model i}}
+    <div class="levelCell">
+
+        <div class="flex flex_between qb bottomBorder topBorder f16" onclick="showOrHide({{i+1}});">
+            <div class="flex flex_item_center">
+                <div class="jian x90 level{{i+1}}"></div>
+                <div class=" marl15">{{model.levelName}}</div>
+            </div>
+            <div>{{model.list.length||0}}</div>
+        </div>
+
+        <div class="subList{{i+1}} bg_lgray bottomBorder hide">
+
+            {{each model.list item j}}
+            <div class="flex_between p15 bottomBorder" onclick="Comm.go('PartnershipDetails.html?spid={{item.partnerId}}&devote={{item.devoteValue}}')">
+                <div class="flex_start">
+                    <div class="marl10 marr10 imgCt_cover headIcon">
+                        <img src="{{OSS(item.face,'s')}}" onerror="app.herrorimg(this);"/>
+                    </div>
+                    <div>
+                        <div>{{item.headName}}</div>
+                        <!--<div class="f11 r">让利20%</div>-->
+                    </div>
+                </div>
+                <div class="col_lgray f12">累计贡献:￥{{priceTp(item.devoteValue||0)}}</div>
+            </div>
+            {{/each}}
+
+        </div>
+    </div>
+    {{/each}}
+
+
+
+</script>
+
+
+
+</body>
+
+</html>

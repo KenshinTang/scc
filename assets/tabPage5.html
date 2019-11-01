@@ -1,0 +1,63 @@
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width,initial-scale=1.0,user-scalable=no" name="viewport">
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+    <meta name="format-detection" content="telephone=no,email=no,adress=no"/>
+
+    <title>红包</title>
+
+    <link rel="stylesheet" href="css/g.css">
+    <link rel="stylesheet" href="css/comm.css">
+
+    <style>
+
+    </style>
+
+</head>
+
+<!--******************************************************************************-->
+<body>
+
+<header>
+    <div class="navBar bottomShadow">
+        <div class="navItemIcon marr10"></div>
+        <div class="navTitle">红包</div>
+    </div>
+</header>
+<!--******************************************************************************-->
+
+<section>
+
+    <div class="p20 bottomBorder" onclick="sendRedBag()">发红包</div>
+    <div class="p20 bottomBorder" onclick="Comm.go('redBagRList.html?type=FC')">我发出的红包</div>
+    <div class="p20 bottomBorder" onclick="Comm.go('redBagRList.html?type=SD')">收到的红包</div>
+    <div class="p20 bottomBorder" onclick="Comm.go('redBagDetail.html')">红包详情</div>
+    <div class="p20 bottomBorder" onclick="Comm.go('redBagView.html')">红包列表</div>
+
+</section>
+
+<!--******************************************************************************-->
+<footer class="shared"></footer>
+
+<script src="js/z.js"></script>
+<script src="js/g.js"></script>
+<script src="js/comm.js"></script>
+<script src="js/api.js"></script>
+
+<script>
+    var u = Comm.db('userinfo')||{};
+    function sendRedBag(){
+        if(u.partnerId == -1){
+            Comm.message('只有合伙人才能发红包');
+            return;
+        }
+        Comm.go('addNewRedBag.html')
+    }
+    Foot.init();
+</script>
+
+</body>
+
+</html>

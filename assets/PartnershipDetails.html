@@ -1,0 +1,259 @@
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width,initial-scale=1.0,user-scalable=no" name="viewport">
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+    <meta name="format-detection" content="telephone=no,email=no,adress=no"/>
+
+    <title>合伙人详情</title>
+
+    <link rel="stylesheet" href="css/g.css">
+    <link rel="stylesheet" href="css/comm.css">
+
+    <style>
+        body {
+            background-color: #F5F5F5;
+        }
+
+        .f10 {
+            font-size: 10px;
+        }
+
+        .bg_ljgxje {
+            background: url("img/tbmain/ljgxje.png");
+            background-repeat: no-repeat;
+            background-size: 16px 16px;
+            background-position: 0px center;
+            padding-left: 25px;
+        }
+
+        .ht {
+            height: 70px;
+        }
+    </style>
+
+</head>
+
+<!--******************************************************************************-->
+
+<body>
+
+<header class="">
+    <div>
+        <div class="grow1 bg_white">
+            <div class="navBar">
+                <div class="navBackIcon" onclick="Comm.close()"></div>
+                <div class=""></div>
+                <div class="navTitle">合伙人详情</div>
+            </div>
+        </div>
+    </div>
+</header>
+<!--******************************************************************************-->
+
+<section class="scroll-y f15 mart5">
+
+    <div class="pInfo"></div>
+
+    <div class="plist"></div>
+
+</section>
+
+<!--******************************************************************************-->
+<footer class="shared">
+</footer>
+
+<script src="js/z.js"></script>
+<script src="js/g.js"></script>
+<script src="js/comm.js"></script>
+<script src="js/api.js"></script>
+<script src="js/art-template.js"></script>
+
+<script>
+
+    var userinfo = Comm.db('userinfo')||{};
+    var spid = Comm.query('spid') || '',devote = Comm.query('devote')||0;
+
+    function pageload() {
+        getPartnerDetail();
+    }
+
+
+    //获取合伙人详情
+    function getPartnerDetail() {
+        var params = {
+            partnerId: spid
+        }
+        SLNetwork('get', '/api/partner/mypartner', params, function (data) {
+            if (data.code == 1) {
+                getSubPatnerGetList();
+
+                var model = data.data||{};
+                devote = model.partner.devoteValue;
+                $('.pInfo').html(template('tp_id_info',model));
+            } else {
+                Comm.message(data.msg);
+            }
+        });
+    }
+
+    //获取下属合伙人贡献记录列表
+    function getSubPatnerGetList() {
+        var api = '/api/partner/nextPartnerConsumelogList';
+        var params = {
+            partnerId1: userinfo.myPartnerId,
+            partnerId2: spid
+        }
+        SLNetwork('get', api, params, function (data) {
+            if (data.code == 1) {
+                nslog(data);
+                var model = {
+                    devote:devote,
+                    list:data.data||[],
+                }
+                $('.plist').html(template('tp_id_list',model));
+            } else {
+                Comm.message(data.msg);
+            }
+        });
+    }
+
+
+    template.defaults.imports.getType = function (getState){
+
+        switch (parseInt(getState)||0) {
+            case 1: {
+                return '充值';
+            }
+                break;
+
+            case 2: {
+                return '购买会员';
+            }
+                break;
+            case 3: {
+                return '订单信息';
+            }
+                break;
+
+            case 4: {
+                return '推荐奖励';
+            }
+                break;
+            case 5: {
+                return '佣金';
+            }
+                break;
+
+            case 6: {
+                return '平台补助';
+            }
+                break;
+
+            case 7: {
+                return '差额';
+            }
+                break;
+            case 8: {
+                return '提现';
+            }
+                break;
+            case 9: {
+                return '平台奖励';
+            }
+                break;
+            case 10: {
+                return '店铺付款';
+            }
+                break;
+            case 11: {
+                return '合伙人还加盟费';
+            }
+                break;
+            case 12: {
+                return '分润';
+            }
+                break;
+
+            default:
+                break;
+        }
+
+        return '';
+    };
+
+
+
+
+    // DEPOSIT(1,"充值"),
+    //     PURCHASE_VIP(2,"购买会员"),
+    //     CONSUMEINFO(3,"订单信息"),
+    //     REFERRAL_BONUSES(4,"推荐奖励"),
+    //     COMMISSION(5,"佣金"),
+    //     PLATFORM_SUBSIDIES(6,"平台补助"),
+    //     BALANCE(7,"差额"),
+    //     WITHDRAWA(8,"提现"),
+    //     PLATFORM_BONUSES(9,"平台奖励"),
+    //     STORE_BONUSES(10,"店铺付款"),
+    //     PARTNER_COUNT(11,"合伙人还加盟费"),
+    //     SHARE_PROFIT(12,"分润"),;
+
+</script>
+
+
+
+<script type="text/html" id="tp_id_info">
+
+    <div class="bg_white paddl15 paddr15 marb10">
+        <div class="flex_between bottomBorder">
+            <div class="mart20 marb20 flex_center">合伙人昵称</div>
+            <div class="flex_center" id="storeName">{{partner.headName||''}}</div>
+        </div>
+        <div class="flex_between bottomBorder">
+            <div class="mart20 marb20 flex_center">合伙人等级</div>
+            <div class="flex_center" id="score">{{levelName||''}}</div>
+        </div>
+        <div class="flex_between bottomBorder">
+            <div class="mart20 marb20 flex_center">手机号码</div>
+            <div class="flex_center" id="headPhone">{{sphone(phone)||''}}</div>
+        </div>
+        <div class="flex_between">
+            <div class="mart20 marb20 flex_center">注册日期</div>
+            <div class="flex_center" id="addTime">{{formatDate(partner.addTime,'Y-m-d')}}</div>
+        </div>
+    </div>
+
+</script>
+
+<script type="text/html" id="tp_id_list">
+
+    <div class="bg_white paddl15 paddr15 marb5 f16" id="list">
+        <div class="flex_between bottomBorder ">
+            <div class="mart20 marb20 flex_center f16 bold bg_ljgxje">累计贡献金额</div>
+            <div class="flex_center col_red">￥<span id="platformBonuses">{{priceTp(devote)}}</span></div>
+        </div>
+
+
+        {{each $data.list model i}}
+        <div class="bg_white mart10 marb5">
+
+            <div class="flex_between bottomBorder ht">
+                <div class="mart20 marb20">
+                    <div class=" bold">{{model.actTypeName}}</div>
+                    <div class="col_lgray f10 mart5">{{formatDate(model.addTime,'Y-m-d')}}</div>
+                </div>
+                <div class="f14 bold">+<span>{{priceTp(model.money)}}</span></div>
+            </div>
+
+        </div>
+        {{/each}}
+
+    </div>
+
+</script>
+
+
+</body>
+
+</html>

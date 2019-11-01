@@ -1,0 +1,229 @@
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width,initial-scale=1.0,user-scalable=no" name="viewport">
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="format-detection" content="telephone=no,email=no,adress=no" />
+
+    <title>商品详情</title>
+
+    <link rel="stylesheet" href="css/g.css">
+    <link rel="stylesheet" href="css/comm.css">
+    <link href="inc/side/side.css" type="text/css" rel="stylesheet" />
+    <link href="inc/mescroll/mescroll.min.css" type="text/css" rel="stylesheet" />
+
+    <style>
+        /*头部*/
+        .navTitle {
+            margin: 0px 80px;
+            background: url("img/tbhome/logo.png") center center no-repeat;
+            background-size: auto 20px;
+        }
+
+        .navItemIcon.msg {
+            background-image: url("img/tbhome/xiaoxi.png");
+        }
+
+        .position {
+            background-image: url("img/tbhome/position.png");
+        }
+
+        /*附近店铺*/
+        .threeItem {
+            min-width: 30%;
+            max-width: 32%;
+        }
+
+        .cell {
+            padding: 15px 15px;
+            background-color: white;
+            margin-bottom: 10px;
+        }
+
+        .cellRight {
+            padding: 0px 0px;
+            flex: 1;
+        }
+
+        .star {
+            width: 50px;
+            height: 10px;
+            background: url("img/tbshop/Star_n.png") repeat-x center center;
+            background-size: 10px auto;
+        }
+
+
+
+        .headItem {
+            line-height: 44px;
+            height: 44px;
+        }
+
+        .headItem.msg {
+            background-image: url("img/tbhome/xiaoxi.png");
+        }
+
+        .new {
+            background-image: url("img/tbmall/xptj.png");
+        }
+
+        .navBg {
+            height: 230px;
+            background-size: 100%;
+            background-repeat: no-repeat;
+        }
+
+        .navBackIcon {
+            margin-top: 5px;
+            margin-left: 5px;
+            height: 100%;
+            width: 35px;
+            height: 35px;
+            background: url("img/generalIcon/back_w.png");
+            background-color: rgba(0, 0, 0, 0.5);
+            background-position: center center;
+            background-repeat: no-repeat;
+            background-size: auto 16px;
+            background-position-x: 11px;
+            border-radius: 50%;
+            -moz-border-radius: 50%;
+            -webkit-border-radius: 50%;
+            float: left;
+        }
+
+        .navBar {
+            background-color: unset;
+            background-color: rgba(0, 0, 0, 0);
+            position: absolute;
+            z-index: 999;
+            top: 0;
+            left: 0;
+            right: 0;
+        }
+
+        .wrap {
+            padding-top: 100%;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .artical img{
+            max-width: 100%;
+        }
+
+    </style>
+
+</head>
+
+<!--******************************************************************************-->
+
+<body>
+
+    <header>
+
+    </header>
+    <section class="bg_white">
+
+        <div class="navBar">
+            <div class="headItem navTitles">
+                <div class="navBackIcon" onclick="Comm.close()"></div>
+            </div>
+        </div>
+        <!-- 商品图片滚动 -->
+        <div class="wrap bg_white">
+            <div class="wrap_ct">
+                <div class="mainW mainH" id="banner">
+                    <ul class="list fullImg side_ul" id="side">
+
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <!--店铺信息-->
+        <div class="bg_white cell" style="margin-bottom:0px">
+            <div class=" flex_start">
+
+                <div class="cellRight">
+                    <div id="goodsName" class="f22 bold marb15 mart10" style="word-break: break-all;"></div>
+                    <div id="synopsis" class="f14 marb30 col_lgray"></div>
+                    <div class="f14 col_lgray marb15">
+                        <span class="f12" style="color:#E30008">￥</span>
+                        <span id="price" class="f18 bold" style="color:#E30008"></span>
+                        <!-- <span>/份</span> -->
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+        <div class="bg_lgray" style="height:10px"></div>
+        <!--商品详情-->
+        <div class="bg_white cell">
+            <div class="marb15 f20 bold">商品详情:</div>
+            <div id="goodsDs" class="f14 col_lgray artical" style="line-height:25px"></div>
+            <div id="detailImgs"></div>
+        </div>
+    </section>
+
+    <script src="js/z.js"></script>
+    <script src="js/g.js"></script>
+    <script src="js/comm.js"></script>
+    <script src="js/api.js"></script>
+    <script src="inc/side/side.js"></script>
+    <script src="inc/mescroll/mescroll.min.js"></script>
+    <script src="js/art-template.js"></script>
+
+    <script type="text/javascript">
+        function pageload() {
+            var o = {};
+            o.storeGoodsId = Comm.query('storeGoodsId');
+            //获取店铺商品
+            AJAX.POST('/api/store/storeGoodsDetail', o, function (d) {
+                if (d.code == 1) {
+                    var data = d.data;
+                    for (x in data) {
+                        if (x == 'price') {
+                            $('#' + x).html(data[x]);
+                        } else if (x == 'imgs') {
+                            //获取顶部滚动广告图
+                            var arr = data[x].split(',');
+                            var banner = template('bannerTpl', arr);
+                            $('#side').html(banner);
+                            new Side('banner', true);
+                        } else if (x == 'detailImgs') {
+                            var dimg = data[x].split(',');
+                            for (var i = 0; i < dimg.length; i++) {
+                                if (dimg[i] != '') {
+                                    $('#' + x).append('<img src="' + Comm.OSS.getImgUrl(dimg[i]) +
+                                        '" style="max-width:100%;max-height:100%"/>');
+                                }
+                            }
+                        } else if (x == 'goodsDs') {
+                            var str = data[x];
+                            var xxx = /&lt;/g;
+                            var d = /&gt;/g;
+                            var k = /%26nbsp;/g;
+                            str = str.replace(xxx, '<');
+                            str = str.replace(d, '>');
+                            str = str.replace(k, ' ');
+                            $('#' + x).html(str);
+                        } else {
+                            $('#' + x).html(data[x]);
+                        }
+                    }
+                }
+            })
+        }
+    </script>
+    <!--banner滚动商品图片-->
+    <script type="text/html" id="bannerTpl">
+        {{each $data model i}}
+        <li class="imgCt_cover">
+            <img src="{{OSS(model,'l')}}" class="bannerImg" alt="" onerror="app.errorimg(this)">
+        </li>
+        {{/each}}
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,197 @@
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width,initial-scale=1.0,user-scalable=no" name="viewport">
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+    <meta name="format-detection" content="telephone=no,email=no,adress=no"/>
+
+    <title>支付完成</title>
+
+    <link rel="stylesheet" href="css/g.css">
+    <link rel="stylesheet" href="css/comm.css">
+
+    <style>
+        .status img {
+            width: 65px;
+        }
+
+        .lh45 {
+            line-height: 45px;
+        }
+
+        .clickItem {
+            border-radius: 22px;
+            border: 1px solid #E4E4E4;
+            margin-top: 20px;
+            color: #444444;
+        }
+
+        .clickItem img {
+            margin-right: 13px;
+            height: 20px;
+        }
+
+        .staticW {
+            width: 90px;
+        }
+
+        .checkShow{
+            display: none;
+        }
+
+    </style>
+
+</head>
+
+<!--******************************************************************************-->
+<body>
+
+<header>
+    <div class="navBar bottomShadow">
+        <div class="navItem mr10 col_blue" onclick="backClicked();">完成</div>
+        <div class="navTitle">支付完成</div>
+    </div>
+</header>
+<!--******************************************************************************-->
+
+<section>
+
+    <div class="center p30 status">
+        <img src="img/pay/zfucg.png" alt="">
+        <div class="f18 mart20 content">订单支付成功</div>
+    </div>
+
+    <div class="p30">
+        <div class="cellOrder checkShow">
+            <div class="flex_center border clickItem" onclick="showOrderDetail();">
+                <img src="img/tbmall/ckdd.png" alt="">
+                <div class="lh45 staticW check">查看订单</div>
+            </div>
+        </div>
+
+        <div class="cellHome checkShow">
+            <div class="flex_center border bg_trans clickItem col_white home" onclick="Comm.godismiss(4)">
+                <img src="img/tbmall/fhsy.png" alt="">
+                <div class="lh45 staticW home">返回首页</div>
+            </div>
+        </div>
+
+
+    </div>
+
+</section>
+
+<!--******************************************************************************-->
+<footer></footer>
+
+<script src="js/z.js"></script>
+<script src="js/g.js"></script>
+<script src="js/comm.js"></script>
+<script src="js/api.js"></script>
+
+<script>
+    var orderId = Comm.query('oid')||'';
+    var type = Comm.query('type')||'';
+
+
+
+    function androidback() {
+        backClicked();
+    }
+
+    function backClicked() {
+
+        switch (type) {
+            case 'online': {//app中店铺页面付款
+                Comm.close(4);
+            }
+                break;
+
+            case 'FK': {//向商家付款
+                Comm.close(4);
+            }
+                break;
+
+            case 'SK': {//向用户收款
+                Comm.close(2);
+            }
+                break;
+
+            case 'DD': {//支付订单
+                Comm.close(4);
+            }
+                break;
+
+
+            default: {
+                Comm.close();
+            }
+                break;
+        }
+    }
+
+
+    function pageload() {
+
+        switch (type) {
+            case 'online': {//app中店铺页面付款
+                var model = {
+                    title:'支付完成',
+                }
+                initUI(model);
+            }
+                break;
+
+            case 'FK': {//向商家付款
+                var model = {
+                    title:'支付完成',
+                }
+                initUI(model);
+            }
+                break;
+
+            case 'SK': {//向用户收款
+                var model = {
+                    title:'收款完成',
+                }
+                initUI(model);
+            }
+                break;
+
+            case 'DD': {//支付订单
+                $('.checkShow').show();
+                addNeedRefPage('orderList',{oid:orderId,type:1})
+            }
+                break;
+
+
+            default: {
+
+            }
+                break;
+        }
+
+    }
+
+
+    function initUI(m) {
+        if (!m) return;
+        $('.navTitle').text(m.title||'');
+        $('.content').text(m.title||'');
+        $('.check').text(m.check||'');
+        $('.home').text(m.home||'');
+    }
+
+
+    function showOrderDetail() {
+        Comm.go('orderDetail.html?oid='+orderId);
+    }
+
+
+
+</script>
+
+</body>
+
+</html>

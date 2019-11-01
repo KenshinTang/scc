@@ -1,0 +1,95 @@
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width,initial-scale=1.0,user-scalable=no" name="viewport">
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+    <meta name="format-detection" content="telephone=no,email=no,adress=no"/>
+
+    <title></title>
+
+    <link rel="stylesheet" href="css/g.css">
+    <link rel="stylesheet" href="css/comm.css">
+
+    <style>
+        img{
+            max-width: 100% !important;
+            height: auto !important;
+            object-fit: contain;
+        }
+    </style>
+
+</head>
+
+<!--******************************************************************************-->
+<body>
+
+<header>
+    <div class="navBar bottomShadow">
+        <div class="navBackIcon" onclick="Comm.close()"></div>
+        <div class="navTitle">广告</div>
+    </div>
+</header>
+<!--******************************************************************************-->
+
+<section class="p10 scroll-y">
+
+
+
+
+
+
+
+</section>
+
+<!--******************************************************************************-->
+<footer></footer>
+
+<script src="js/z.js"></script>
+<script src="js/g.js"></script>
+<script src="js/comm.js"></script>
+<script src="js/api.js"></script>
+<script src="js/art-template.js"></script>
+
+<script>
+
+    var rid = Comm.query('rid');
+    function pageload(){
+        getArticalWithAid(rid);
+    }
+
+    function getArticalWithAid(aid) {
+        var params = {
+            rpacketId:aid
+        }
+        Comm.loading(true);
+        SLNetwork('get','/api/rpacket/rpacketAdvertDetail',params,function (data) {
+            Comm.loading();
+            if (data.code==1) {
+                nslog(data);
+                var model = data.data||{};
+                if(model&&model.imgs) model.imgList=model.imgs.split(',');
+                $('section').html(template('tp_id_content',model));
+            } else {
+                Comm.message(data.msg);
+            }
+        });
+    }
+
+</script>
+
+<script type="text/html" id="tp_id_content">
+    <div class="">
+        <div class="f20 bold pad_v10">{{title}}</div>
+        <div class="">{{ds}}</div>
+        <div class="imgContain">
+            {{each imgList model i}}
+            <img src="{{OSS(model,'')}}" alt="" onerror="app.errorimg(this)">
+            {{/each}}
+        </div>
+    </div>
+</script>
+
+</body>
+
+</html>

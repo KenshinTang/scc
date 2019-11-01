@@ -1,0 +1,221 @@
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width,initial-scale=1.0,user-scalable=no" name="viewport">
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+    <meta name="format-detection" content="telephone=no,email=no,adress=no"/>
+
+    <title>优惠券</title>
+
+    <link rel="stylesheet" href="css/g.css">
+    <link rel="stylesheet" href="css/comm.css">
+
+    <style>
+        .checkBox {
+            background: url("img/address/uncheck.png") center center no-repeat;
+            background-size: 15px;
+        }
+
+        .active > .checkBox {
+            background-image: url("img/address/sel_yes.png");
+        }
+    </style>
+
+</head>
+
+<!--******************************************************************************-->
+
+<body>
+
+<header>
+    <div class="navBar bottomShadow">
+        <div class="navBackIcon" onclick="Comm.close()"></div>
+        <div class="navTitle">选择优惠券</div>
+    </div>
+</header>
+<!--******************************************************************************-->
+
+<section class="bg_lgray">
+
+    <div class="meauList">
+
+    </div>
+
+</section>
+
+<!--******************************************************************************-->
+<footer></footer>
+
+<script src="js/z.js"></script>
+<script src="js/g.js"></script>
+<script src="js/comm.js"></script>
+<script src="js/api.js"></script>
+<script src="js/art-template.js"></script>
+
+<script>
+    var type = Comm.query('type');
+    var pageData = Comm.db('PData');
+    var uinfo = pageData.uinfo;
+    var ginfo = pageData.ginfo;
+    var sureOrderM = pageData.sureOrderM;
+
+    function pageload() {
+        if (!type) {
+            return;
+        }
+        pageData.type = type;
+
+        var model = {
+            mine: 0,
+            canUse: 0,
+            type: type,
+            isSel: false,
+        }
+
+        if (type == 1) {
+            model.mine = uinfo.ticket;
+            model.canUse = getCanUse(type);
+            model.isSel = (sureOrderM.ticket >= 1) ? true : false;
+        } else if (type == 2) {
+            model.mine = uinfo.packets;
+            model.canUse = getCanUse(type);
+            model.isSel = (sureOrderM.packets >= 1) ? true : false;
+            pageData.sureOrderM.packetPrice = model.isSel ? model.canUse : 0;
+        }
+
+        $('.meauList').html(template('tp_id', model));
+        registerMeauClick();
+    }
+
+
+    function registerMeauClick() {
+        meauChooseClick('.meauList', '.cellContent', function (o, idx) {
+            setDeduction(idx);
+        })
+    }
+
+
+    //设置优惠券
+    function setDeduction(use) {
+
+        if (type == 1) {
+            pageData.sureOrderM.ticket = use ? 2 : 0;
+            pageData.sureOrderM.packets = pageData.sureOrderM.packets ? 1 : 0;
+
+            pageData.sureOrderM.ticketPrice = use ? getCanUse(type) : 0;
+            pageData.sureOrderM.packetPrice = pageData.sureOrderM.packets ? getCanUse(2) : 0;
+
+        } else if (type == 2) {//红包
+
+            pageData.sureOrderM.packets = use ? 2 : 0;
+            pageData.sureOrderM.ticket = pageData.sureOrderM.ticket ? 1 : 0;
+
+            pageData.sureOrderM.packetPrice = use ? getCanUse(type) : 0;
+            pageData.sureOrderM.ticketPrice = pageData.sureOrderM.ticket ? getCanUse(1) : 0;
+        }
+
+
+
+
+
+        // if (type == 1) {
+        //     pageData.sureOrderM.ticket = use ? (pageData.sureOrderM.packets ? 2 : 1) : 0;
+        //     pageData.sureOrderM.packets = pageData.sureOrderM.packets ? 1 : 0;
+        //     pageData.sureOrderM.ticketPrice = use ? canUse : 0;
+        //     pageData.sureOrderM.packetPrice = getCanUse(2);
+        // } else if (type == 2) {
+        //     pageData.sureOrderM.packets = use ? (pageData.sureOrderM.ticket ? 2 : 1) : 0;
+        //     pageData.sureOrderM.ticket = pageData.sureOrderM.ticket ? 1 : 0;
+        //     pageData.sureOrderM.packetPrice = use ? canUse : 0;
+        //     pageData.sureOrderM.ticketPrice = getCanUse(1);
+        // }
+
+        Comm.db('PData', pageData);
+
+        console.log(pageData.sureOrderM.ticket + 'ticket' + pageData.sureOrderM.ticketPrice);
+        console.log(pageData.sureOrderM.packets + 'packets' + pageData.sureOrderM.packetPrice);
+        // return;
+
+        Comm.close();
+    }
+
+
+    template.defaults.imports.showTypeText = function (type) {
+        switch (parseInt(type)) {
+            case 1: {
+                return '现金';
+            }
+                break;
+            case 2: {
+                return '红包';
+            }
+                break;
+
+            default:
+                return '';
+                break;
+
+        }
+    };
+
+
+    //获取小值
+    function getMinNum(a, b) {
+        if (a > b) {
+            return b;
+        } else {
+            return a;
+        }
+    }
+
+    function getCanUse(t) {
+        var pModel = pageData;
+
+        var a = 0, b = 0, u = 0;
+        if (t == 1) {
+            var limit = pModel.sureOrderM.price - (pModel.sureOrderM.packetPrice || 0);//最多可以抵扣的金额
+            a = pModel.uinfo.ticket;//用户现有券 数额
+            b = pModel.ginfo.ticket * pModel.sureOrderM.num;//商品可抵扣券 数额
+
+            var minTickt = getMinNum(a, b);
+
+            return getMinNum(minTickt, limit) || 0;
+        } else if (t == 2) {
+
+            var limit = pModel.sureOrderM.price - (pModel.sureOrderM.ticketPrice || 0);//最多可以抵扣的金额
+            a = pModel.uinfo.packets;//用户现有券 数额
+            b = pModel.ginfo.packets * pModel.sureOrderM.num;//商品可抵扣券 数额
+
+            var minTickt = getMinNum(a, b);
+            return getMinNum(minTickt, limit) || 0;
+        }
+        return 0;
+    }
+
+
+</script>
+
+
+<script type="text/html" id="tp_id">
+
+    <div class="cellContent bg_white m10 br3 {{if !isSel}}active{{/if}}">
+        <div id="mname" class="pl10">不使用{{showTypeText(type)}}券</div>
+        <div class="baseWH checkBox"></div>
+    </div>
+
+    <div class="cellContent bg_white m10 br3 {{if isSel}}active{{/if}}">
+        <div>
+            <div class="pl10">使用<span class="col_red">{{priceTp(canUse)}}元</span>红包券</div>
+            <div class="pl10 f12 mt10 col_sub">我的{{showTypeText(type)}}券{{priceTp(mine)}}元，本次最多使用{{priceTp(canUse)}}元
+            </div>
+        </div>
+        <div class="baseWH checkBox"></div>
+    </div>
+
+</script>
+
+
+</body>
+
+</html>

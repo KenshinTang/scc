@@ -1,0 +1,312 @@
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width,initial-scale=1.0,user-scalable=no" name="viewport">
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="format-detection" content="telephone=no,email=no,adress=no" />
+
+    <title>设置或修改支付密码</title>
+
+    <link rel="stylesheet" href="css/g.css">
+    <link rel="stylesheet" href="css/comm.css">
+    <link rel="stylesheet" href="css/zhifu.css">
+
+    <style>
+        .bg_keyboard {
+            background-color: #D1D2D6;
+        }
+
+        section {
+            position: relative;
+        }
+
+        .sureBtn {
+            margin-top: 30px;
+        }
+
+        .mt80 {
+            margin-top: 80px;
+        }
+
+        .kCss {
+            color: #999999;
+            padding-bottom: 10px;
+        }
+    </style>
+
+</head>
+
+<!--******************************************************************************-->
+
+<body>
+
+    <header>
+        <div class="navBar">
+            <div class="navBackIcon" onclick="model.clear();Comm.close();"></div>
+            <div class="navTitle">设置支付密码</div>
+        </div>
+    </header>
+    <!--******************************************************************************-->
+
+    <section class="bg_white">
+
+        <div class="ftc_wzsf" style="display: block;">
+
+            <div id="k" class="srzfmm_box">
+
+                <div class="scroll-y mainH mainW">
+
+                    <ul class="mm_box mt80">
+                        <li data="" class=""></li>
+                        <li data="" class=""></li>
+                        <li data="" class=""></li>
+                        <li data="" class=""></li>
+                        <li data="" class=""></li>
+                        <li data="" class=""></li>
+                    </ul>
+
+
+                    <!--<div class="bg_trans lh50 br5 m10 center col_white f18 sureBtn" onclick="submitSurePay();">确认</div>-->
+
+                    <!--<div class="bg_trans lh50 br5 m10 center col_white f18 sureBtn" onclick="submitSurePay();">下一步</div>-->
+
+
+                </div>
+
+            </div>
+
+
+            <div class="numb_box bg_keyboard" style="display: none;">
+                <div class="xiaq_tb" style="background-color: #f5f5f5;">
+                    <img src="img/generalIcon/jftc_14.jpg" height="10">
+                </div>
+                <ul class="nub_ggg">
+                    <li><a href="javascript:void(0);" class="zf_num">1</a></li>
+                    <li><a href="javascript:void(0);" class="zj_x zf_num">2</a></li>
+                    <li><a href="javascript:void(0);" class="zf_num">3</a></li>
+                    <li><a href="javascript:void(0);" class="zf_num">4</a></li>
+                    <li><a href="javascript:void(0);" class="zj_x zf_num">5</a></li>
+                    <li><a href="javascript:void(0);" class="zf_num">6</a></li>
+                    <li><a href="javascript:void(0);" class="zf_num">7</a></li>
+                    <li><a href="javascript:void(0);" class="zj_x zf_num">8</a></li>
+                    <li><a href="javascript:void(0);" class="zf_num">9</a></li>
+                    <li><a href="javascript:void(0);" class="zf_empty">清空</a></li>
+                    <li><a href="javascript:void(0);" class="zj_x zf_num">0</a></li>
+                    <li><a href="javascript:void(0);" class="zf_del">删除</a></li>
+                </ul>
+            </div>
+            <div class="hbbj"></div>
+        </div>
+
+
+    </section>
+
+    <!--******************************************************************************-->
+    <footer></footer>
+
+    <script src="js/z.js"></script>
+    <script src="js/g.js"></script>
+    <script src="js/comm.js"></script>
+    <script src="js/api.js"></script>
+    <script src="inc/ewm/jquery-1.11.1.js"></script>
+
+    <script>
+        function pageload() {
+            var c = Comm.db('userinfo');
+            if (Comm.db('forgetByPhone') == 1) {
+                model.psdCount = 1;
+                model.initialiseModifyUI();
+            } else {
+                if (c.payPassword == 0) {
+                    model.initialiseSetUI();
+                } else {
+                    model.initialiseOldUI();
+                }
+            }
+            //出现浮动层
+            $(".ljzf_but").click(function () {
+                $(".ftc_wzsf").show();
+            });
+            //关闭浮动
+            $(".close").click(function () {
+                $(".ftc_wzsf").hide();
+                $(".mm_box li").removeClass("mmdd");
+                $(".mm_box li").attr("data", "");
+                i = 0;
+            });
+            //数字显示隐藏
+            $(".xiaq_tb").click(function () {
+                $(".numb_box").slideUp(500);
+                setTimeout(function () {
+                    $('#kk').removeClass('hide');
+                }, 500);
+            });
+            $(".mm_box").click(function () {
+                $('#kk').addClass('hide');
+                $(".numb_box").slideDown(500);
+            });
+            //----
+            var i = 0;
+            $(".nub_ggg li .zf_num").click(function () {
+                if (i < 6) {
+                    $(".mm_box li").eq(i).addClass("mmdd");
+                    $(".mm_box li").eq(i).attr("data", $(this).text());
+                    i++
+                    if (i == 6) {
+                        setTimeout(function () {
+                            var data = "";
+                            $(".mm_box li").each(function () {
+                                data += $(this).attr("data");
+                            });
+                            //第一次设置密码
+                            if (c.payPassword != 1) {//未设置密码 第一次
+                                c.payPassword = data;
+                                AJAX.POST('/api/customer/updateCustomer', c, function (a) {
+                                    if (a.code == 1) {
+                                        Comm.message('保存成功');
+                                        var tUinfo = Comm.db('userinfo');
+                                        tUinfo.payPassword = 1;
+                                        saveUserinfo(tUinfo);
+                                        setTimeout(function () {
+                                            if (Comm.query('type') == 'payset') {
+                                                Comm.close();
+                                            } else {
+                                                Comm.gotop();
+                                            }
+                                        }, 300);
+                                    } else {
+                                        Comm.message('保存失败');
+                                    }
+                                });
+
+                            } else {
+                                if (model.psdCount == 0) {
+                                    var o = {};
+                                    model.oldPwd = data;
+                                    o.oldPayPassword = model.oldPwd;
+                                    AJAX.POST('/api/customer/checkOldPayPwd', o, function (a) {
+                                        if (a.code == 0) {
+                                            Comm.message(a.msg);
+                                            return;
+                                        }
+                                        $('#kk').remove();
+                                        model.initialiseModifyUI();
+                                        model.psdCount++;
+                                        $(".mm_box li").removeClass("mmdd");
+                                        $(".mm_box li").attr("data", "");
+                                        i = 0;
+                                    })
+                                } else if (model.psdCount == 1) {
+                                    model.initialiseModifyUIQue();
+                                    model.psdCount++;
+                                    model.firstPwd = data;
+                                    $(".mm_box li").removeClass("mmdd");
+                                    $(".mm_box li").attr("data", "");
+                                    i = 0;
+                                } else {
+                                    if (model.firstPwd != data) {
+                                        Comm.message('两次输入的密码不一致，请重新输入');
+                                        setTimeout(function () {
+                                            window.location.reload();
+                                        }, 600);
+                                    } else {
+                                        if (Comm.db('forgetByPhone') == 1) {
+                                            var o = {};
+                                            o.phone = Comm.db('userinfo').phone;
+                                            o.payPassword = model.firstPwd;
+                                            AJAX.POST('/api/customer/updatePayPasswordByPhone', o,
+                                                function (
+                                                    a) {
+                                                    if (a.code == 1) {
+                                                        Comm.message('修改成功');
+                                                        setTimeout(function () {
+                                                            model.clear();
+                                                            Comm.gotop()
+                                                        }, 600);
+                                                    } else {
+                                                        Comm.message(a.msg);
+                                                        setTimeout(function () {
+                                                            window.location.reload();
+                                                        }, 600);
+                                                    }
+                                                });
+                                        } else {
+                                            var o = {};
+                                            o.oldPayPassword = model.oldPwd;
+                                            o.newPayPassword = model.firstPwd;
+                                            AJAX.POST('/api/customer/updatePayPassword', o, function (
+                                                a) {
+                                                if (a.code == 1) {
+                                                    Comm.message('修改成功');
+                                                    setTimeout(function () {
+                                                        Comm.gotop()
+                                                    }, 600);
+                                                } else {
+                                                    Comm.message(a.msg);
+                                                    setTimeout(function () {
+                                                        window.location.reload();
+                                                    }, 600);
+                                                }
+                                            });
+                                        }
+                                    }
+                                }
+                            }
+                        }, 100);
+                    };
+                }
+            });
+
+            $(".nub_ggg li .zf_del").click(function () {
+                if (i > 0) {
+                    i--
+                    $(".mm_box li").eq(i).removeClass("mmdd");
+                    $(".mm_box li").eq(i).attr("data", "");
+                }
+            });
+
+            $(".nub_ggg li .zf_empty").click(function () {
+                console.log(12312321);
+                $(".mm_box li").removeClass("mmdd");
+                $(".mm_box li").attr("data", "");
+                i = 0;
+            });
+        }
+
+        var model = {
+            oldPwd: '',
+            firstPwd: '',
+            psdCount: 0,
+            //设置支付密码
+            initialiseSetUI: function() {
+                $('.navTitle').text('设置支付密码');
+
+            },
+            //修改支付密码(1)
+            initialiseModifyUI: function() {
+                $('.navTitle').text('修改支付密码');
+            },
+            //修改支付密码(2)
+            initialiseModifyUIQue: function() {
+                $('.navTitle').text('确认支付密码');
+            },
+            //输入原密码
+            initialiseOldUI: function() {
+                $('.navTitle').text('输入旧密码');
+                $('footer').append(
+                    '<div id="kk" class="kCss flex_center bg_white" onclick="model.forgetPwd()">忘记旧密码?</div>');
+                Comm.resizeSection();
+            },
+            forgetPwd: function() {
+                Comm.go('forgetPwd.html');
+            },
+            clear: function() {
+                Comm.db('forgetByPhone', null)
+            }
+        }
+    </script>
+
+</body>
+
+</html>

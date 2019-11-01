@@ -1,0 +1,453 @@
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width,initial-scale=1.0,user-scalable=no" name="viewport">
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+    <meta name="format-detection" content="telephone=no,email=no,adress=no"/>
+
+    <title>售后详情</title>
+
+    <link rel="stylesheet" href="css/g.css">
+    <link rel="stylesheet" href="css/comm.css">
+
+    <style>
+        .courierNum {
+            height: 20px;
+            line-height: 20px;
+        }
+
+        .addressH {
+            /*height: 60px;*/
+        }
+
+        .addressH img {
+            width: 15px;
+        }
+
+        .iconContain {
+            width: 90px;
+            height: 90px;
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .endTest {
+            position: absolute;
+            bottom: 0px;
+        }
+
+        .optionItem {
+            border: 1px solid #DCDCDC;
+            width: 80px;
+            line-height: 30px;
+            border-radius: 15px;
+            text-align: center;
+            margin-right: 10px;
+        }
+    </style>
+
+</head>
+
+<!--******************************************************************************-->
+
+<body>
+
+<header>
+    <div class="navBar bottomShadow">
+        <div class="navBackIcon" onclick="Comm.close()"></div>
+        <div class="navTitle">售后详情</div>
+    </div>
+</header>
+<!--******************************************************************************-->
+
+<section class="bg_lgray">
+
+    <div class="content"></div>
+
+
+</section>
+
+<!--******************************************************************************-->
+<footer>
+    <div class="bg_trans marl15 marr15 marb10 br5 col_white center lh50 f18 hide submit" onclick="addTransNo();">提交
+    </div>
+</footer>
+
+<script src="js/z.js"></script>
+<script src="js/g.js"></script>
+<script src="js/comm.js"></script>
+<script src="js/api.js"></script>
+<script src="js/area.js"></script>
+<script src="js/dict.js"></script>
+<script src="js/art-template.js"></script>
+
+<script>
+    var userinfo = Comm.db('userinfo') || {};
+    var oid = Comm.query('oid');
+    var timer = null, updataFlag = false, pageModel = null;
+
+
+    function pageload() {
+        Area.init();
+        GDict.init(function () {
+            getNetDetail();
+        });
+    }
+
+
+    //获取售后详情
+    function getNetDetail(update) {
+        if (update && updataFlag) return;
+        var params = {
+            customerId: userinfo.customerId,
+            ordersId: oid,
+        }
+        Comm.loading(1);
+        SLNetwork('get', '/api/ordersaftersale/afterSaleDetail', params, function (data) {
+            Comm.loading();
+            if (data.code == 1) {
+                if (update) updataFlag = true;
+                var model = data.data || {};
+                pageModel = model;
+                if (model.state == 2) {
+                    $('.submit').removeClass('hide');
+                } else {
+                    $('.submit').addClass('hide');
+                }
+                getLimitTime(model);
+                Comm.resizeSection();
+                var html = template('tp_id', model);
+                $('.content').html(html);
+            } else {
+                Comm.message(data.msg);
+            }
+        });
+    }
+
+
+    //获取售后有效时间
+    function getLimitTime(model) {
+
+        if (model.state == 1 || model.state == 2 || model.state == 4) {
+
+            var timelimit = new Date(iosTime(model.autoTime)).getTime() - new Date(iosTime(model.nowTime)).getTime();
+            limitTime = timelimit / 1000;
+
+            if (limitTime > 0) {
+                countDown(limitTime);
+            } else {
+                checkTimeOutNet();
+            }
+        }
+
+    }
+
+
+    //买家寄出商品
+    function addTransNo() {
+        var no = $('#transNo').val() || '';
+        if (!no) {
+            Comm.message('请填写单号');
+            return;
+        }
+        var params = {
+            customerId: userinfo.customerId,
+            ordersId: oid,
+            afterSaleNo: no,
+        }
+        SLNetwork('post', '/api/ordersaftersale/afterSaleNo', params, function (data) {
+            if (data.code == 1) {
+                nslog(data);
+                getNetDetail();
+            } else {
+                Comm.message(data.msg);
+            }
+        });
+    }
+
+
+    //撤销申请
+    function undo(oid, uid) {
+        var params = {
+            customerId: uid || '',
+            ordersId: oid || '',
+        }
+        Comm.loading('正在处理...');
+        SLNetwork('post', '/api/ordersaftersale/withdrawn', params, function (data) {
+            Comm.loading();
+            if (data.code == 1) {
+                addNeedRefPage('afterSalesList');
+                Comm.close();
+            } else {
+                Comm.message(data.msg);
+            }
+        });
+    }
+
+
+    //带天数的倒计时
+    function countDown(times) {
+
+        timer = null;
+        timer = setInterval(function () {
+            var day = 0,
+                hour = 0,
+                minute = 0,
+                second = 0; //时间默认值
+            if (times > 0) {
+                day = Math.floor(times / (60 * 60 * 24));
+                hour = Math.floor(times / (60 * 60)) - (day * 24);
+                minute = Math.floor(times / 60) - (day * 24 * 60) - (hour * 60);
+                second = Math.floor(times) - (day * 24 * 60 * 60) - (hour * 60 * 60) - (minute * 60);
+            }
+            if (day <= 9) day = '0' + day;
+            if (hour <= 9) hour = '0' + hour;
+            if (minute <= 9) minute = '0' + minute;
+            if (second <= 9) second = '0' + second;
+            //
+
+            var text = (day + "天:" + hour + ":" + minute + " " + second);
+
+            $('.limitTime').text('剩余' + text);
+            times--;
+
+            if (times <= 0) {
+                timeOut();
+            }
+
+        }, 1000);
+        console.log('时间')
+        if (times <= 0) {
+            timeOut();
+        }
+    }
+
+
+    function timeOut() {
+        clearInterval(timer);
+        $('.submit').addClass('hide');
+        $('.limitTime').text('当前已过操作时间');
+        addNeedRefPage('afterSalesList');
+        checkTimeOutNet();
+        Comm.resizeSection();
+    }
+
+
+    function checkTimeOutNet() {
+        if (updataFlag) {
+            setTimeout(function () {
+                updataFlag = false;
+            }, 5000);
+            return;
+        }
+        var params = {
+            ordersAfterSaleId: pageModel.ordersAfterSaleId || '',
+        }
+
+        SLNetwork('post', '/api/ordersAfterSale/overTimeAgree', params, function (data) {
+            if (data.code == 1) {
+                getNetDetail(true);
+            } else {
+                Comm.message(data.msg);
+            }
+        });
+    }
+
+
+    template.defaults.imports.getType = function (type) {
+
+
+        switch (parseInt(type)) {
+            case 1: {
+                return '退货';
+            }
+                break;
+            case 2: {
+                return '换货';
+            }
+                break;
+
+            default:
+                return '';
+                break;
+
+        }
+    };
+
+
+    template.defaults.imports.getReson = function (tid) {
+        if (!parseInt(tid)) return '';
+        var dd = GDict.getItem(tid) || {};
+        return dd.dictname;
+    }
+
+
+</script>
+
+
+<script type="text/html" id="tp_id">
+    <!--
+1:待审核
+2：第一次审核成功
+3:审核失败
+4:买家已上传物流
+5:商家已收到获取
+6:已处理
+10:已撤销
+-->
+    <div class="lh25">
+        {{if state == 1}}
+
+
+        <div class="p15">
+            <div class="col_red">您的{{getType(type)}}申请已提交，请耐心等待商家处理</div>
+            <div class="f12 col_sub999 limitTime baseWH"></div>
+        </div>
+        <div class="p15 flex_between bg_white">
+            <div class="bold"></div>
+            <div class="optionItem f12" onclick="undo('{{ordersId}}','{{customerId}}');">撤销申请</div>
+        </div>
+
+        {{else if state == 2}}
+
+        <div class="p15">
+            <div class="col_red">平台已经同意您的{{getType(type)}}申请，请尽快寄出商品</div>
+            <div class="f12 col_sub999 limitTime baseWH"></div>
+        </div>
+        <div class="p15 flex_start bg_white">
+            <div class="bold">填写单号</div>
+            <input type="text" placeholder="请录入快递单号" class="courierNum ml10 f14" id="transNo">
+        </div>
+
+        <!--地址信息-->
+        <div class="flex_start p15 mt10 bg_white">
+            <div class="addressH"><img src="img/order/dizh.png" alt="" width="15px"></div>
+            <div class="pl10 pr10">
+                <div class="bold">
+                    收货人:
+                    <span>{{customerName||''}}</span>
+                    <span>{{customerPhone||''}}</span>
+                </div>
+
+                <div class="col_sub mt5">
+                    地址:
+                    {{getFullName(cityId)}}
+                    <span> {{customerAddr||''}}</span>
+                </div>
+
+            </div>
+        </div>
+
+
+        {{else if state == 3}}
+
+        <div class="p15">
+            <div class="col_red">您的{{getType(type)}}申请审核失败</div>
+            <div class="f12 col_sub999">{{formatDate(dealTime,'Y-m-d')}}</div>
+        </div>
+
+        <div class="p15 bg_white">
+            <div class="col_title">失败原因</div>
+            <div class="f12 col_sub999">{{loserReason||''}}</div>
+        </div>
+
+        {{else if state == 4}}
+
+        <div class="p15">
+            <div class="col_red">您的{{getType(type)}}物流信息已提交，等待商家确认</div>
+            <!--<div class="f12 col_sub999">{{formatDate(dealTime,'Y-m-d')}}</div>-->
+            <div class="f12 col_sub999 limitTime baseWH"></div>
+        </div>
+
+        {{else if state == 5}}
+
+        <div class="p15">
+            <div class="col_red">商家已收到货品，将很快处理，请耐心等待</div>
+            <div class="f12 col_sub999">{{formatDate(dealTime,'Y-m-d')}}</div>
+        </div>
+
+        {{else if state == 6}}
+
+        <div class="p15">
+            <div class="col_red">{{getType(type)}}成功</div>
+            <div class="f12 col_sub999">{{formatDate(dealTime,'Y-m-d')}}</div>
+        </div>
+
+        {{if type == 1}}
+        <div class="p15 bg_white">
+            <div class="col_title">退款金额: <span class="col_red f18">¥{{priceTp(refund||0)}}</span></div>
+            <div class="f12 col_red">商品金额已退回至账户余额</div>
+        </div>
+        {{else if type == 2}}
+        <div class="p15 bg_white">
+            <div class="col_title">您的换货订单号是</div>
+            <div class="f12 col_sub999 baseWH">{{receiptsNo||''}}</div>
+        </div>
+        {{/if}}
+
+        {{else if state == 10}}
+
+        <div class="p15">
+            <div class="col_red">已撤销</div>
+            <div class="f12 col_sub999">{{formatDate(dealTime,'Y-m-d')}}</div>
+        </div>
+
+        {{/if}}
+    </div>
+
+
+    <!--商品信息-->
+    <div>
+        <div class="p15 mt10 bold bg_white">
+            {{getType(type)}}信息
+        </div>
+
+        <div class="p15 mt5 bg_white">
+
+            <div class="flex f16 pad10">
+                <div class="br3 iconContain imgContain br3">
+                    <img src="{{OSS(faceImg,'s')}}" onerror="app.errorimg(this)">
+                </div>
+
+                <div class="column paddl10 grow1 relative" style="min-height: 75px;width:100%;">
+
+                    <div class="f15 lh20 wordW2">{{goodsName||''}}</div>
+                    <div class="flex">
+                        <div class=" f12 baseWH mt5 flex_between col_sub">{{specText||''}}</div>
+                        <div class=" f12 baseWH mt5 flex_between col_sub marl10">数量:{{goodsCount||''}}</div>
+                    </div>
+                    <div class="coloreb3 f16 endTest w50 bold">{{priceTp(price*goodsCount||0)}}</div>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+
+    <div class="p15 bg_white mt5">
+        <div class="flex_start lh30">
+            <div class="col_sub999">售后原因:</div>
+            <div class="col_title ml5">{{getReson(returnReason)}}</div>
+        </div>
+
+        <div class="flex_start lh30">
+            <div class="col_sub999">申请时间:</div>
+            <div class="col_title ml5">{{formatDate(addTime,'Y-m-d')}}</div>
+        </div>
+
+        <div class="flex_start lh30">
+            <div class="col_sub999">{{getType(type)}}编号:</div>
+            <div class="col_title ml5">{{exceptionNo||''}}</div>
+        </div>
+
+    </div>
+
+
+</script>
+
+
+</body>
+
+</html>

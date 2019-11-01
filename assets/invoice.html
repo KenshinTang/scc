@@ -1,0 +1,196 @@
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width,initial-scale=1.0,user-scalable=no" name="viewport">
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+    <meta name="format-detection" content="telephone=no,email=no,adress=no"/>
+
+    <title>发票</title>
+
+    <link rel="stylesheet" href="css/g.css">
+    <link rel="stylesheet" href="css/comm.css">
+
+    <style>
+
+        .invoiceCt{
+            color: #222222;
+
+        }
+        .descrip{
+            width: 100px;
+        }
+
+        .option{
+            width: 50%;
+            background-image: url("img/generalIcon/agree_n.png");
+            font-size: 13px;
+        }
+        .active.option{
+            background-image: url("img/generalIcon/agree_y.png");
+        }
+
+        .desValue{
+            padding-right: 10px;
+        }
+
+        .desValue input{
+            width: 100%;
+            height: 40px;
+            font-size: 14px;
+        }
+
+    </style>
+
+</head>
+
+<!--******************************************************************************-->
+<body>
+
+<header>
+    <div class="navBar bottomShadow">
+        <div class="navBackIcon" onclick="Comm.close()"></div>
+        <div class="navTitle">申请开票</div>
+    </div>
+</header>
+<!--******************************************************************************-->
+
+<section class="f15 bg_lgray">
+
+    <div class="invoiceCt">
+        <div class="flex_between lh50 bottomBorder paddl20 bg_white">
+            <div class="descrip ">发票类型</div>
+            <div class="desValue flex1">电子增值税普通发票</div>
+        </div>
+
+        <div class="flex_between lh50 bottomBorder paddl20 bg_white">
+            <div class="descrip ">发票金额</div>
+            <div class="desValue flex1 price"></div>
+        </div>
+
+        <div class="flex_between lh50 bottomBorder paddl20 bg_white">
+            <div class="descrip ">发票抬头</div>
+            <div class="desValue flex1 choose flex_between">
+                <div class="option lIcon">个人</div>
+                <div class="option lIcon">单位</div>
+            </div>
+        </div>
+
+        <div class="flex_between lh50 bottomBorder paddl20 bg_white singleHide">
+            <div class="descrip ">企业名称</div>
+            <div class="desValue flex1">
+                <input id="company" type="text" placeholder="必填，请填入企业名称">
+            </div>
+        </div>
+
+        <div class="flex_between lh50 bottomBorder paddl20 bg_white singleHide">
+            <div class="descrip ">企业税号</div>
+            <div class="desValue flex1">
+                <input id="taxNum" type="text" placeholder="必填">
+            </div>
+        </div>
+
+        <div class="flex_between lh50 bottomBorder paddl20 mt10 bg_white">
+            <div class="descrip ">邮箱地址</div>
+            <div class="desValue flex1">
+                <input id="email" type="email" placeholder="必填">
+            </div>
+        </div>
+
+    </div>
+
+    <div class="notice col_sub999 f13 p20">
+        温馨提示：应国家税务局要求，您所开具增值税电子发票，其法律效力、基本用途、基本使用规定等于税务机关监制的增值税普通发票相同。
+    </div>
+
+
+
+
+</section>
+
+<!--******************************************************************************-->
+<footer>
+    <div class="bg_trans marl15 marr15 marb10 br5 col_white center lh50 f18" onclick="submit();">提交申请</div>
+</footer>
+
+<script src="js/z.js"></script>
+<script src="js/g.js"></script>
+<script src="js/comm.js"></script>
+<script src="js/api.js"></script>
+
+<script>
+
+    var p = Comm.query('p')||'',oid = Comm.query('oid');
+    var requestParms = {
+        ordersId:oid,
+    };
+
+
+    function pageload() {
+        $('.price').text(app.price(p) + '元');
+    }
+
+
+
+    meauChooseClick('.choose','.option',function (o,idx) {
+        requestParms.head = idx + 1;
+        if (idx == 0){
+            $('.singleHide').addClass('hide');
+        } else {
+            $('.singleHide').removeClass('hide');
+        }
+    });
+
+    
+    function submit() {
+        requestParms.company = $('#company').val();
+        requestParms.taxNum = $('#taxNum').val();
+        requestParms.email = $('#email').val();
+
+        if (!requestParms.company && requestParms.head == 2){
+            Comm.message('请填写企业名称');
+            return;
+        } else if (!requestParms.taxNum && requestParms.head == 2){
+            Comm.message('请填写税号');
+            return;
+        } else if (!requestParms.email){
+            Comm.message('请填写邮箱地址');
+            return;
+        }
+
+
+        var emaileReg = /^([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+@([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+\.[a-zA-Z]{2,3}$/;
+        var skip = emaileReg.test(requestParms.email);
+        if (!skip) {
+            Comm.message('请输入正确的邮箱');
+            return;
+        }
+
+
+
+
+        Comm.loading(1);
+        SLNetwork('post', '/api/shoppingMall/order/invoice', requestParms, function (data) {
+            Comm.loading();
+            if (data.code == 1) {
+                nslog(data);
+                addNeedRefPage('orderList',{oid:oid,type:1})
+                Comm.message('提交申请成功');
+                setTimeout(function () {
+                    Comm.close();
+                },300);
+
+            } else {
+                Comm.message(data.msg);
+            }
+        });
+
+    }
+
+
+
+</script>
+
+</body>
+
+</html>

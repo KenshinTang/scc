@@ -1,0 +1,463 @@
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width,initial-scale=1.0,user-scalable=no" name="viewport">
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="format-detection" content="telephone=no,email=no,adress=no" />
+
+    <title>提现</title>
+
+    <link rel="stylesheet" href="css/g.css">
+    <link rel="stylesheet" href="css/comm.css">
+
+    <style>
+        .box {
+            margin-top: 0px;
+            margin-bottom: 5px;
+            padding: 0px 10px;
+            background-color: white;
+            border-radius: 8px;
+        }
+
+        .priceItem {
+            background-color: #E4E4E4;
+            margin: 5px;
+            text-align: center;
+            padding: 8px 25px;
+            border-radius: 5px;
+            color: #444444;
+            width: 30%;
+        }
+
+        .priceItem.active {
+            background-color: #FF6161;
+            color: white;
+        }
+
+        .input input {
+            width: 150px;
+            height: 50px;
+            line-height: 50px;
+            font-size: 19px;
+        }
+
+        .payBtn {
+            line-height: 44px;
+            border-radius: 3px;
+        }
+    </style>
+
+    <style>
+        .cell {
+            padding: 20px 15px;
+            padding-left: 60px;
+            background-image: url(img/pay/checkMark_n.png);
+            background-position: left 15px center;
+            background-size: 20px;
+        }
+
+        .cell.disable {
+            color: #E4E4E4;
+        }
+
+        .cell img {
+            width: 34px;
+            height: 34px;
+            margin-right: 10px;
+        }
+
+        .submit {
+            line-height: 44px;
+            border-radius: 22px;
+            font-size: 16px;
+        }
+
+        .cell.active {
+            background-image: url(img/pay/checkMark_y.png);
+        }
+
+        footer {
+            height: 64px;
+        }
+
+        .bindItem {
+            min-width: 60px;
+            text-align: right;
+            color: #E30008;
+        }
+
+        .bgg {
+            background: linear-gradient(#FB5E3D, #E30008);
+            /* 标准的语法 */
+            border-radius: 5px;
+            height: 50px;
+        }
+    </style>
+
+</head>
+
+<!--******************************************************************************-->
+
+<body>
+
+    <header>
+        <div class="navBar bottomShadow">
+            <div class="navBackIcon" onclick="Comm.close()"></div>
+            <div class="navTitle">提现</div>
+        </div>
+    </header>
+    <!--******************************************************************************-->
+
+    <section>
+
+        <div class="linebod bg_lgray"></div>
+        <div class="p20 bottomBorder">
+            <div class="col_sub f16 tleft lh40">输入提现金额</div>
+
+            <div class="flex_start f24 mart20">
+                ¥
+                <input type="text" placeholder="" id="id_moneyInput" class="f30">
+            </div>
+        </div>
+
+        <div class="col_sub f14 tleft lh40 paddl20 paddr20">
+            <span>可提现金额</span>
+            <span id="balanceId">0</span>
+            <span>元,</span>
+            <span class="col_red" onclick="allTx()">全部提现</span>
+        </div>
+
+        <!--提现方式-->
+        <div id="drawOutId" class="">
+
+
+        </div>
+
+    </section>
+
+    <!--******************************************************************************-->
+    <footer>
+        <div class="bg_theme col_white f18 payBtn marl10 marr10 center bgg" onclick="preventRepeadClickDeal(function () {drawOut()}, 1)">提现</div>
+    </footer>
+
+    <script src="js/z.js"></script>
+    <script src="js/g.js"></script>
+    <script src="js/comm.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/dict.js"></script>
+    <script src="js/art-template.js"></script>
+
+    <script>
+        var recordParms = {};
+        var userinfo = Comm.db('userinfo')||{};
+        //提现人类型
+        var comeType = Number(Comm.query('comeType') || 0); //1:系统   2:店铺   3:分公司   4:个人   5:合伙人
+        function pageload() {
+
+            if (!comeType) {
+                // Comm.close();
+                // return;
+            }
+            getBalanceInfo();
+            initOrrefreshUI();
+        }
+
+
+        function pageresume() {
+            initOrrefreshUI();
+        }
+
+        /******************************************************************************************/
+
+
+        function getBalanceInfo() {
+
+            //根据申请人类型提交对应的itemId
+            if (comeType == 4) { //个人
+                recordParms.itemId = userinfo.customerId;
+                recordParms.itemType = 1;
+
+            } else if (comeType == 2) { //店铺
+                recordParms.itemId = userinfo.myStoreId;
+                recordParms.itemType = 2;
+            } else if (comeType == 5) { //店铺
+                recordParms.itemId = userinfo.myPartnerId;
+                recordParms.itemType = 3;
+            }
+
+
+
+
+            if (comeType == 4) { //这是会员(个人)
+                AJAX.GET('/api/customer/my', function (a) {
+                    if (a.code == 1) {
+                        var data = a.data;
+                        setBalance(data.balance || 0);
+                    }
+                });
+            } else if (comeType == 2) { //这是店铺
+                AJAX.POST('/api/store/myStoreInfo', userinfo, function (d) {
+                    if (d.code == 1) {
+                        var data = d.data || {};
+                        setBalance(data.balance || 0);
+                    }
+                })
+            } else if (comeType == 5) { //这是合伙人
+                var parms = {
+                    partnerId: userinfo.myPartnerId
+                }
+                SLNetwork('get', '/api/partner/mypartner', parms, function (data) {
+                    if (data.code == 1) {
+                        var model = data.data || {};
+                        var partner = model.partner || {};
+                        setBalance(model.partner.balance);
+                    } else {
+                        Comm.message(data.msg);
+                    }
+                });
+            }
+
+        }
+
+
+        /******************************************************************************************/
+
+
+        function setBalance(balance) {
+            $('#balanceId').html(app.price(balance || 0));
+        }
+
+
+        /******************************************************************************************/
+
+        //全部提现
+        function allTx() {
+            var b = $('#balanceId').text();
+            $('#id_moneyInput').val(b);
+        }
+
+
+        /******************************************************************************************/
+
+        //申请提现
+        function drawOut() {
+
+            var money = parseFloat($('#id_moneyInput').val()) || 0;
+            recordParms.money = money * 100;
+
+            if (!validPrice(money)) {
+                Comm.message('请输入正确的金额');
+                return;
+            }
+
+            if (recordParms.money == '' || recordParms.money == 0) {
+                Comm.message('请输入提现金额');
+                return;
+            } else if (recordParms.money < 1) {
+                Comm.message('最低提现金额为0.01元');
+                return;
+            } else if (!userinfo.cardNo || !userinfo.cardNo.length) {
+                Comm.message('请绑定或完善银行卡信息');
+                return;
+            } else if (!userinfo.accountName || !userinfo.accountName.length) {
+                Comm.message('请绑定或完善银行卡信息');
+                return;
+            }
+
+
+            recordParms.cardNo = userinfo.cardNo;
+            recordParms.accountName = userinfo.accountName;
+            recordParms.cardBack = userinfo.cardBack;
+            recordParms.type = userinfo.type; //类型
+            recordParms.bankNo = userinfo.bankNo || ''; //行号
+            // recordParms.type = 1
+            // recordParms.bankNo = '23123132'; //行号
+
+            if(!$('#choose').hasClass('active')){
+                Comm.message('请选择账户类型');
+                return;
+            }
+            AJAX.POST('/api/store/cashMoney', recordParms, function (a) {
+                if (a.code == 1) {
+                    Comm.message('提现申请成功');
+                    setTimeout(function () {
+                        Comm.close();
+                    }, 300);
+                } else {
+                    Comm.message(a.msg);
+                }
+            });
+        }
+
+        /******************************************************************************************/
+
+
+
+
+        //界面赋值
+        function initOrrefreshUI() {
+            { //支付方式
+                var tempUser = userinfo = Comm.db('userinfo');
+
+                tempUser.recordParms = recordParms;
+                var choose = template('tp_draw', tempUser);
+
+                $('#drawOutId').html(choose);
+
+                meauChooseClick('.choosePay', '.cell', function (o, idx) {
+                    if (idx != 2) {
+                        $(o).removeClass('active');
+                        Comm.message('暂不支持');
+                        return;
+                    }
+                    if (idx == 0) {
+                        recordParms.type = 2; //支付宝
+                    } else if (idx == 1) {
+                        recordParms.type = 1; //微信
+                    } else if (idx == 2) {
+                        recordParms.type = 0; //银行
+                    }
+                });
+            }
+        }
+
+
+        //点击去绑定(微信、支付宝)
+        function bind(t) {
+            event.stopPropagation();
+
+            var account = '';
+            if (t == 1) {
+                account = userinfo.aliyunId || '';
+                Comm.go('bind.html?type=' + t + '&act=' + account);
+            } else if (t == 2) {
+                Comm.extLogin({
+                    type: 1
+                }, function (d) {
+                    if (d && d.code == 1) {
+                        saveWXId(d.openid, d.nickname);
+                    } else {
+                        Comm.message('绑定失败');
+                    }
+                });
+            } else if (t == 3) {
+                //绑定银行卡
+                Comm.go('bindYHK.html');
+            }
+        }
+
+
+        //绑定微信
+        function saveWXId(openid, name) {
+
+            Comm.message(openid + '/' + name);
+
+            var apistr = '/api/customer/bindWx'; //微信
+
+            var parms = {
+                openId: openid,
+                wxname: name
+            };
+            Comm.loading(1);
+            SLNetwork('post', apistr, parms, function (data) {
+                Comm.loading();
+                if (data.code == 1) {
+                    userinfo.wxId = parms.openId;
+                    userinfo.wxname = parms.wxname;
+
+                    Comm.db('userinfo', userinfo);
+                    initOrrefreshUI();
+                    Comm.message('保存成功');
+                } else {
+                    Comm.message(data.msg);
+                }
+            });
+        }
+    </script>
+
+
+
+    <script type="text/html" id="tp_draw">
+        <div class="linebod bg_lgray"></div>
+        <div class="p15 f16 bottomBorder">选择账户类型</div>
+
+        <div class="choosePay">
+
+            <div class="cell hide"></div>
+            <div class="cell hide"></div>
+
+            <div id="choose" class="cell lIcon bottomBorder {{recordParms && recordParms.type==1?'active':''}}">
+                <div class="flex_between">
+                    <div class="flex_start">
+                        <img src="img/pay/yhk.png" alt="">
+                        <div>
+                            <div class="baseWH f16">银行卡</div>
+                            <div class="col_sub baseH f12">{{cardNo ? cardNo :'绑定银行卡'}}</div>
+                        </div>
+                    </div>
+                    <div class="col_blue bindItem" onclick="bind(3)">绑定银行卡</div>
+                </div>
+            </div>
+
+        </div>
+    </script>
+
+
+
+
+
+
+    <!--下面的部分没有使用-->
+
+
+
+    <script type="text/html">
+        <div class="cell lIcon bottomBorder {{recordParms && recordParms.type==2?'active':''}}">
+            <div class="flex_between">
+                <div class="flex_start">
+                    <img src="img/pay/zfb.png" alt="">
+                    <div>
+                        <div class="baseWH f16">支付宝</div>
+                        <div class="col_sub baseH f12">未绑定</div>
+                    </div>
+
+                </div>
+
+                <div class="col_blue bindItem" onclick="bind(1)">添加</div>
+
+            </div>
+        </div>
+
+        <div class="cell lIcon bottomBorder {{recordParms && recordParms.type==1?'active':''}}">
+            <div class="flex_between">
+                <div class="flex_start">
+                    <img src="img/pay/wx.png" alt="">
+                    <div>
+                        <div class="baseWH f16">微信</div>
+                        <div class="col_sub baseH f12">未绑定</div>
+                    </div>
+                </div>
+                <div class="col_blue bindItem" onclick="bind(2)">添加</div>
+            </div>
+        </div>
+
+        <div class="cell lIcon bottomBorder {{recordParms && recordParms.type==1?'active':''}}">
+            <div class="flex_between">
+                <div class="flex_start">
+                    <img src="img/pay/yhk.png" alt="">
+                    <div>
+                        <div class="baseWH f16">银行卡</div>
+                        <div class="col_sub baseH f12">未绑定</div>
+                    </div>
+                </div>
+                <div class="col_blue bindItem" onclick="bind(3)">
+                    {{cardBack && cardBack != 'undefined' ? cardBack :'绑定银行卡'}}</div>
+            </div>
+        </div>
+    </script>
+
+
+</body>
+
+</html>

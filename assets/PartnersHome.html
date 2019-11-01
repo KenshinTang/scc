@@ -1,0 +1,395 @@
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width,initial-scale=1.0,user-scalable=no" name="viewport">
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="format-detection" content="telephone=no,email=no,adress=no" />
+
+    <title>合伙人主页</title>
+
+    <link rel="stylesheet" href="css/g.css">
+    <link rel="stylesheet" href="css/comm.css">
+
+    <style>
+        /*头部*/
+
+        .navBackIcon {
+            height: 100%;
+            width: 40px;
+            height: 44px;
+            background: url("img/generalIcon/back_b.png");
+            background-position: center center;
+            background-repeat: no-repeat;
+            background-size: auto 16px;
+            background-position-x: 10px;
+            float: left;
+        }
+
+        svg {
+            width: 100%;
+        }
+
+        .grow1 {
+            flex: 1;
+        }
+
+        .grow2 {
+            flex: 2;
+        }
+
+        .grow3 {
+            flex: 3;
+        }
+
+        .h40P {
+            height: 15%;
+            text-align: center;
+        }
+
+        .headIcon {
+            height: 75px;
+            width: 75px;
+            border-radius: 50%;
+            overflow: hidden;
+            margin: 0px 10px;
+        }
+
+        .leftText {
+            text-align: left;
+        }
+
+        .lIcon.phone {
+            background-image: url("img/tbmine/phone.png");
+        }
+
+        .iden {
+            background-image: url("img/tbmine/grzx.png");
+            background-size: 8px auto;
+            background-position: center right 15px;
+        }
+
+        .tp {
+            margin: 15px;
+            background: url("img/tbmain/beij1.png") no-repeat center center;
+            background-size: 100% 100%;
+            border-radius: 10px;
+        }
+
+        .zt {
+            padding-left: 18px;
+            font-size: 30px;
+            color: #fff;
+            padding-top: 23px;
+            padding-bottom: 23px;
+        }
+
+        .lj {
+            font-size: 12px;
+
+        }
+
+        .box {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            margin-left: 15px;
+            margin-right: 15px;
+        }
+
+        .box1 {
+            border-radius: 8px;
+            box-shadow: 1px 1px 10px #EEEEEE;
+            float: left;
+            width: 100%;
+            text-align: center;
+
+        }
+        .shadow{
+            box-shadow: 1px 1px 10px #EEEEEE;
+            border-radius:3px;
+        }
+
+        .box2 {
+            margin-bottom: 15px;
+            overflow: hidden;
+        }
+
+        .img {
+            width: 30px;
+            margin-top: 20px;
+            margin-bottom: 20px;
+            height: 30px;
+        }
+
+        .dx {
+            width: 57px;
+            font-size: 13px;
+
+        }
+
+        .bnner {
+            width: 100%;
+            height: 55px;
+            background-repeat: no-repeat;
+            background-image: url(img/tbmain/shji.png);
+            background-color: #F03E33;
+            background-size: 100% 55px;
+            background-position: left;
+            line-height: 55px;
+            color: #FFFFFF;
+            margin-top: 23px;
+        }
+
+        .center {
+            float: left;
+            font-size: 14px;
+            margin-left: 72px;
+        }
+
+        .ljsj {
+            float: right;
+            padding-right: 28px;
+            font-size: 12px;
+            background: url(img/tbmain/ljsj.png) no-repeat 55px center;
+            background-size: 5px 9px;
+        }
+
+        .db {
+            width: 100%;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .db_box {
+            padding-top:15px;
+            padding-bottom:15px;
+            margin-bottom: 16px;
+            line-height: 20px;
+        }
+
+        .db_zt {
+            float: left;
+            font-size: 12px;
+            font-weight: normal;
+            color: #878787;
+
+        }
+
+        span {
+            font-size: 12px;
+            color: #999999;
+        }
+
+        @media (device-height: 568px) and (-webkit-min-device-pixel-ratio: 2) {
+            .box1 {
+                float: left;
+                width: 130px;
+                height: 70px;
+                text-align: center;
+            }
+
+            .box2 {
+
+                margin-bottom: 10px;
+                overflow: hidden;
+            }
+        }
+
+        .drawOut {
+            padding: 5px 15px;
+        }
+
+        .selectImg img[src=""] {
+
+            opacity: 0;
+
+        }
+    </style>
+
+</head>
+
+<!--******************************************************************************-->
+
+<body>
+
+    <header>
+        <header>
+            <div class="navBar">
+                <div class="navBackIcon" onclick="Comm.close()"></div>
+                <div class="navTitle">合伙人主页
+                </div>
+            </div>
+        </header>
+    </header>
+    <!--******************************************************************************-->
+
+    <section class="scroll-y">
+        <div class="flex_start ">
+            <div class="baseH grow1">
+                <div class="flex_center">
+                    <div class="selectImg imgContain headIcon">
+                        <img id="id_head" src="">
+                    </div>
+                </div>
+            </div>
+
+            <div class="grow3 infoText leftText">
+                <div class="f18 baseWH Bold mb10" id="storeName"></div>
+                <div class="f12 lh20 flex " style="color: #666666;">
+                    <div id="addr"></div>
+                    丨
+                    <div id="score"></div>
+                    <div class="flex flex_item_center"  style="margin-left:6% ; color: #999;"><div>加盟费已交</div><div id="id_forward"></div></div>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="tp">
+            <div class="zt ">
+                <div id="totalIncome" class="marb10"> 0</div>
+                <p class="lj">累计收益（元）</p>
+            </div>
+        </div>
+        <div class="box">
+            <div class="flex" style="width:100%">
+                <div class="flex box1 right paddl15">
+                    <div><img src="img/tbmain/yoji.png" alt="" class="img"></div>
+                    <div>
+                        <div class="f16 flex" style="margin-top: 15px;margin-bottom:5px;margin-left: 13px;">
+                            ￥<div id="commission" class="bold">0</div>
+                        </div>
+                        <div class="col_lgray f12 marl15" style="width:24px;">佣金</div>
+                    </div>
+                </div>
+                <div class="marl20 flex box1 right paddl15">
+                    <div><img src="img/tbmain/chae.png" alt="" class="img"></div>
+                    <div>
+                        <div class="f16 flex" style="margin-top: 15px;margin-bottom:5px;margin-left: 13px;">
+                            ￥<div id="difference" class="bold">0</div>
+                        </div>
+                        <div class="col_lgray f12 marl15">差额</div>
+                    </div>
+                </div>
+            </div>
+            <div class="flex mart15" style="width:100%">
+                <div class="flex box1 right paddl15">
+                    <div><img src="img/tbmain/buzhu.png" alt="" class="img"></div>
+                    <div>
+                        <div class="f16 flex" style="margin-top: 15px;margin-bottom:5px;margin-left: 13px;">
+                            ￥<div id="subsidy" class="bold">0</div>
+                        </div>
+                        <div class="col_lgray f12 marl15">补助</div>
+                    </div>
+                </div>
+                <div class="marl20 flex box1 right paddl15">
+                    <div><img src="img/tbmain/tjjl.png" alt="" class="img"></div>
+                    <div>
+                        <div class="f16 flex" style="margin-top: 15px;margin-bottom:5px;margin-left: 13px;">
+                            ￥<div id="recommend" class="bold">0</div>
+                        </div>
+                        <div class="col_lgray f12 marl15">推荐奖励</div>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="bnner">
+                <div class="center">升级合伙人等级</div>
+                <div class="ljsj" onclick="Comm.go('UpgradedUsers.html')">立即升级</div>
+            </div>
+            <div class="db mart25">
+                <div class="paddl10 paddr10 shadow db_box flex_between"
+                    onclick="Comm.go('coupon.html?type=hhr');return;Comm.go('accountBalance.html')">
+                    <div>
+                        <p class="f14">账户余额</p>
+                        <p class="db_zt  f12">账户余额<span id="balance">0</span>元</p>
+                    </div>
+
+                    <div class="bg_theme col_white flex_center flex_item_center f12" style="font-weight:normal;width:60px;height:25px;border-radius:13px"
+                        onclick="event.stopPropagation(); Comm.go('withDrawal.html?comeType=5')">提现</div>
+                </div>
+                <div class="paddl10 paddr10 shadow db_box flex_start" onclick="Comm.go('myPartner.html')">
+                    <div>
+                        <div class="f14">合伙人</div>
+                        <span class="db_zt f12">共<span id="partnerCount">0</span>人，累计收益<span id="partnerIncome">0</span>元</span>
+                    </div>
+                </div>
+                <div class="paddl10 paddr10 shadow db_box flex_start" style="margin-bottom:32px;" onclick="Comm.go('myJoins.html')">
+                    <div>
+                        <p class="f14">加盟商</p>
+                        <span class="db_zt f12">共<span id="storeCount">0</span>家，累计收益<span id="storeIncome">0</span>元</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!--******************************************************************************-->
+    <footer class="shared"></footer>
+
+    <script src="js/z.js"></script>
+    <script src="js/g.js"></script>
+    <script src="js/comm.js"></script>
+    <script src="js/api.js"></script>
+
+    <script>
+        var userinfo = Comm.db('userinfo') || {};
+
+
+        function pageload(){
+            pageresume();
+        }
+
+        function pageresume() {
+            u = userinfo;
+            if (!userinfo.myPartnerId) {
+                Comm.close();
+                return;
+            }
+            var parms = {
+                partnerId: userinfo.myPartnerId
+            }
+
+            Comm.loading(1);
+            AJAX.POST('/api/partner/mypartner', parms, function (d) {
+                Comm.loading();
+                if (d.code == 1) {
+                    var data = d.data;
+                    var partner = data.partner;
+                    console.log(data);
+                    if (data.logo == '') {
+                        $('#id_head').attr('src', 'img/login/user.png');
+                    } else {
+                        $('#id_head').attr('src', Comm.OSS.getImgUrl(data.logo, 's'));
+                    }
+                    $('#storeName').text(data.partner.headName);
+                    $('#addr').text(data.cityName);
+                    $('#score').text(data.levelName);
+                    $('#totalIncome').text(data.partner.totalIncome / 100);
+                    $('#commission').text(data.partner.commission / 100);
+                    $('#difference').text(data.partner.difference / 100);
+                    $('#subsidy').text(data.partner.subsidy / 100);
+                    $('#recommend').text(data.partner.recommend / 100);
+                    $('#balance').text(data.partner.balance / 100);
+                    $('#partnerCount').text(data.partner.partnerCount);
+                    $('#partnerIncome').text(data.partner.partnerIncome / 100);
+                    $('#storeCount').text(data.partner.storeCount);
+                    $('#storeIncome').text(data.partner.storeIncome / 100);
+
+
+
+                    var forward =   app.price((Number(partner.franchiseFee || 0) + Number(partner
+                        .debtCount || 0))) + '/' + app.price(Number(partner.franchiseFee || 0));
+
+                    $('#id_forward').text(forward)
+
+                }
+            })
+        }
+    </script>
+
+</body>
+
+</html>

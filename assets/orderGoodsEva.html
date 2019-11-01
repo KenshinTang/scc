@@ -1,0 +1,329 @@
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width,initial-scale=1.0,user-scalable=no" name="viewport">
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+    <meta name="format-detection" content="telephone=no,email=no,adress=no"/>
+
+    <title>评价商品</title>
+
+    <link rel="stylesheet" href="css/g.css">
+    <link rel="stylesheet" href="css/comm.css">
+
+    <style>
+
+        .cell {
+            padding: 15px 15px;
+            background-color: white;
+            margin-bottom: 10px;
+        }
+
+        .cellIcon {
+            height: 90px;
+            width: 90px;
+            flex-basis: 90px;
+        }
+
+        .cellRight {
+            height: 90px;
+            padding: 0px 10px;
+            flex: 1;
+        }
+
+        .headItem {
+            line-height: 44px;
+            height: 44px;
+        }
+
+        .headItem.msg {
+            background-image: url("img/tbhome/xiaoxi.png");
+        }
+
+        .btn2 {
+            height: 40px;
+            width: 160px;
+            background: linear-gradient(#FB5E3D, #E30008);
+            border-radius: 5px;
+            width: 100%;
+        }
+
+        .btnMar {
+            padding: 8px 18px;
+        }
+
+
+
+
+        /* upimg 图片多选 S*/
+        .up-Img {
+            overflow: hidden;
+            padding: 22px 0;
+        }
+
+        .up-Img .box {
+            background-color: unset;
+            width: 65px;
+            height: 65px;
+            margin-right: 12px;
+            margin-bottom: 12px;
+            float: left;
+            border-radius: 5px;
+            position: relative;
+            line-height: unset;
+        }
+
+        .box ,#upload{
+            width: 65px;
+            height: 65px;
+        }
+
+        .box img {
+            object-fit: cover;
+            width: 100%;
+            height: 100%;
+        }
+
+        .upimg-del {
+            width: 30px;
+            height: 30px;
+            position: absolute;
+            right: -10px;
+            top: -10px;
+            background: 10px center no-repeat url(img/delete.png);
+            background-size: 20px 20px;
+        }
+
+        .inputArea{
+            width: 100%;
+            min-height: 80px;
+        }
+        /* upimg 图片多选 S*/
+
+    </style>
+
+</head>
+
+<!--******************************************************************************-->
+
+<body>
+
+<header>
+
+    <div class="navBar udLine">
+        <div class="headItem navTitles">
+            <div class="navBackIcon" onclick="Comm.close()"></div>
+            <div class="f17" style="padding-right:40px">评价商品</div>
+        </div>
+    </div>
+
+</header>
+<section class="bg_lgray">
+
+    <!--店铺信息-->
+    <div class="bg_white cell marb10 gInfo">
+
+    </div>
+
+    <!--店铺评价-->
+    <div class="bg_white cell" style="margin-bottom:40px">
+        <div class="marb5 f14">商品评价:</div>
+        <textarea id="id_textArea" class="f14 inputArea" placeholder="请输入评价内容" style="height:80px"></textarea>
+
+
+        <div>
+            <div class="mart10 marl10">
+                <div class="up-Img">
+                    <div id="imgList"></div>
+
+
+                    <div class="btn box">
+                        <div class="up-upBtn" id="subbutton">
+                            <img class="fullImg" src="img/camera.png" height="65" alt="">
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <div>
+
+            </div>
+        </div>
+
+
+        <!--<div>-->
+            <!--<div class="mart10 marl10">-->
+                <!--<div class="up-Img">-->
+                    <!--<div id="imgList"></div>-->
+                <!--</div>-->
+            <!--</div>-->
+
+            <!--<div>-->
+                <!--<div id="upload">-->
+                    <!--<img src="img/camera.png" width="65px" height="65px" class="marb5">-->
+                <!--</div>-->
+            <!--</div>-->
+        <!--</div>-->
+
+
+
+    </div>
+
+    <div class="flex flex_between btnMar" style="padding-top:0px" onclick="evaluateOrder();">
+        <div class="btn2 col_white f16 flex flex_item_center flex_center">发表评论</div>
+    </div>
+</section>
+
+<script src="js/z.js"></script>
+<script src="js/g.js"></script>
+<script src="js/comm.js"></script>
+<script src="js/api.js"></script>
+<script src="js/api.js"></script>
+<script src="js/art-template.js"></script>
+<script src="inc/upimg/upload.js"></script>
+
+<script type="text/javascript">
+
+
+    var oid = Comm.query('oid');
+
+    var PageUpimgModel = {
+        maxImgCount: 8,
+        curCount: 0,
+        upimg: null,
+    };
+    var requestParms = {};
+
+
+    function pageload() {
+
+        getOrderDetail(oid);
+        upimg = new imgUploader("imgList", PageUpimgModel.maxImgCount, "subbutton");
+    }
+
+
+    function getOrderDetail(orderId) {
+        var params = {
+            orderId: orderId
+        }
+        SLNetwork('get', '/api/shoppingMall/order/detail', params, function (data) {
+            if (data.code == 1) {
+                var oDate = data.data || {};
+                requestParms.goodsId = oDate.goodsId;
+                var pageEle = template('tp_id_goodsInfo', oDate);
+                $('.gInfo').html(pageEle);
+                //设置星级
+                Praise(0);
+            } else {
+                Comm.message(data.msg);
+            }
+        });
+    }
+
+    function Praise(num) {
+
+        $('#a').html('');
+        $('#des').text(getNumDes(num));
+        requestParms.score = num;
+
+        var imgUrl = '<img src="img/tbmall/shca.png" height="17" width="17" class="marr10"/>';
+        var imgUrl1 = '<img src="img/tbmall/shca-1.png" height="17" width="17" class="marr10"/>';
+        var i = 0;
+        for (i; i < num; i++) {
+            if (i < 6) {
+                $('#a').append(imgUrl1);
+            }
+        }
+        if (i < 5) {
+            for (var a = 0; a < 5 - i; a++) {
+                $('#a').append(imgUrl);
+            }
+        }
+
+
+        clickList('#shcaImg','img',function (o,idx) {
+            Praise(idx+1);
+        })
+    }
+
+
+    function getNumDes(num) {
+        if (num >= 1 && num <3){
+            return '不好';
+        } else if (num == 3){
+            return '中等';
+        }  else if (num == 4 || num == 5){
+            return '非常好';
+        }
+
+    }
+
+
+    function evaluateOrder() {
+        if (!requestParms.goodsId) return;
+
+        requestParms.ds = $('#id_textArea').val();
+
+        if (upimg.imgList && upimg.imgList.length){
+            requestParms.imgurl = upimg.imgList.join(',')
+        }
+
+        debugger
+        if (!requestParms.score){
+            Comm.message('请选择星级');
+            return;
+        } else if (!requestParms.ds) {
+            Comm.message('请输入评论内容');
+            return;
+        }
+
+
+
+        requestParms.orderId = oid||'';
+
+        Comm.loading(1);
+        SLNetwork('post', '/api/shoppingMall/comment/addGoodsEvaluate', requestParms, function (data) {
+            Comm.loading();
+            if (data.code == 1) {
+                Comm.message('发表评论成功');
+                addNeedRefPage('orderList',{oid:oid,type:1})
+                setTimeout(function () {
+                    Comm.close();
+                },300)
+
+            } else {
+                Comm.message(data.msg);
+            }
+        });
+    }
+
+
+</script>
+
+
+<script type="text/html" id="tp_id_goodsInfo">
+
+    <div class=" flex_start">
+        <div class="imgContain cellIcon br5 ohide">
+            <img src="{{OSS(faceImg),'s'}}" onerror="app.errorimg(this);">
+        </div>
+
+        <div class="cellRight">
+            <div class="f16 bold marb15 mart10 wordW2">{{goodsName||''}}</div>
+
+            <div class="evaluate flex_start">
+                <div id="shcaImg" class="flex">
+                    <div id="a" class="flex_item_center flex h20"></div>
+                </div>
+                <div class="f15 marl5 col_theme" id="des"></div>
+            </div>
+        </div>
+    </div>
+
+</script>
+
+
+</body>
+
+</html>

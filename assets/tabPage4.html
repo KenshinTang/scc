@@ -1,0 +1,428 @@
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width,initial-scale=1.0,user-scalable=no" name="viewport">
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="format-detection" content="telephone=no,email=no,adress=no" />
+
+    <title>我的</title>
+
+    <link rel="stylesheet" href="css/g.css">
+    <link rel="stylesheet" href="css/comm.css">
+
+    <style>
+        .background {
+            background: url("img/tbmine/Background.png") no-repeat top center;
+            background-size: 100% auto;
+        }
+
+        /*头部*/
+        .navBar {
+            background-color: rgba(0, 0, 0, 0);
+        }
+
+        .navBackIcon.msg {
+            background-image: url("img/tbmine/xiaoxi.png");
+            background-size: auto 19px;
+        }
+
+        .navItemIcon.kf {
+            background-image: url("img/tbmine/kefu.png");
+            background-size: 20px auto;
+        }
+
+        .topH {
+            padding-top: 50%;
+        }
+
+        svg {
+            width: 100%;
+        }
+
+        .grow1 {
+            flex: 1;
+        }
+
+        .grow2 {
+            flex: 2;
+        }
+
+        .grow3 {
+            flex: 3;
+        }
+
+        .h40P {
+            height: 30%;
+            text-align: center;
+        }
+
+        .headIcon {
+            height: 60px;
+            width: 60px;
+            border-radius: 50%;
+            overflow: hidden;
+
+            margin-left: 10px;
+            margin-right: 10px;
+        }
+
+        .infoText {}
+
+        .leftText {
+            text-align: left;
+        }
+
+        .lIcon.phone {
+            background-image: url("img/tbmine/phone.png");
+        }
+
+        .iden {
+            background-image: url("img/tbmine/grzx.png");
+            background-size: 8px auto;
+            background-position: center right 15px;
+        }
+
+        /*我的订单*/
+        .quickItem {
+            max-width: 25px;
+            height: 25px;
+        }
+
+        .col_sub {
+            color: #A8A8A8 !important;
+        }
+
+        .width25 {
+            width: 25%;
+        }
+
+        .hasNew {
+            line-height: 30px;
+            width: 25px;
+            float: right;
+            font-size: 20px;
+        }
+
+        .selectImg img[src=""] {
+
+            opacity: 0;
+
+        }
+
+        .navBar {
+            background-color: rgba(0, 0, 0, 0);
+            /*background: url("img/tbmain/beij.png") no-repeat top center;*/
+            /*background-size: 100% 304px;*/
+        }
+        .rIcon{
+            background-size: 6px auto;
+        }
+
+        /*.topHeader {*/
+            /*position: absolute;*/
+            /*z-index: 1001;*/
+        /*}*/
+    </style>
+
+</head>
+
+<!--******************************************************************************-->
+
+<body>
+
+    <header>
+    </header>
+    <!--******************************************************************************-->
+
+    <section class="scroll-y">
+        <div class="background" style="">
+            <div class="navBar topHeader iosDeal">
+                <div class="navBackIcon msg ml10" onclick="if (needLoginCheck(true)) return;Comm.go('msg.html')">
+                    <div class="hasNew col_white hide">•</div>
+                </div>
+                <div class="navItemIcon kf marr15" onclick="contactKF();"></div>
+                <div class="navTitle"></div>
+
+            </div>
+            <div class="wrap topH col_white">
+                <div class="wrap_ct">
+
+                    <div class="mart10">
+
+                        <div class="grow2 h40P">
+                            <div class="flex_start mainH">
+
+                                <div class="baseH grow1">
+                                    <div class="flex_center">
+                                        <div class="imgContain headIcon selectImg">
+                                            <img src="" id="face" />
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="grow3 infoText leftText">
+                                    <div id="nickName" class="f16 baseWH mb10"></div>
+                                    <div class="f12 baseWH lIcon phone lh20">+86 <span id="phone"></span></div>
+                                </div>
+                                <div class="baseH grow2" onclick="Comm.go('userinfo.html')">
+                                    <div class="rIcon iden tright">个人中心</div>
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <div class="grow2 h40P">
+                            <div class="flex_start">
+                                <div class="baseH grow1" onclick="headItemsClick(1)">
+                                    <div id="balance" class="f16 baseWH lh30 mt10"></div>
+                                    <div class="f12 baseWH">余额(元)</div>
+                                </div>
+                                <!--<div class="baseH grow1" onclick="headItemsClick(2)">-->
+                                    <!--<div id="points" class="f16 baseWH m10"></div>-->
+                                    <!--<div class="f12 baseWH">HB(元)</div>-->
+                                <!--</div>-->
+                                <!--<div class="baseH grow1" onclick="headItemsClick(3)">-->
+                                    <!--<div id="ticket" class="f16 baseWH m10"></div>-->
+                                    <!--<div class="f12 baseWH">现金券(元)</div>-->
+                                <!--</div>-->
+                                <div class="baseH grow1" onclick="headItemsClick(4)">
+                                    <div id="packets" class="f16 baseWH lh30 mt10"></div>
+                                    <div class="f12 baseWH">红包券(元)</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="baseH grow1"></div>
+
+                    </div>
+                    <!--<svg width="700" height="40" viewBox="0 0 700 40">-->
+                    <!--<text font-family="'Helvetica Neue','PingFang SC','microsoft yahei'" font-size="20" x="0" y="1em">CSS世界这本书不错！</text>-->
+                    <!--</svg>-->
+
+                </div>
+            </div>
+
+            <div class="section">
+                <div class="flex_between p20 pb15" onclick="Comm.go('orderList.html');">
+                    <div class="bold f16">我的订单</div>
+                    <div class="col_sub f12">
+                        <span>查看全部</span>
+                        <span><img src="img/generalIcon/iden.png" width="6" alt=""></span>
+                    </div>
+                </div>
+
+                <div class="flex_around">
+                    <div class="p15 center" onclick="Comm.go('orderList.html?type=1');">
+                        <img src="img/tbmine/dfuk.png" class="quickItem bg_place">
+                        <div class="f12 mart10">待付款</div>
+                    </div>
+                    <div class="p15 center" onclick="Comm.go('orderList.html?type=2');">
+                        <img src="img/tbmine/dfah.png" class="quickItem bg_place">
+                        <div class="f12 mart10">待发货</div>
+                    </div>
+                    <div class="p15 center" onclick="Comm.go('orderList.html?type=3');">
+                        <img src="img/tbmine/dshu.png" class="quickItem bg_place">
+                        <div class="f12 mart10">待收货</div>
+                    </div>
+                    <div class="p15 center" onclick="Comm.go('orderList.html?type=4');">
+                        <img src="img/tbmine/yiwc.png" class="quickItem bg_place">
+                        <div class="f12 mart10">已完成</div>
+                    </div>
+                    <div class="p15 center" onclick="Comm.go('afterSalesList.html')">
+                        <img src="img/tbmine/shhou.png" class="quickItem bg_place">
+                        <div class="f12 mart10">售后</div>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="section service">
+
+                <div class="bold f16 p20 pb15">我的服务</div>
+
+
+                <div class="flex_around">
+                    <div class="p15 center width25" onclick="Comm.go('statement.html')">
+                        <img src="img/tbmine/xfjil.png" class="quickItem bg_place">
+                        <div class="f12 mart10">消费记录</div>
+                    </div>
+                    <div class="p15 center width25">
+                        <img src="img/tbmine/wdsca.png" class="quickItem bg_place" onclick="Comm.go('favorite.html')">
+                        <div class="f12 mart10">我的收藏</div>
+                    </div>
+                    <div class="p15 center width25" onclick="Comm.go('addressList.html')">
+                        <img src="img/tbmine/wddz.png" class="quickItem bg_place">
+                        <div class="f12 mart10">我的地址</div>
+                    </div>
+                    <div class="p15 center width25" onclick="goStore()">
+                        <img src="img/tbmine/wddp.png" class="quickItem bg_place">
+                        <div class="f12 mart10">我的店铺</div>
+                    </div>
+                </div>
+
+                <div class="flex_around">
+                    <div class="p15 center width25" onclick="goUpLevel();">
+                        <img src="img/tbmine/hhrzx.png" class="quickItem bg_place">
+                        <div class="f12 mart10">合伙人中心</div>
+                    </div>
+                    <div class="p15 center width25 wxHide" onclick="Comm.go('Invitation.html')">
+                        <img src="img/tbmine/yqhyo.png" class="quickItem bg_place">
+                        <div class="f12 mart10">邀请好友</div>
+                    </div>
+                    <div class="p15 center width25" onclick="Comm.go('aboutus.html');">
+                        <img src="img/tbmine/gywom.png" class="quickItem bg_place">
+                        <div class="f12 mart10">关于我们</div>
+                    </div>
+                    <div class="p15 center width25" onclick="Comm.go('artical.html?aid=bzsm')">
+                        <img src="img/tbmine/bzsm.png" class="quickItem bg_place">
+                        <div class="f12 mart10">帮助说明</div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+
+    </section>
+
+    <!--******************************************************************************-->
+    <footer class="shared"></footer>
+
+    <script src="js/z.js"></script>
+    <script src="js/g.js"></script>
+    <script src="js/comm.js"></script>
+    <script src="js/api.js"></script>
+
+
+    <script>
+
+        Foot.init();
+        var userinfo = Comm.db('userinfo') || {};
+
+        function pageresume() {
+            if (!app.isLogin()){
+                clearUserData();
+            }
+            if (!app.isLogin()){
+                clearUserData();
+            }
+            getUserinfo();
+        }
+
+        function pageload() {
+
+            //导航栏变色
+            var ih = 0;
+            // $("section").scroll(function () {
+            //     ih = $("section").scrollTop() / 40;
+            //     ih = ih > 1 ? 1 : ih;
+            //     $('.navBar').css('background-color', 'rgba(235,32,26,' + ih + ')');
+            // });
+            getUserinfo();
+        }
+
+
+        function getUserinfo() {
+            //获取用户信息
+
+            hasNewMessage();
+            SLNetwork('get', '/api/customer/my', {}, function (a) {
+                if (a.code == 1) {
+                    var data = a.data;
+                    saveUserinfo(data);
+
+                    $('#balance').text(app.price(data.balance || 0));
+                    $('#points').text(app.price(data.points || 0));
+                    $('#ticket').text(app.price(data.ticket || 0));
+                    $('#packets').text(app.price(data.packets || 0));
+
+
+                    $('#phone').text(data.phone || '');
+
+
+                    $('#nickName').text(data.nickName || '');
+                    if (data.face == '') {
+                        $('#face').attr('src', 'img/login/user.png');
+                    } else {
+                        $('#face').attr('src', Comm.OSS.getImgUrl(data.face, 's' || ''));
+                    }
+
+                } else {
+                    Comm.message(data.msg);
+                }
+            });
+        }
+
+
+        function hasNewMessage() {
+
+            if (app.isLogin()) {
+                AJAX.GET('/api/message/messIsRead', function (a) {
+                    if (a.code == 1) {
+                        if (a.data > 0) {
+                            $('.hasNew').removeClass('hide');
+                        } else {
+                            $('.hasNew').addClass('hide');
+                        }
+                    }
+                })
+            }
+        }
+
+
+
+        function headItemsClick(idx) {
+
+            switch (idx) {
+                case 1: {
+                    Comm.go('wallet.html');
+                }
+                break;
+            case 2: {
+                Comm.go('redBag.html');
+            }
+            break;
+            case 3: {
+                Comm.go('coupon.html?type=xjq');
+            }
+            break;
+            case 4: {
+                Comm.go('coupon.html?type=hbq');
+            }
+            break;
+
+            default:
+                break;
+
+            }
+
+        }
+
+        function goStore() {
+            preventRepeadClickDeal(function () {
+                SLNetwork('get', 'api/store/myStoreState', userinfo, function (a) {
+                    if (a.data.code == 4 || a.data.code == 5) {
+                        Comm.go('storeMain.html');
+                    } else if (a.data.code == 7){
+                        Comm.message(a.data.msg);
+                    } else {
+                        getStoreState(true);
+                    }
+                })
+            }, 1)
+
+        }
+
+
+
+        function goUpLevel() {
+            preventRepeadClickDeal(function () {
+                getPartnerState(true);
+            }, 2)
+        }
+    </script>
+
+</body>
+
+</html>

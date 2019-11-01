@@ -1,0 +1,407 @@
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width,initial-scale=1.0,user-scalable=no" name="viewport">
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="format-detection" content="telephone=no,email=no,adress=no" />
+
+    <title>搜索</title>
+
+    <link rel="stylesheet" href="css/g.css">
+    <link rel="stylesheet" href="css/comm.css">
+    <link rel="stylesheet" href="inc/mescroll/mescroll.min.css">
+
+    <style>
+        .headItem {
+            line-height: 44px;
+            height: 44px;
+        }
+
+        .searchBar {
+            height: 30px;
+            margin: 7px 2%;
+            line-height: 30px;
+            border-radius: 15px;
+            text-align: left;
+        }
+
+        .searchBar.lIcon {
+            background-position-x: 15px;
+            padding-left: 35px;
+            background-image: url("img/tbshop/sousuo.png");
+            color: #A8ADBA;
+        }
+
+
+        /*附近店铺列表*/
+        .recommentShop {
+            padding: 15px 0px;
+        }
+
+        .headTt {
+            padding-left: 15px;
+        }
+
+        .cell {
+            padding: 20px 15px;
+            background-color: white;
+            margin-bottom: 10px;
+        }
+
+        .cellIcon {
+            height: 90px;
+            width: 90px;
+            flex-basis: 90px;
+        }
+
+        .cellRight {
+            height: 90px;
+            padding: 0px 10px;
+            flex: 1;
+        }
+
+        .breakLine_v {
+            width: 1px;
+            height: 16px;
+            background-color: #EBEBEB;
+        }
+
+        .star {
+            width: 50px;
+            height: 10px;
+            background: url("img/tbshop/Star_n.png") repeat-x center center;
+            background-size: 10px auto;
+        }
+
+        .star_get {
+            width: 0%;
+            height: 100%;
+            background: url("img/tbshop/Star.png") repeat-x left center;
+            background-size: 10px auto;
+        }
+
+        .benefit {
+            width: auto;
+            border-radius: 10px 1px;
+            padding: 2px 8px;
+        }
+
+        .mv5 {
+            margin: 5px 0px;
+        }
+
+        .lIcon.distance {
+            background-image: url("img/tbhome/position.png");
+        }
+
+
+
+        .headItem {
+            line-height: 44px;
+            height: 44px;
+        }
+
+        .headItem.msg {
+            background-image: url("img/tbhome/xiaoxi.png");
+        }
+
+        .base80 {
+            min-width: 50px;
+            max-width: 100px;
+        }
+
+
+        .searchBar {
+            height: 30px;
+            margin: 7px 2%;
+            line-height: 30px;
+            border-radius: 15px;
+            text-align: left;
+        }
+
+        .searchBar.lIcon {
+            background-position-x: 15px;
+            padding-left: 35px;
+            background-image: url("img/tbshop/sousuo.png");
+            color: #A8ADBA;
+        }
+
+        .bg_g_jb {
+            background: linear-gradient(to right, #7ACC52, #68AF47)
+        }
+
+        .bgG {
+            background: url('img/tbshop/Certification.png');
+            background-repeat: no-repeat;
+            background-size: 100% 100%;
+        }
+
+        .benefit2 {
+            width: auto;
+            padding: 3px 10px;
+        }
+        .tyc {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            width: 70%;
+        }
+    </style>
+
+</head>
+
+<!--******************************************************************************-->
+
+<body>
+
+    <header>
+        <div class="navBar bottomShadow flex">
+            <div class="navBackIcon" onclick="Comm.close()"></div>
+            <div class="headItem flex1">
+                <div class="searchBar bg_lgray lIcon pr10">
+                    <input id="id_search" type="search" class="mainH mainW mr10 bg_lgray f14" placeholder="请输入搜索关键词">
+                </div>
+            </div>
+            <div class="navItem mr10 ml10" onclick="searchSubmit();">搜索</div>
+        </div>
+    </header>
+    <!--******************************************************************************-->
+
+    <section class="page mescroll chatroom" id="refreshId0">
+
+        <div class="list bg_lgray">
+            <div id="id_list0">
+                <!--列表-->
+            </div>
+        </div>
+
+        <div class="bg_lgray">
+            <div id="id_list1" class="goodsList p10 flex_wrap f12">
+                <!--列表-->
+            </div>
+        </div>
+
+
+
+
+    </section>
+
+    <!--******************************************************************************-->
+    <footer></footer>
+
+    <script src="js/z.js"></script>
+    <script src="js/g.js"></script>
+    <script src="js/comm.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/art-template.js"></script>
+    <script src="inc/mescroll/mescroll.min.js"></script>
+    <script src="js/area.js"></script>
+
+    <script>
+        var type = Comm.query('type');
+        var merefresh = null;
+
+
+        function pageload() {
+
+        }
+
+
+        //添加刷新控件
+        function addrefresh() {
+
+            if (!merefresh) {
+                merefresh = new MERefresh();
+
+                switch (type) {
+                    case 'shop': {
+                        merefresh.refreshOption.refreshUrl = '/api/store/storeList';
+                    }
+                    break;
+                case 'goods': {
+                    merefresh.refreshOption.refreshUrl = '/api/shoppingMall/goods/list';
+                }
+
+                break;
+
+                default:
+                    break;
+                }
+
+
+                merefresh.refreshOption.noMoreSize = 2;
+                merefresh.refreshOption.refreshParm = {
+                    lat: UserJWD.lat(),
+                    lng: UserJWD.lng(),
+                    storeName: $('#id_search').val() || '',
+                    goodsName: $('#id_search').val() || '',
+                };
+
+                //页面 <刷新> 的回调
+                merefresh.refreshOption.refresh_cb = function (refresh, d) {
+
+                    refresh.successEndRef(d.data && d.data.length || 0, d.totalCount);
+                    if (!d.data) {
+                        return;
+                    }
+                    if (d.code == 1) {
+                        var list = d.data || [];
+                        var html = '';
+                        for (var i = 0; i < list.length; i++) {
+                            list[i].km = Math.round(list[i].distance / 1000 * 100) / 100;
+                            list[i].cc = app.price(list[i].consumption);
+                            Area.init(function () {
+                                list[i].addrInfo = Area.getFullName(list[i].addrId);
+                            })
+                        }
+                        switch (type) {
+                            case 'shop': {
+                                html = template('tp_id_cell_shop', list);
+                            }
+                            break;
+                        case 'goods': {
+                            html = template('tp_id_cell_goods', list);
+                        }
+
+                        break;
+
+                        default:
+                            break;
+                        }
+
+                        merefresh.appendHtml(html);
+                    } else {
+                        Comm.message(d.msg);
+                    }
+                };
+                switch (type) {
+                    case 'shop': {
+                        merefresh.configurationDone('refreshId0', 'id_list0');
+                    }
+                    break;
+                case 'goods': {
+                    merefresh.configurationDone('refreshId0', 'id_list1');
+                }
+
+                break;
+
+                default:
+                    break;
+                }
+
+
+            } else {
+                merefresh.refreshOption.refreshParm = {
+                    lat: UserJWD.lat(),
+                    lng: UserJWD.lng(),
+                    storeName: $('#id_search').val() || '',
+                    goodsName: $('#id_search').val() || '',
+                };
+                merefresh.MeRefScroll.resetUpScroll();
+            }
+        }
+
+
+        function searchSubmit() {
+            var searchText = $('#id_search').val() || '';
+            if (!searchText || !searchText.length) {
+                Comm.message('请输入搜索关键词')
+                return;
+            }
+            addrefresh();
+        }
+    </script>
+
+
+    <script type="text/html" id="tp_id_cell_shop">
+        {{each $data as model i}}
+        <div class="cell flex_start" onclick="Comm.go('store.html?storeId={{model.storeId}}')">
+            <div class="imgContain cellIcon" style="width:40%">
+                <img src="{{OSS(model.doorPic,'s')}}">
+            </div>
+
+            <div class="cellRight" style="width:60%">
+                <div class="f16 bold">{{model.storeName}}{{if model.open==0}}(休息中){{/if}}</div>
+                <div class="mv5">
+                    <!--<span class="f12 col_white bg_g_jb benefit">让利{{model.rebate/100}}%</span>-->
+                    <span class="f12 col_white bg_g_jb benefit">付款返红包券</span>
+                    {{if model.isChain == 1}}
+                    <span class="marl5 f12 col_white bgG benefit2"><span class="marl10">连锁认证</span></span>
+                    {{/if}}
+                </div>
+
+
+                <div class="evaluate flex_start">
+                    <div class="star bg_place">
+                        <div class="star_get" style="width: {{scorePer(model.score)}}%"></div>
+                    </div>
+
+                    <div class="f12 lineSpan">
+                        <span class="col_red ml5">{{model.score}}分</span>
+                        <span class="col_lgray f14">丨</span>
+                        <span class="col_sub">{{model.cc}}</span>
+                        <span class="col_sub">/人</span>
+                    </div>
+                </div>
+
+                <div class="f12 col_sub flex_between mt5">
+                    <div class="tyc">地点：{{model.addrInfo}}{{model.addr}}</div>
+                    <div class="lIcon distance">{{model.km}}km</div>
+                </div>
+            </div>
+        </div>
+
+        {{/each}}
+    </script>
+
+
+
+    <script type="text/html" id="tp_id_cell_goods">
+        {{each $data model i}}
+        <div class="rcm_goodsCell" onclick="Comm.go('goodsDetail.html?gid={{model.goodsId}}');">
+
+            <div class="wrap rcm_goodsFace">
+                <div class="wrap_ct imgContain ">
+                    <img src="{{OSS(model.faceImg,'m')}}" alt="" onerror="app.errorimg(this)">
+                </div>
+            </div>
+
+            <div class="p5 bg_white">
+                <div class="goodsTitle line2">{{model.goodsName}}</div>
+                <div class="flex_wrap h40">
+
+                    {{if model.specialTag == '1'}}
+                    <div class="label">特卖</div>
+                    {{/if}}
+
+                    {{if model.newTag == 1}}
+                    <div class="label">新品</div>
+                    {{/if}}
+
+                    {{if model.hotTag == 1}}
+                    <div class="label">热门</div>
+                    {{/if}}
+
+                    {{if model.offersTag == 1}}
+                    <div class="label">特价</div>
+                    {{/if}}
+
+                    {{if model.isPoor == '1'}}
+                    <div class="label">扶贫</div>
+                    {{/if}}
+
+                </div>
+                <div class="flex_start">
+                    <div class="col_theme">¥{{priceTp(model.price)}}</div>
+                    <!--<div class="col_sub mline ml5">¥{{priceTp(model.oldprice)}}</div>-->
+                </div>
+            </div>
+        </div>
+        {{/each}}
+    </script>
+
+
+</body>
+
+</html>

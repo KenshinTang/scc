@@ -1,0 +1,406 @@
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width,initial-scale=1.0,user-scalable=no" name="viewport">
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+    <meta name="format-detection" content="telephone=no,email=no,adress=no"/>
+
+    <title>扫码付款</title>
+
+    <link rel="stylesheet" href="css/g.css">
+    <link rel="stylesheet" href="css/comm.css">
+    <link rel="stylesheet" href="inc/keyboard/slKeyboard.css">
+
+    <style>
+        body {
+            background-color: #EBEBEB;
+        }
+
+        .content {
+            margin: 28px;
+            border-radius: 15px;
+        }
+
+        .bgtop {
+            background-color: #F7F7F7;
+        }
+
+        .uinfo {
+            min-height: 80px;
+        }
+
+        .headIcon {
+            height: 40px;
+            width: 40px;
+        }
+
+        .moneyInput {
+            height: 60px;
+            line-height: 60px;
+            font-size: 28px;
+        }
+
+        .navBar {
+            background-color: unset;
+            background-color: rgba(0,0,0,0);
+        }
+    </style>
+
+</head>
+
+<!--******************************************************************************-->
+
+<body>
+
+<header>
+    <div class="navBar">
+        <div class="navBackIcon" onclick="Comm.close()"></div>
+        <div class="navTitle">扫码付款</div>
+    </div>
+</header>
+<!--******************************************************************************-->
+
+<section class="">
+
+    <div class="content bg_white ohide">
+        <div class="uinfo"></div>
+
+        <div class="p20">
+            <div class="">金额</div>
+
+            <div class="flex_start">
+                <div class="f24 mr10">¥</div>
+                <!--<input type="tel" id="money" class="moneyInput" placeholder="请输入金额" maxlength="8">-->
+                <div id="money" class="col_sub999 tright w180 baseH moneyInput" onclick="moneyBoard.showKeyBoard();"></div>
+            </div>
+
+
+            <div class="col_red pb10 bottomBorder">
+                HB
+                <span id="rlbl"></span>
+            </div>
+        </div>
+
+
+        <div class="bg_trans m20 lh40 center col_white br5 submitBtn" onclick="goPay();">付款</div>
+
+
+    </div>
+
+    <div id="keyBoardMoney"></div>
+</section>
+
+<!--******************************************************************************-->
+<footer></footer>
+
+<script src="js/z.js"></script>
+<script src="js/g.js"></script>
+<script src="js/comm.js"></script>
+<script src="js/api.js"></script>
+<script src="js/art-template.js"></script>
+
+<script src="inc/ewm/jquery-1.11.1.js"></script>
+<script src="inc/keyboard/slKeyboard.js"></script>
+
+<script>
+
+    // api/store/getUserPayProfit  获取比例
+    /*
+    type:
+    online - app中店铺页面付款
+    FK - 向商家付款
+    SK - 向用户收款
+    */
+    var type = Comm.query('type') || '';
+    var sid = Comm.query('sid') || '';
+    var uid = Comm.query('uid') || '';
+    var userinfo = Comm.db('userinfo')||{};
+    var pageData = {},moneyBoard=null;
+
+    function pageload() {
+        moneyBoard = new SLKeyBoard('keyBoardMoney','money',true);
+        moneyBoard.init();
+        moneyBoard.textChangedBlock = function (text) {
+            $('#rlbl').html(Math.round($('#money').text() * (pageData.rebate*2/100 / 100) * 100) / 100);
+        }
+
+        if (!sid && !uid) return;
+        switch (type) {
+            case 'online': {//app中店铺页面付款
+                getStoreInfo();
+            }
+                break;
+
+            case 'FK': {//向商家付款
+                getStoreInfo();
+            }
+                break;
+
+            case 'SK': {//向用户收款
+                sid = userinfo.myStoreId||'';
+                // getStoreInfo();
+                $('.navTitle').text('扫码收款');
+                $('.submitBtn').text('发起收款');
+
+            }
+                break;
+
+
+            default:
+                break;
+        }
+
+    }
+
+    /************************************************************************/
+    function getStoreInfo() {
+
+        $('.navTitle').text('扫码付款');
+
+        var params = {
+            storeId: sid,
+            lat: UserJWD.lat(),
+            lng: UserJWD.lng(),
+        }
+        SLNetwork('get', '/api/store/storeDetail', params, function (data) {
+            if (data.code == 1) {
+                var model = data.data || {}
+                pageData = model;
+
+
+                switch (type) {
+                    case 'online': {//app中店铺页面付款
+                        var html = template('tp_id_shopInfo', model);
+                        $('.uinfo').html(html);
+                    }
+                        break;
+
+                    case 'FK': {//向商家付款
+                        var html = template('tp_id_shopInfo', model);
+                        $('.uinfo').html(html);
+                    }
+                        break;
+
+                    case 'SK': {//向用户收款
+                        // var html = template('tp_id_uInfo', model);
+                        // $('.uinfo').html(html);
+                    }
+                        break;
+
+
+                    default:
+                        break;
+                }
+
+                bindkeyUp();
+            } else {
+                Comm.message(data.msg);
+            }
+        });
+    }
+
+
+    /************************************************************************/
+    function goPay() {
+        switch (type) {
+            case 'online': {//app中店铺页面付款
+                onlinePayShop();
+            }
+                break;
+
+            case 'FK': {//向商家付款
+                onlinePayShop();
+            }
+                break;
+
+            case 'SK': {//向用户收款
+                //
+                onlinePayShop();
+            }
+                break;
+
+            default:
+                break;
+        }
+
+    }
+
+
+    /************************************************************************/
+
+    //店铺页面点付款来的页面方法  - - 向商家付款
+    function onlinePayShop() {
+        if (!sid) return;
+        var money = $('#money').text() * 100;
+        if(money.toString().length>8){
+            Comm.message('付款超过最大金额')
+            return;
+        }
+        if (!money){
+            Comm.message('请输入金额')
+            return;
+        }
+
+        //调用向店铺付款
+        var parms = {};
+        parms.storeId = sid;
+        parms.money = $('#money').text() * 100;
+
+
+        switch (type) {
+            case 'online': {//app中店铺页面付款
+                parms.customerId = userinfo.customerId||'';
+            }
+                break;
+
+            case 'FK': {//向商家付款
+                parms.scan = 1;
+                parms.customerId = userinfo.customerId||'';
+            }
+                break;
+
+            case 'SK': {//向用户收款
+                parms.scan = 1;
+                parms.mesType = 2;
+                parms.customerId = uid||'';
+                parms.storeId = userinfo.myStoreId||'';
+            }
+                break;
+
+
+            default:
+                break;
+        }
+
+
+        if (type == 'SK'){
+
+            Comm.loading(1);
+            SLNetwork('post', '/api/store/saveStoreMoney', parms, function (a) {
+                Comm.loading();
+                if (a.code == 1) {
+
+                    switch (type) {
+                        case 'online': {//app中店铺页面付款
+                            setTimeout(function () {
+                                Comm.go('payComplect.html?type=online');
+                            }, 300);
+                        }
+                            break;
+
+                        case 'FK': {//向商家付款
+                            setTimeout(function () {
+                                Comm.go('payComplect.html?type=FK');
+                            }, 300);
+                        }
+                            break;
+
+                        case 'SK': {//向用户收款
+                            setTimeout(function () {
+                                Comm.go('payComplect.html?type=SK');
+                            }, 300);
+                        }
+                            break;
+
+
+                        default:
+                            break;
+                    }
+
+                } else {
+                    Comm.message(a.msg);
+                }
+            });
+
+        } else {
+            Comm.db('payInfo',{type:'shop',data:parms});
+            Comm.go('pay.html?type=shop')
+            return;
+        }
+    }
+
+    /************************************************************************/
+
+
+
+
+    //绑定输入金额事件
+    function bindkeyUp() {
+        $('#money').keyup(function () {
+             var a = Math.round($('#money').val() * (pageData.rebate/100 / 100) * 100) / 100;
+             if(isNaN(a)){
+                 a=0;
+             }
+            $('#rlbl').html(a);
+        });
+    }
+
+    /************************************************************************/
+
+
+    {
+        switch (type) {
+            case 'online': {//app中店铺页面付款
+
+            }
+                break;
+
+            case 'FK': {//向商家付款
+
+            }
+                break;
+
+            case 'SK': {//向用户收款
+
+            }
+                break;
+
+
+            default:
+                break;
+        }
+    }
+
+
+</script>
+
+
+<script type="text/html" id="tp_id_shopInfo">
+    <div class="p20 flex_between bgtop">
+        <div class="">
+            <div class="">付款给商家</div>
+            <div class="col_sub f12">
+                <span>{{storeName}}</span>
+                <span class="col_red">付款返红包券</span>
+                <!--<span class="col_red">让利{{rebate/100}}%</span>-->
+            </div>
+        </div>
+
+        <div class="headIcon imgContain br5 ohide">
+            <img src="{{OSS(doorPic,'s')}}" alt="" onerror="app.herrorimg(this);">
+        </div>
+    </div>
+</script>
+
+
+<script type="text/html" id="tp_id_uInfo">
+    <div class="p20 flex_between bgtop">
+        <div class="">
+            <div class="">付款给商家</div>
+            <div class="col_sub f12">
+                <span>{{storeName}}</span>
+                <span class="col_red">付款返红包券</span>
+                <!--<span class="col_red">让利{{rebate/100}}%</span>-->
+            </div>
+        </div>
+
+        <div class="headIcon imgContain br5 ohide">
+            <img src="{{OSS(doorPic,'s')}}" alt="" onerror="app.herrorimg(this);">
+        </div>
+    </div>
+</script>
+
+</body>
+
+</html>

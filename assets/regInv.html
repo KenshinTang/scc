@@ -1,0 +1,332 @@
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width,initial-scale=1.0,user-scalable=no" name="viewport">
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="format-detection" content="telephone=no,email=no,adress=no" />
+
+    <title>邀请好友</title>
+
+    <link rel="stylesheet" href="css/g.css">
+    <link rel="stylesheet" href="css/comm.css">
+
+    <style>
+        .mart60 {
+            margin-top: 60px
+        }
+
+        .sectionBgImg {
+            background-image: url("img/Invitation/yqzch.png");
+            background-repeat: no-repeat;
+            background-size: 100% 100%;
+        }
+
+        .col_1 {
+            color: #E30008;
+        }
+
+        .col_2 {
+            color: #7D1B00;
+        }
+
+
+        .rewardCt{
+            height: 300px;
+        }
+
+        .reward{
+            margin: 30px 10px;
+            margin-bottom:10px;
+            font-size: 28px;
+        }
+
+        .rewardText{
+            padding: 0px 20px;
+            height: 30px;
+            line-height: 30px;
+            border-radius: 15px;
+            text-align:center;
+            background-color: #FEEEB5;
+            color: #EC2F28;
+            font-size: 13px;
+            margin: auto;
+        }
+
+        .marttext {
+            /*margin-top: 53%;*/
+            height: 45px;
+            width: 345px;
+            background-color: #FFEC5B;
+            border-radius: 5px;
+        }
+
+        .h2 {
+            width: 10px;
+            background-image: url("img/Invitation/sqb.png");
+            height: 10px;
+            background-repeat: no-repeat;
+            background-size: 10px;
+            background-position: left;
+        }
+
+        .h1 {
+            width: 10px;
+            background-image: url("img/Invitation/sqb-1.png");
+            height: 10px;
+            background-repeat: no-repeat;
+            background-size: 10px;
+            background-position: right;
+        }
+
+        .yqBox {
+            width: 345px;
+            height: 235px;
+            background-color: white;
+            border-radius: 5px;
+        }
+
+        ul {
+            line-height: 24px;
+        }
+
+        .btn {
+            height: 50px;
+            width: 345px;
+            background: linear-gradient(#FFFD34, #FFC62E);
+            border-radius: 5px;
+            color: #771A00;
+        }
+
+        .close_btn {
+            height: 25px;
+            width: 25px;
+            background-image: url("img/Invitation/close.png");
+            background-size: 25px 25px;
+            float: right;
+            margin-top: -45px;
+        }
+
+        .f7 {
+            font-size: 7px;
+        }
+
+        .int {
+            height: 40px;
+            padding-left: 25px;
+        }
+
+        .col_e3 {
+            color: #E30008;
+            border: 0.5px solid;
+            border-color: #E30008;
+            border-radius: 3px;
+            height: 30px;
+            width: 30%;
+        }
+
+        .clickBgImg {
+            background-image: url("img/Invitation/zccg.png");
+            background-repeat: no-repeat;
+            background-size: 320px 340px;
+            height: 340px;
+            width: 320px;
+        }
+
+        @media (device-height:568px) and (-webkit-min-device-pixel-ratio:2) {
+
+            /* 兼容iphone5 */
+            .q {
+                padding: 0px 18px;
+            }
+
+            .yqBox {
+                width: 285px;
+                height: 235px;
+                background-color: white;
+                border-radius: 5px;
+            }
+
+            .yz {
+                width: 135px;
+            }
+        }
+    </style>
+
+</head>
+
+<!--******************************************************************************-->
+
+<body>
+
+    <header>
+        <div class="navBar">
+            <!-- <div class="navBackIcon" onclick="Comm.close()"></div> -->
+            <div class="navTitle f17">邀请好友</div>
+        </div>
+    </header>
+    <section class="sectionBgImg q">
+
+
+        <div class="flex f17 bold flex flexItem_v flexItem_between flex_item_center rewardCt">
+
+            <div>
+                <div class="col_white reward">注册领取60红包券</div>
+
+                <div class="flex_center">
+                    <div class="rewardText">邀请的会员注册成功后,即建立邀请关系</div>
+                </div>
+
+            </div>
+
+
+            <div class="marttext flex flex_center flex_item_center marb15">
+                <div class="col_1">@<span id="userName"></span></div>
+                <div class="col_2">邀请您加入水车车</div>
+            </div>
+        </div>
+
+
+        <div>
+            <div class="flex flex_center">
+                <div class="yqBox">
+                    <div class="flex flex_center mart15">
+                        <span class="h1 marr10"></span>
+                        <span class="f20">申请表</span>
+                        <span class="h2 marl10"></span>
+                    </div>
+                    <div class="flex flex_center f7 col_lgray">APPLICATION</div>
+                    <div class="marl20 marr20 bottomBorder mart10">
+                        <img src="img/Invitation/sjh.png" width="15" height="23">
+                        <input placeholder="输入11位手机号" id="phone" name="phone" data-reg='m' type="tel" maxlength="11"
+                            class="int" />
+                    </div>
+                    <div class="marl20 marr20 bottomBorder mart10 flex flex_center">
+                        <img src="img/Invitation/yazma.png" width="22" height="18">
+                        <input type="text" maxlength="4" name="code" data-reg='c' placeholder="验证码" class="int yz" />
+                        <button id="yzm" class="col_e3 flex flex_center" style="background-color:#FFFFFF;" onclick="model.yzm(this);">获取验证码</button>
+                    </div>
+                    <div class="marl20 marr20 bottomBorder mart10">
+                        <img src="img/Invitation/miam.png" width="17" height="18">
+                        <input type="password" name="password" maxlength="20" id="password" data-reg='p'
+                            placeholder="设置登录密码" class="int" />
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="flex flex_center mart15 marb15">
+            <div class="btn flex flex_item_center flex_center f17 bold" onclick="model.next()">
+                立即注册</div>
+        </div>
+    </section>
+
+    <!--******************************************************************************-->
+    <footer class="shared">
+    </footer>
+    <div id="sinbox" wtd="sinboxTemp" class="clickBgImg">
+        <div class="close_btn" onclick="Comm.db('firstLogin',false);Comm.showWindow();"></div>
+        <div class="flex_center">
+            <div class="col_white flex_center flex_item_center" style="margin-top:270px;height:40px;width:190px;border-radius:20px;background: linear-gradient(#FB5E3D, #E30008);font-size:16px;"
+                onclick="showDownLoad();">下载APP查看</div>
+        </div>
+    </div>
+    <script src="js/z.js"></script>
+    <script src="js/g.js"></script>
+    <script src="js/comm.js"></script>
+    <script src="js/api.js"></script>
+
+    <script type="text/javascript">
+        var referece = Comm.query('referece');
+
+        function pageload() {
+            var o ={};
+            o.customerId = referece;
+            AJAX.POST('/api/customer/getUserName', o, function (a) {
+                if(a.code == 1){
+                    $('#userName').html(a.data);
+                }
+            })
+            getRegReward();
+        }
+
+
+        function getRegReward() {
+            SLNetwork('get','/api/sysconfig/getconfig', {keys:'register_reward'}, function (data) {
+                if (data.code == 1) {
+                    nslog(data);
+                    var money = data.data.register_reward;
+                    console.log(money);
+                    $('.reward').text('注册领取'+app.price(money)+'红包券');
+                } else {
+                    Comm.message(data.msg);
+                }
+            });
+        }
+
+
+
+        var model = {
+            next: function() {
+                var opt = Check.submit('POST');
+                opt.referece = referece;
+                // debugger
+                if (opt) { //1 注册 2 忘记 3修改手机 5手机验证
+                    Comm.loading('正在注册...');
+                    AJAX.POST('/api/customer/invregister', opt, function (a) { //注册
+                        Comm.loading();
+                        if (a.code == 1) {
+                            Comm.showWindow('sinboxTemp', false);
+                            Comm.db('firstLogin', true);
+                        } else {
+                            Comm.message(a.msg);
+                        }
+                    });
+                }
+            },
+            getCode: function(t) {
+                var o = {};
+                o.type = 1; //1：注册 2：找回密码  5：手机验证
+                o.phone = $('#phone').val();
+                AJAX.POST('/common/sms/send', o, function (a) {});
+            },
+            yzm: function(a) {
+                var m = /^1\d{10}$/;
+                var o = $('#phone').val().search(m);
+                if (o == 0) {
+                    var time = 60;
+                    settime();
+                    this.getCode(a, 1);
+                    Comm.message('验证码已发送!');
+
+                    function settime() {
+                        if (time == 0) {
+                            $("#yzm").text("获取验证码");
+                            $("#yzm").css("background-color", "#FFFFFF");
+                            $("#yzm").css("border", "0.5px soild");
+                            $("#yzm").css("border-color", "#E30008");
+                            $("#yzm").css("border-radius", "3px");
+                            $("#yzm").css("color", "#E30008");
+                            $("#yzm").removeAttr("disabled");
+                            return;
+                        } else {
+                            $("#yzm").removeClass("bg_trans");
+                            $("#yzm").text(time + "S重新发送");
+                            $("#yzm").css("background-color", "#EDEDED");
+                            $("#yzm").css("border-color", "#EDEDED");
+                            $("#yzm").css("color", "#B3B3B3");
+                            $("#yzm").attr("disabled", "disabled");
+                            time--;
+                        }
+                        setTimeout(function () {
+                            settime()
+                        }, 1000)
+                    }
+                } else {
+                    Comm.message('手机号格式错误!');
+                }
+            }
+        }
+    </script>
+</body>
+
+</html>

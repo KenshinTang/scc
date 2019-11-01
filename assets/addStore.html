@@ -1,0 +1,552 @@
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width,initial-scale=1.0,user-scalable=no" name="viewport">
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="format-detection" content="telephone=no,email=no,adress=no" />
+
+    <title>评价商品</title>
+
+    <link rel="stylesheet" href="css/g.css">
+    <link rel="stylesheet" href="css/comm.css">
+
+    <style>
+        /*头部*/
+        .navTitle {
+            margin: 0px 80px;
+            background: url("img/tbhome/logo.png") center center no-repeat;
+            background-size: auto 20px;
+        }
+
+        .navItemIcon.msg {
+            background-image: url("img/tbhome/xiaoxi.png");
+        }
+
+        .position {
+            background-image: url("img/tbhome/position.png");
+        }
+
+        /*附近店铺*/
+        .threeItem {
+            min-width: 30%;
+            max-width: 32%;
+        }
+
+        .m5 {
+            margin: 5px;
+        }
+
+        .m5h {
+            margin-left: 5px;
+            margin-right: 5px;
+        }
+
+        .threeItemIcon {
+            padding-top: 100%;
+            margin-top: 17px;
+            margin-bottom: 13px;
+        }
+
+
+        /*附近店铺列表*/
+        .recommentShop {
+            padding: 15px 0px;
+        }
+
+        .headTt {
+            padding-left: 15px;
+        }
+
+        .cell {
+            padding: 15px 15px;
+            background-color: white;
+        }
+
+        .cellIcon {
+            height: 90px;
+            width: 90px;
+            flex-basis: 90px;
+        }
+
+        .cellRight {
+            height: 90px;
+            padding: 0px 10px;
+            flex: 1;
+        }
+
+        .breakLine_v {
+            width: 1px;
+            height: 16px;
+            background-color: #EBEBEB;
+        }
+
+        .star {
+            width: 50px;
+            height: 10px;
+            background: url("img/tbshop/Star_n.png") repeat-x center center;
+            background-size: 10px auto;
+        }
+
+        .star_get {
+            width: 60%;
+            height: 100%;
+            background: url("img/tbshop/Star.png") repeat-x center center;
+            background-size: 10px auto;
+        }
+
+        .benefit {
+            width: auto;
+            border-radius: 10px 1px;
+            padding: 2px 8px;
+        }
+
+        .pt20 {
+            padding-top: 20px;
+        }
+
+
+
+        .headItem {
+            line-height: 44px;
+            height: 44px;
+        }
+
+        .headItem.msg {
+            background-image: url("img/tbhome/xiaoxi.png");
+        }
+
+        .base80 {
+            min-width: 50px;
+            max-width: 100px;
+        }
+
+        .flex1 {
+            flex: 1;
+        }
+
+        .fenleiBar {
+            background-position-x: 100px;
+            background-image: url("img/tbshop/fenlei.png");
+            background-size: 8px;
+        }
+
+        .f13 {
+            font-size: 13px;
+        }
+
+        .pb12 {
+            padding-bottom: 12px;
+        }
+
+        /*特卖商品 新品推荐*/
+        .special {
+            background-image: url("img/tbmall/tmsp.png");
+        }
+
+        .new {
+            background-image: url("img/tbmall/xptj.png");
+        }
+
+        .mline {
+            text-decoration: line-through;
+        }
+
+        .goodsCell {
+            min-width: 33%;
+            max-width: 33%;
+            width: 33%;
+            margin: 7px;
+        }
+
+        .goodsFace {
+            padding-top: 70%;
+            border-radius: 5px;
+
+        }
+
+        .marl7 {
+            margin-left: 8px;
+        }
+
+        .pt7 {
+            padding-top: 7px;
+        }
+
+        .pb7 {
+            padding-bottom: 7px;
+        }
+
+        .lIcon {
+            padding-left: 25px;
+            background-repeat: no-repeat;
+            background-position: left 5px center;
+            background-size: auto 15px;
+            background-image: url(img/tbshop/Place.png);
+        }
+
+        .f10 {
+            font-size: 10px;
+        }
+
+        .btn1 {
+            height: 40px;
+            width: 160px;
+            background: linear-gradient(#FFDB26, #F6B138);
+            border-radius: 5px;
+        }
+
+        .btn2 {
+            height: 40px;
+            width: 160px;
+            background: linear-gradient(#FB5E3D, #E30008);
+            border-radius: 5px;
+        }
+
+        .btnMar {
+            padding: 8px 18px;
+        }
+
+        .borbred {
+            border-bottom: 2px solid #E30008;
+        }
+
+        .paddb5 {
+            padding-bottom: 5px;
+        }
+
+        .marb8 {
+            margin-bottom: 8px;
+        }
+
+        .bor {
+            border: 1px solid #EBEBEB;
+        }
+
+        /* upimg S*/
+        .up-Img {
+            overflow: hidden;
+            padding: 22px 0;
+        }
+
+        .up-Img .box {
+            background-color: unset;
+            width: 79px;
+            height: 79px;
+            margin-right: 12px;
+            margin-bottom: 12px;
+            float: left;
+            border-radius: 5px;
+            position: relative;
+            line-height: unset;
+        }
+
+        .limitNum {
+            color: #A8A7A7;
+            margin: auto;
+            text-align: center;
+            position: absolute;
+            top: 72%;
+            right: 0px;
+            left: 0px;
+            z-index: 9;
+        }
+
+        .box {
+            width: 65px;
+            height: 65px;
+        }
+
+        .box img {
+            object-fit: cover;
+            width: 100%;
+            height: 100%;
+        }
+
+        .upimg-del {
+            width: 30px;
+            height: 30px;
+            position: absolute;
+            right: -10px;
+            top: -10px;
+            background: 10px center no-repeat url(img/tbmain/delete.png);
+            background-size: 20px 20px;
+        }
+
+        /* upimg E*/
+        footer button,
+        .footer button,
+        .button,
+        button,
+        .btn {
+            background: transparent;
+        }
+
+        body>footer {
+            z-index: 99;
+        }
+    </style>
+
+</head>
+
+<!--******************************************************************************-->
+
+<body class="bg_lgray">
+
+    <header class="paddb10">
+
+        <div class="navBar">
+            <div class="headItem navTitles">
+                <div class="navBackIcon" onclick="Comm.close()"></div>
+                <div id="title" class="f17" style="padding-right:40px">添加商品</div>
+            </div>
+        </div>
+
+    </header>
+    <section>
+
+        <div class="marb5 bg_white">
+            <div class="bg_white paddl15 paddr15">
+                <div class="flex_between bottomBorder">
+                    <div class="mart20 marb20 flex_center">商品标题</div>
+                    <input id="goodsName" class="flex_center tRight" placeholder="请输入商品标题" />
+                </div>
+            </div>
+            <div class="bg_white paddl15 paddr15 marb5">
+                <div class="flex_between">
+                    <div class="mart20 marb20 flex_center">商品简介</div>
+                    <input id="synopsis" class="flex_center tRight" placeholder="请输入商品简介" />
+                </div>
+            </div>
+        </div>
+
+        <div class="cell marb5">
+            <div class="f16 bold marb20">商品轮播图</div>
+            <div class="up-Img">
+                <div id="face"></div>
+            </div>
+            <div class="marr10 fl">
+                <div id="upload" class="bor paddt20" style="width:78px;height:78px;">
+                    <div class="marb5 up-upBtn flex_center flex_item_center"><img src="img/tbmain/jianj.png"
+                            width="20px" height="20px"></div>
+                    <div class="flex_center flex_item_center col_lgray"><span id="imgNum">0</span>/5</div>
+                </div>
+            </div>
+            <div style="clear:both"></div>
+        </div>
+
+        <div class="cell marb5" style="padding-top:0px;">
+            <div class="bg_white paddt15">
+                <div class="marb5 f14">商品详情:</div>
+                <div id="goodsDsText" class="hide"></div>
+                <textarea id="goodsDs" class="f12" placeholder="请输入详情..." style="width:100%;height:60px"></textarea>
+                <div class="up-Img">
+                    <div id="detailImgs"></div>
+                </div>
+                <div class="mart15">
+                    <div id="upload2" class="up-upBtn bor flex_center flex_item_center" style="width:80px;height:80px;">
+                        <div class="marb5"><img src="img/tbmain/jianj.png" width="20px" height="20px"></div>
+                    </div>
+                    <div style="clear:both"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg_white paddl15 paddr15 marb5">
+            <div class="flex_between">
+                <div class="mart20 marb20 flex_center">价格</div>
+                <div class="flex"><input id="price" class="flex_center tRight" placeholder="请输入价格" /></div>
+            </div>
+        </div>
+
+        <div class="flex flex_between btnMar" style="padding-top:0px;padding-bottom:0px;">
+            <div id="buttomText" class="btn2 col_white f16 flex flex_item_center flex_center"
+                style="width:100%;height:50px;margin-top:30px;margin-bottom:10px;" onclick="model.sub()">确认发布</div>
+        </div>
+    </section>
+
+    <script src="js/z.js"></script>
+    <script src="js/g.js"></script>
+    <script src="js/comm.js"></script>
+    <script src="js/api.js"></script>
+    <script src="inc/upimg/upload.js"></script>
+
+    <script type="text/javascript">
+        var uploader;
+        var uploader2;
+
+        function pageload() {
+            //多图上传
+            uploader = new imgUploader('face', 5 - model.imgNum, 'upload');
+            //初始化上传插件
+            uploader2 = new imgUploader('detailImgs', 5, 'upload2');
+            model.o.storeGoodsId = model.storeGoodsId;
+            model.o.storeId = Comm.db('userinfo').storeId;
+            if (Comm.db('storeGoodsId') != null) {
+                $('#title').html('编辑商品');
+                $('#buttomText').html('确认修改');
+                AJAX.POST('/api/store/storeGoodsDetail', model.o, function (d) {
+                    Comm.db('storeGoodsId', null);
+                    if (d.code == 1) {
+                        var data = d.data;
+                        model.d = data;
+                        for (x in data) {
+                            if (x == 'imgs') {
+                                var a = data[x].split(',');
+                                if (a != 0) {
+                                    for (var index = 0; index < a.length; index++) {
+                                        uploader.addImgItem(a[index], true);
+                                        model.imgNum = uploader.imgList.length;
+                                    }
+                                    $('#imgNum').html(model.imgNum);
+                                }
+                            } else if (x == 'face') {
+
+                            } else if (x == 'goodsDs') {
+                                var str = '';
+                                var xxx = /&lt;/g;
+                                var ddd = /&gt;/g;
+                                var kkk = /%26nbsp;/g;
+                                str = data[x];
+                                str = str.replace(xxx, '<');
+                                str = str.replace(ddd, '>');
+                                str = str.replace(kkk, ' ');
+                                var goodsDsText = $('#goodsDsText').html(str);
+                                var strw = goodsDsText.text();
+                                $('#' + x).val(strw);
+                            } else if (x == 'detailImgs') {
+                                if(data[x]=='')return;
+                                var img = data[x].split(',');
+                                for (var i = 0; i < img.length; i++) {
+                                    uploader2.addImgItem(img[i], true);
+                                }
+                            } else if (x == 'price') {
+                                $('#' + x).val(data[x]);
+                            } else {
+                                $('#' + x).html(data[x]);
+                                $('#' + x).val(data[x]);
+                            }
+                        }
+                        $('#imgNum').html(model.imgNum);
+                    } else {
+                        Comm.message(d.msg);
+                    }
+                })
+            }
+            uploader.success = function () {
+                if (model.imgNum < 5) {
+                    model.imgNum++;
+                    var cimgUrl = uploader.imgList[uploader.imgList.length - 1] != '' ? uploader.imgList[0] :
+                        'img/error.png';
+                    var imgUrl = Comm.OSS.getImgUrl(cimgUrl);
+                    model.imgNum = uploader.imgList.length;
+                    $('#imgNum').html(model.imgNum);
+                } else {
+                    Comm.message('超过轮播图最大限制数');
+                }
+            };
+            uploader2.success = function () {
+                var cimgUrl = uploader2.imgList[uploader2.imgList.length - 1] != '' ?
+                    uploader2.imgList[0] :
+                    'img/error.png';
+                var imgUrl = Comm.OSS.getImgUrl(cimgUrl);
+            };
+        }
+        var model = {
+            imgNum: 0,
+            storeGoodsId: Comm.db('storeGoodsId'),
+            o: {},
+            d: {},
+            del: function (i) {
+                $('#lbImgt' + i).remove();
+                this.imgNum = uploader.imgList.length;
+                $('#imgNum').html(this.imgNum);
+            },
+            sub: function () {
+                this.d.goodsName = $('#goodsName').val();
+                this.d.synopsis = $('#synopsis').val();
+                this.d.goodsDs = $('#goodsDs').val();
+                this.d.price = $('#price').val();
+                this.d.storeId = Comm.db('userinfo').storeId;
+
+
+
+                var d2 = {};
+                d2.imgs = undefined;
+                if (uploader.imgList.length) {
+                    d2.imgs = uploader.imgList.join(',');
+                } else {
+                    d2.imgs ='';
+                }
+                d2.storeId = Comm.db('userinfo').storeId;
+                this.d.imgs = d2.imgs;
+                if (uploader2.imgList.length) {
+                    this.d.detailImgs = uploader2.imgList.join(',');
+                } else {
+                    this.d.detailImgs = '';
+                }
+                var t = Comm.query('type');
+                if (this.d.goodsName == '') {
+                    Comm.message('请输入商品名称');
+                    return;
+                }
+                if (this.d.synopsis == '') {
+                    Comm.message('请输入商品简介');
+                    return;
+                }
+                if (this.d.synopsis.length > 20) {
+                    Comm.message('商品简介最多20字');
+                    return;
+                }
+
+                if (!d2.imgs || d2.imgs.length == 0) {
+                    Comm.message('请添加商品轮播图');
+                    return;
+                }
+
+
+                if (this.d.goodsDs == '') {
+                    Comm.message('请输入商品详情');
+                    return;
+                }
+
+                if (!this.d.price) {
+                    Comm.message('请填写商品价格');
+                    return;
+                }
+                if (t == 'add') {
+                    this.d.storeId = this.o.storeId;
+                    Comm.loading('正在添加...');
+                    $('#buttomText').attr('disabled', 'disabled');
+                    AJAX.POST('/api/store/addstoregoods', this.d, function (d) {
+                        Comm.loading();
+                        if (d.code == 1) {
+                            Comm.message('商品添加成功');
+                            setTimeout(function () {
+                                Comm.close();
+                            }, 300)
+                        } else {
+                            Comm.message(d.msg);
+                        }
+                    })
+                } else {
+                    $('#buttomText').attr('disabled', 'disabled');
+                    Comm.loading('正在修改...');
+                    AJAX.POST('/api/store/updatestoregoods', this.d, function (d) {
+                        if (d.code == 1) {
+                            Comm.message('商品更新成功');
+                            setTimeout(function () {
+                                Comm.loading();
+                                Comm.close();
+                            }, 300)
+                        } else {
+                            Comm.message(d.msg);
+                        }
+                    })
+                }
+            }
+        }
+    </script>
+</body>
+
+</html>

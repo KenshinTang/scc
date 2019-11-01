@@ -1,0 +1,119 @@
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width,initial-scale=1.0,user-scalable=no" name="viewport">
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="format-detection" content="telephone=no,email=no,adress=no" />
+
+    <title>审核中</title>
+
+    <link rel="stylesheet" href="css/g.css">
+    <link rel="stylesheet" href="css/comm.css">
+
+    <style>
+        body {
+            background-image: url("img/tbmain/Background.png");
+            background-repeat: no-repeat;
+            background-size: 100% 100%;
+            background-position: center center;
+        }
+
+        .navBackIcon {
+            background: url("img/generalIcon/back_w.png");
+            background-position: center center;
+            background-repeat: no-repeat;
+            background-size: auto 16px;
+            background-position-x: 10px;
+        }
+
+        .d1 {
+            width: 90px;
+            height: 90px;
+            /* position: fixed; */
+            margin-top: 14%;
+            background: url("img/tbmain/skz.png");
+            background-size: 90px 90px;
+            background-position: center center;
+            background-repeat: no-repeat;
+        }
+
+        .d2 {
+            /* position: fixed; */
+            margin-top: 40%;
+        }
+
+        .d3 {
+            /* position: fixed; */
+            margin-top: 20px;
+        }
+        .navBar{
+            background-color:rgba(0, 0, 0, 0);
+        }
+    </style>
+
+</head>
+
+<!--******************************************************************************-->
+
+<body>
+
+    <header>
+        <div>
+            <div class="grow1">
+                <div class="navBar bg_clear">
+                    <div class="navBackIcon" onclick="closePage()"></div>
+                    <div class=""></div>
+                    <div class="navTitle col_white">申请</div>
+                </div>
+            </div>
+        </div>
+    </header>
+    <!--******************************************************************************-->
+
+    <section class="scroll-y">
+        <div class="flex_center">
+            <div class="d1"></div>
+        </div>
+        <div class="flex_center">
+            <div class="f16 bold d2">提交成功，请等待管理员审核！</div>
+        </div>
+        <div class="flex_center">
+            <div class="f12 d3" style="color:#999999;text-align: center;width:184px;">申请提交成功，审核中，在此期间 请您耐心等待！</div>
+        </div>
+    </section>
+
+    <!--******************************************************************************-->
+    <footer>
+        <div class="flex_center f12 marb15" style="color:#C2C2C2;">客服电话：<div onclick="contactKF();" id="id_kf_tel"></div></div>
+    </footer>
+
+    <script src="js/z.js"></script>
+    <script src="js/g.js"></script>
+    <script src="js/comm.js"></script>
+    <script src="js/api.js"></script>
+
+    <script>
+
+        var skip = Comm.query('skip')||0;
+        function closePage() {
+            if (skip){
+                Comm.close(skip);
+            } else {
+                Comm.close()
+            }
+        }
+
+        function androidback(){
+            closePage();
+        }
+
+
+        //显示客服电话
+        showKFText('#id_kf_tel');
+
+    </script>
+
+</body>
+
+</html>

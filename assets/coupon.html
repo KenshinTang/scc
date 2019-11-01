@@ -1,0 +1,538 @@
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width,initial-scale=1.0,user-scalable=no" name="viewport">
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+    <meta name="format-detection" content="telephone=no,email=no,adress=no"/>
+
+    <title></title>
+
+    <link rel="stylesheet" href="css/g.css">
+    <link rel="stylesheet" href="css/comm.css">
+    <link rel="stylesheet" href="inc/mescroll/mescroll.min.css">
+
+
+    <style>
+        .cellContent {
+            padding: 18px 0px;
+            padding-right: 15px;
+        }
+
+        .hbBj {
+            padding-top: 29.3%;
+            background: url("img/tbmine/hbBg.png") center center no-repeat;
+            background-size: 100%;
+            color: white;
+        }
+
+        .br15 {
+            border-radius: 15px;
+        }
+
+        .calendar {
+            background: url("img/tbmine/calend.png") center center no-repeat;
+            background-size: 15px;
+        }
+
+        .lh35 {
+            line-height: 35px;
+        }
+
+        .placeholder {
+            line-height: 100px;
+            text-align: center;
+        }
+
+        .checkShow {
+            display: none;
+        }
+
+        /*筛选*/
+        #MainBg,
+        #WTDBOX {
+            z-index: 99;
+        }
+        #start{
+            background-color:#FFFFFF;
+        }
+        #end{
+            background-color:#FFFFFF;
+        }
+
+        /*筛选*/
+
+    </style>
+
+</head>
+
+<!--******************************************************************************-->
+
+<body>
+
+<header>
+    <div class="navBar bottomShadow">
+        <div class="navBackIcon" onclick="Comm.close()"></div>
+        <div class="navTitle"></div>
+    </div>
+</header>
+<!--******************************************************************************-->
+
+<section class="scroll-y mescroll" id="refreshId">
+
+    <div class="wrap hbBj">
+
+        <div class="checkShow xjq">
+            <div class="wrap_ct flex_between p20">
+                <div>
+                    <div class="f12">我的现金券(元)</div>
+                    <div id="XJQ" class="flex_center f18 mt10"></div>
+                </div>
+                <div class="bg_white col_red lh30 pad_h10 br15" onclick="clickedType()">赚取现金券</div>
+            </div>
+        </div>
+
+        <div class="checkShow hbq">
+            <div class="wrap_ct flex_between p20">
+                <div>
+                    <div class="f12">我的红包券(元)</div>
+                    <div id="HBQ" class="flex_center f18 mt10"></div>
+                </div>
+                <div class="bg_white col_red lh30 pad_h10 br15 wxHide" onclick="clickedType()">抢红包</div>
+            </div>
+        </div>
+
+
+        <div class="checkShow hhr">
+            <div class="wrap_ct flex_between p20">
+                <div>
+                    <div class="f12">我的余额(元)</div>
+                    <div id="HHR" class="flex_center f18 mt10"></div>
+                </div>
+                <div class="bg_white col_red lh30 pad_h10 br15" onclick="clickedType()">提现</div>
+            </div>
+        </div>
+
+
+        <div class="checkShow dpye">
+            <div class="wrap_ct flex_between p20">
+                <div>
+                    <div class="f12">我的余额(元)</div>
+                    <div id="DPYE" class="flex_center f18 mt10"></div>
+                </div>
+                <div id="tixian" class="hide bg_white col_red lh30 pad_h10 br15" onclick="clickedType()">提现</div>
+            </div>
+        </div>
+
+
+    </div>
+
+
+    <div class="paddl15 paddr15 bg_lgray">
+        <div class="bg_lgray lh40 flex_between">
+            <div id="time" class="col_title choosedTime baseWH">本月</div>
+            <!--<div class="col_title">2018-10-03至2019-01-31累计分润</div>-->
+            <div class="baseWH calendar" onclick="showFilter();"></div>
+        </div>
+    </div>
+
+
+    <div id="id_list"></div>
+
+
+</section>
+
+<div id="time_filter" wtd="sinboxTemp">
+    <div class="item p20 pt10">
+        <div class="colorb5 left">时间筛选：</div>
+        <div class="tleft">
+            <input type="button" id="start" placeholder="开始时间" onclick="datePickerstart.show();"
+                   class="baseH center timeChooseItem"/>
+            <span>&nbsp;至&nbsp;</span>
+            <input type="button" id="end" onclick="datePickerend.show();" placeholder="结束时间"
+                   class="baseH center timeChooseItem"/>
+        </div>
+    </div>
+
+
+    <div class="tb">
+        <div class="td f18 bg_lred" onclick="filterReset()">重置</div>
+        <div class="td f18 r btn bg_trans" onclick="filterSure()">确定</div>
+    </div>
+</div>
+
+<!--******************************************************************************-->
+<footer></footer>
+
+<script src="js/z.js"></script>
+<script src="js/g.js"></script>
+<script src="js/comm.js"></script>
+<script src="js/api.js"></script>
+<script src="js/art-template.js"></script>
+<script type="text/javascript" src="js/picker.min.js"></script>
+<script src="inc/mescroll/mescroll.min.js"></script>
+
+
+<script>
+    var type = Comm.query('type'), consumeType; //[xjq (现金)   hbq(红包)  hhr(合伙人账户明细)]
+    var userinfo = Comm.db('userinfo')||{};
+    var datePickerstart, datePickerend,merefresh;
+    var requestModel = {
+        beginTime: "",
+        endTime: "",
+    }
+
+
+    //显示筛选界面
+    function showFilter() {
+        Comm.showWindow('sinboxTemp', true);
+        automaticalTop();
+        $("#WTDBOX #start").val(requestModel.beginTime||'');
+        $("#WTDBOX #end").val(requestModel.endTime||'');
+    }
+
+    function pageresume(){
+        initTypeData();
+    }
+
+    //重置筛选
+    function filterReset() {
+        requestModel.beginTime = '';
+        requestModel.endTime = '';
+        Comm.showWindow();
+        getList(requestModel);
+    }
+
+    //确定筛选
+    function filterSure() {
+        getList(requestModel);
+        $('#time').html(requestModel.beginTime+'至'+requestModel.endTime);
+        Comm.showWindow();
+        Comm.db('requestModel',requestModel);
+        //Comm.go('searchMoneyListResult.html');
+    }
+
+
+
+    function pageload() {
+        initPicker();
+        initUIAndListData();
+        initTypeData();
+    }
+
+    function initPicker() {
+        datePickerstart = new Datepicker("开始时间", function (a, b, c) {
+
+            var days = checkDays(b, requestModel.endTime);
+            if (days > 0) {
+                Comm.message('开始时间不得大于结束时间');
+                return;
+            }
+            $("#WTDBOX #start").val(b);
+            requestModel.beginTime = b;
+
+        });
+        datePickerend = new Datepicker("结束时间", function (a, b, c) {
+            var days = checkDays(requestModel.beginTime, b);
+
+            if (days > 0) {
+                Comm.message('结束时间不得小于开始时间');
+                return;
+            }
+            $("#WTDBOX #end").val(b);
+            requestModel.endTime = b;
+        });
+    }
+
+    //处理蒙层尺寸
+    function automaticalTop() {
+        $("#MainBg,#WTDBOX").css("top", $(".navBar").height());
+    }
+
+
+    //获取列表数据
+    function initUIAndListData() {
+        //consumeType「1:余额  2:红包   3:积分   4:现金券」
+        //receiverType  「1:系统   2:店铺   3:分公司   4:个人   5:合伙人」
+        //对应上面的id 如: (店铺:storeId / 个人:customerId)
+
+        switch (type) {
+            case 'hbq': {//红包券
+                $('.navTitle').text('红包券');
+                consumeType = 2;
+                requestModel.receiverType = 4;
+                requestModel.receiverId = userinfo.customerId;
+                requestModel.consumeType = consumeType;
+
+            }
+                break;
+
+            case 'xjq': {//现金券
+                $('.navTitle').text('现金券');
+                consumeType = 4;
+                requestModel.receiverType = 4;
+                requestModel.receiverId = userinfo.customerId;
+                requestModel.consumeType = consumeType;
+            }
+                break;
+
+            case 'hhr': {//合伙人余额
+                $('.navTitle').text('余额');
+                consumeType = 1;
+                requestModel.receiverType = 5;
+                requestModel.receiverId = userinfo.myPartnerId||'';
+                requestModel.consumeType = consumeType;
+            }
+                break;
+
+            case 'dpye': {//店铺余额
+                $('.navTitle').text('余额');
+                consumeType = 1;
+                requestModel.receiverType = 2;
+                requestModel.receiverId = userinfo.myStoreId||'';
+                requestModel.consumeType = consumeType;
+            }
+                break;
+
+
+            default:
+                break;
+        }
+        getList(requestModel);
+
+
+        $('.checkShow').hide();
+        $('.' + type).show('!important');
+    }
+
+
+
+    //获取头数据
+    function initTypeData() {
+        switch (type) {
+            case 'hbq': {//红包券
+                getNumericalData();
+            }
+                break;
+
+            case 'xjq': {//现金券
+                getNumericalData();
+            }
+                break;
+
+            case 'hhr': {//合伙人余额
+                getPartnerInfo();
+            }
+                break;
+
+            case 'dpye': {//店铺余额
+                getStoreInfo();
+            }
+                break;
+
+            default:
+                break;
+        }
+    }
+
+
+    //获取用户信息
+    function getNumericalData() {
+        SLNetwork('get', '/api/customer/my', {}, function (data) {
+            if (data.code == 1) {
+                var tmodel = data.data || {};
+                var xjQ = tmodel.ticket || 0;//现金券
+                var hbQ = tmodel.packets || 0;//现金券
+
+                $('#HBQ').html(app.price(hbQ));
+                $('#XJQ').html(app.price(xjQ));
+
+            } else {
+                Comm.message(data.msg);
+            }
+        });
+    }
+
+
+    //获取合伙人信息
+    function getPartnerInfo() {
+        var parms = {
+            partnerId:userinfo.myPartnerId
+        }
+        SLNetwork('get', '/api/partner/mypartner', parms, function (data) {
+            if (data.code == 1) {
+                var model = data.data;
+                $('#HHR').text(app.price(model.partner.balance||0));
+            } else {
+                Comm.message(data.msg);
+            }
+        });
+    }
+
+    //获取合伙人信息
+    function getStoreInfo() {
+        SLNetwork('get', '/api/store/myStoreInfo', userinfo, function (data) {
+            if (data.code == 1) {
+                if(data.data.manageType!=1){
+                    $('#tixian').removeClass('hide');
+                }
+                var model = data.data;
+                $('#DPYE').text(app.price(model.balance||0));
+            } else {
+                Comm.message(data.msg);
+            }
+        });
+    }
+
+
+
+
+    ////////////////////////////////获取列表信息////////////////////////////////
+
+    //添加刷新控件
+    function addrefresh() {
+
+        if (!merefresh){
+            merefresh = new MERefresh();
+            merefresh.refreshOption.refreshUrl = '/api/concumelog/getconcumelogList';
+            merefresh.refreshOption.noMoreSize = 2;
+            merefresh.refreshOption.refreshParm = requestModel;
+
+            //页面 <刷新> 的回调
+            merefresh.refreshOption.refresh_cb = function (refresh, data) {
+                var list = data.data || [];
+                refresh.successEndRef(list.length||0, data.totalCount||0);
+
+                if (data.code == 1) {
+                    $('#id_list').append(template('tp_id_cell', list));
+                } else {
+                    Comm.message(data.msg);
+                }
+
+            };
+            merefresh.configurationDone('refreshId', 'id_list');
+        } else {
+            merefresh.MeRefScroll.resetUpScroll();
+        }
+    }
+
+
+
+
+
+    function getList(params) {
+        addrefresh();return;
+
+        Comm.loading(1);
+        SLNetwork('get', '/api/concumelog/getconcumelogList', params, function (data) {
+            Comm.loading();
+            if (data.code == 1) {
+                var list = data.data || [];
+                $('#id_list').html(template('tp_id_cell', list));
+            } else {
+                Comm.message(data.msg);
+            }
+        });
+    }
+
+
+
+
+    //点击对应的按钮 如（）
+
+    function clickedType() {
+
+
+        switch (type) {
+            case 'hbq': {//红包券
+                //跳原生地图
+                Comm.gopage();
+            }
+                break;
+
+            case 'xjq': {//现金券
+                //需要跳转到原生的红包页面
+                Comm.go('Invitation.html');
+            }
+                break;
+
+            case 'hhr': {//合伙人余额
+                Comm.go('withDrawal.html?comeType='+5);
+            }
+                break;
+
+            case 'dpye': {//店铺余额
+                Comm.go('withDrawal.html?comeType='+2);
+            }
+                break;
+
+
+            default:
+                break;
+        }
+
+    }
+
+
+    function tempTempTemp() {
+
+        switch (type) {
+            case 'hbq': {//红包券
+
+            }
+                break;
+
+            case 'xjq': {//现金券
+
+            }
+                break;
+
+            case 'hhr': {//合伙人余额
+
+            }
+                break;
+
+
+
+            case 'dpye': {//店铺余额
+
+            }
+                break;
+
+            case 'hhr': {//合伙人余额
+
+            }
+                break;
+
+
+
+            default:
+                break;
+        }
+
+    }
+
+
+</script>
+
+
+<script type="text/html" id="tp_id_cell">
+
+    {{each $data model i}}
+    <div class="paddl15 bg_white ">
+        <div class="cellContent bottomBorder">
+            <div class="label f16 icon_pre icon_phone ">
+                <p class="bold">{{fromType(model.actType)}}{{if model.actType==8}}{{if model.state==1}}(审核中){{/if}}{{if model.state==2}}(审核通过){{/if}}{{if model.state==3}}(审核失败){{/if}}{{/if}}</p>
+                <p class="f12 color999">{{formatDate(model.addTime,'Y-m-d H:i')}}</p>
+            </div>
+            <span class="moneyRed f18 bold">{{getSymbol(model.consumeAct)}} {{priceTp(model.money)}}</span>
+        </div>
+    </div>
+    {{/each}}
+
+</script>
+
+
+</body>
+
+</html>

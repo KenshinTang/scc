@@ -1,0 +1,1118 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>商品详情</title>
+    <meta content="width=device-width,initial-scale=1.0,user-scalable=no" name="viewport">
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+    <meta name="format-detection" content="telephone=no,email=no,adress=no"/>
+
+    <link href="css/g.css" type="text/css" rel="stylesheet">
+    <link href="css/comm.css" type="text/css" rel="stylesheet">
+    <link href="inc/side/side.css" type="text/css" rel="stylesheet"/>
+    <link href="inc/mescroll/mescroll.min.css" type="text/css" rel="stylesheet"/>
+
+    <style>
+
+        section div {
+            /*background-color: white;*/
+        }
+
+        body {
+            /*position: relative;*/
+        }
+
+        #head {
+            height: 100%;
+        }
+
+        li img, li {
+            height: 100%;
+            width: 100%;
+        }
+
+        .wrap {
+            padding-top: 100%;
+        }
+
+        .navBar {
+            background-color: unset;
+            background-color: rgba(0,0,0,0);
+            position: absolute;
+            z-index: 999;
+            top: 0;
+            left: 0;
+            right: 0;
+        }
+
+        .banner > .imgContain {
+            width: 100%;
+            height: 100%;
+        }
+
+        .navTitle {
+            background-color: unset;
+            background-color: rgba(0,0,0,0);
+        }
+
+        .navBackIcon, .navItemIcon {
+            background-size: auto 25px;
+        }
+
+        .navBackIcon {
+            background-image: url('img/generalIcon/detail_back.png');
+        }
+
+        .navItemIcon {
+            background-image: url('img/generalIcon/detail_share.png');
+        }
+
+        /** {*/
+            /*overflow: hidden;*/
+        /*}*/
+
+        .foot_bg {
+            width: 20px;
+            height: 20px;
+            margin: auto;
+        }
+
+        .foot_bg.kf {
+            background-image: url("img/tbmall/kefu.png");
+        }
+
+        .foot_bg.sc {
+            background-image: url("img/tbmall/shca.png");
+        }
+
+        .active .foot_bg.sc {
+            background-image: url("img/tbmall/shca-1.png");
+        }
+
+        .border {
+            border: 1px solid #E30008;
+            color: #E30008;
+            padding: 0px 5px;
+            font-size: 12px;
+            margin-left: 10px;
+            border-radius: 3px;
+        }
+
+        .preferent {
+            border-radius: 8px;
+            line-height: 16px;
+            font-size: 12px;
+            padding: 0px 5px;
+        }
+
+        .goodDesTt {
+            background-image: url("img/generalIcon/iden_g_xia.png");
+        }
+
+        .goodDesTt.active {
+            background-image: url("img/generalIcon/iden_g_shang.png");
+        }
+
+
+        .gdetal img {
+            width: 100%;
+        }
+
+        .checkMore {
+            background-image: url("img/tbmall/ckgd.png");
+            background-size: 6px auto;
+            background-position: right;
+            padding-right: 10px;
+        }
+
+        .evaImg {
+            width: 70px;
+            height: 70px;
+        }
+
+        /*选择规格*/
+
+        /*,#WTDBOXTD*/
+        .maskBg{
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background-color: rgba(0,0,0,0.5);
+            z-index: 9998;
+        }
+        .mask {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 70%;
+            width: 100%;
+            background-color: white;
+            z-index: 9999;
+        }
+
+
+        .maskContent {
+            height: 100%;
+            width: 100%;
+            overflow-x: hidden;
+            overflow-y: scroll;
+            position: relative;
+        }
+
+        .maskGoodsIcon {
+            width: 100px;
+            height: 100px;
+            flex-basis: 100px;
+        }
+
+        .chooseM {
+            margin-bottom: 15px;
+        }
+
+        .specificateItem {
+            float: left;
+            padding: 5px 15px;
+            background-color: #F2F2F2;
+            color: #333333;
+            margin-right: 15px;
+            margin-top: 15px;
+            border-radius: 3px;
+        }
+
+        .specificateItem.active {
+            color: white;
+            background-color: #E30008;
+        }
+
+        .specificateItem.disable {
+            color: #C2C2C2;
+        }
+
+        .changeNumber {
+            border: 1px solid #DCDCDC;
+            border-radius: 3px;
+            width: 70px;
+            height: 20px;
+            text-align: center;
+        }
+
+        .changeNumber > .reduce, .changeNumber > .increase {
+            flex: 2;
+        }
+
+        .changeNumber > .number {
+            border-left: 1px solid #DCDCDC;
+            border-right: 1px solid #DCDCDC;
+            flex: 3;
+        }
+
+        #WTDBOX > div {
+            text-align: unset;
+        }
+
+        .fork {
+            background: url("img/goods/Shutdown.png") center center no-repeat;
+            position: absolute;
+            top: 10px;
+            right: 10px;
+
+            width: 20px;
+            height: 20px;
+            background-size: 15px auto;
+            z-index: 2;
+        }
+
+        .maskSure.disable{
+            background-color: #E4E4E4;
+            background: #E4E4E4;
+        }
+
+
+        .star {
+            width: 50px;
+            height: 10px;
+            background: url("img/tbshop/Star_n.png") repeat-x center center;
+            background-size: 10px auto;
+        }
+
+        .star_get {
+            width: 60%;
+            height: 100%;
+            background: url("img/tbshop/Star.png") repeat-x left center;
+            background-size: 10px auto;
+        }
+
+
+        .mw80{
+            min-width: 80px;
+        }
+
+
+
+    </style>
+</head>
+
+
+<body>
+<header>
+</header>
+
+<!-- 返回和分享 -->
+<div class="navBar iosDeal">
+    <div class="navBackIcon" onclick="Comm.close();"></div>
+    <div class="navItemIcon mr10 wxHide" onclick="shareGoods();"></div>
+    <div class="navTitle col_white"></div>
+</div>
+
+<section id="refresh" class="mescroll bg_lgray scroll-y">
+
+    <!-- 商品图片滚动 -->
+    <div class="wrap bg_white">
+        <div class="wrap_ct">
+            <div class="mainW mainH" id="banner">
+                <ul class="list fullImg side_ul" id="side">
+
+                </ul>
+            </div>
+        </div>
+    </div>
+
+
+    <!--商品信息-->
+    <div class="ct_goodsInfo">
+
+    </div>
+
+
+    <!--是否有优惠券-->
+    <div class="hasYH">
+
+    </div>
+
+
+
+    <!--商品规格-->
+    <div class="p15 mt10 bg_white flex_start f15 indicator getShow1" onclick="showChooseModel(true)">
+        <div class="col_sub999">规格:&nbsp;</div>
+        <div class="choosedDes"></div>
+    </div>
+
+
+    <!--商品描述-->
+    <div class="p15 mt10 bg_white">
+        <div class="rIcon bold f18 goodDesTt active">商品描述</div>
+        <div class="ct_goodsModel mart20"></div>
+    </div>
+
+
+
+
+    <!--商品详情-->
+    <div class="p15 mt10 bg_white">
+        <div class="bold f18 pad_v10">商品详情</div>
+
+        <div class="gdetal">
+
+        </div>
+    </div>
+
+
+    <!--商品评价-->
+    <div class="p15 mt10 bg_white goodsEva">
+        <div class="ev_head"></div>
+        <div class="ev_list" id="list"></div>
+    </div>
+
+
+</section>
+
+<footer class="bg_white" id="footer">
+
+    <div class="flex_start center topBorder">
+        <div class="grow1" onclick="goodsContact();">
+            <div class="foot_bg lIcon kf"></div>
+            <div>客服</div>
+        </div>
+        <div class="grow1 collect" onclick="collectionClicked(this)">
+            <div class="foot_bg lIcon sc"></div>
+            <div>收藏</div>
+        </div>
+
+        <div class="grow4 marg_v5 marg_h10 lh50 br5 ohide">
+            <div class="bg_theme col_white f18" onclick="showChooseModel(true)">立即购买</div>
+        </div>
+    </div>
+
+</footer>
+
+</body>
+
+
+<!--mask-->
+<div class="maskBg" style="display: none;">
+    <div class="mask">
+
+    </div>
+</div>
+
+
+
+<!--banner滚动商品图片-->
+<script type="text/html" id="bannerTpl">
+    {{each $data model i}}
+    <li class="imgCt_cover">
+        <img src="{{OSS(model,'l')}}" alt="" onerror="app.errorimg(this)">
+    </li>
+    {{/each}}
+</script>
+
+
+<!--商品信息-->
+<script type="text/html" id="tp_id_goodsInfo">
+    <div class="goodsInfo p15 bg_white">
+        <div class="gdTt">{{goodsName}}</div>
+
+        <div class="flex_start mt10">
+            <div class="f18">¥{{priceTp(price)}}</div>
+            {{if discount>0 && isPoor != 1}}
+            <div class="border">购物返{{priceTp(discount*price*2/100)}}红包券</div>
+            {{/if}}
+        </div>
+
+        <div class="col_sub f12 flex_between mt10">
+            <div class="ct_attr"></div>
+            <div>已售{{salesCount}}件</div>
+        </div>
+    </div>
+</script>
+
+
+<!--优惠情况-->
+<script type="text/html" id="tp_id_yh">
+
+
+    <div class="mt10 p15 flex_start bg_white">
+        <div class="bg_trans col_white preferent">优惠</div>
+        <div class="col_sub marg_h10">
+            最多可使用
+            <span>{{priceTp(packets)}}红包券</span>
+
+            <!--{{if ticket>0}}-->
+            <!--<span>{{priceTp(ticket)}}现金券</span>-->
+            <!--{{/if}}-->
+
+
+            <!--{{if packets>0}}-->
+            <!--{{if ticket>0}}-->
+            <!--<span>+{{priceTp(packets)}}红包券</span>-->
+            <!--{{else}}-->
+            <!--<span>{{priceTp(packets)}}红包券</span>-->
+            <!--{{/if}}-->
+
+            <!--{{/if}}-->
+
+
+        </div>
+    </div>
+
+
+</script>
+
+
+<!--商品规格-->
+<script type="text/html" id="tp_id_parms">
+
+    {{each $data model i}}
+    <div class="flex mt10">
+        <div class="grow1 lh20 wordW2 mr10 mw80 TBreak">{{model.k ||''}}</div>
+        <div class="grow3 lh20 wordW2 TBreak">
+            {{model.v||''}}
+            <!--{{each model.cs parm j}}-->
+            <!--{{parm.specName}}&nbsp;-->
+            <!--{{/each}}-->
+
+        </div>
+    </div>
+    {{/each}}
+
+</script>
+
+
+<!--弹窗商品信息-->
+<script type="text/html" id="tp_id_mask_ginfo">
+    <div class="mask_goodsInfo flex_start bottomBorder p15 pt0">
+        <div class="maskGoodsIcon imgCt_cover">
+            <img src="{{OSS(basic.faceImg,'m')}}" alt="" onerror="app.errorimg(this);">
+        </div>
+
+        <div class="ml10 flex1 marr15">
+            <div class="bold wordW2">{{basic.goodsName||''}}</div>
+            <div class="price col_red">¥{{priceTp(selectedSpec.price)||0}}</div>
+            <div class="col_sub f12">库存{{selectedSpec.stock||0}}</div>
+            <div class="col_sub f12 choosedDes">{{selectedSpec.selDes||''}}</div>
+        </div>
+    </div>
+</script>
+
+
+<!--选择规格弹窗-->
+<script type="text/html" id="tp_id_mask">
+    <div class="maskContent">
+
+        <div class="fork" onclick="showChooseModel(false)"></div>
+        <div class="flex flexItem_v flexItem_between mainH pt15">
+
+            <div class="scroll-y">
+                <!--<div class="fork" onclick="showChooseModel(false)"></div>-->
+
+                <div class="specGoodsInfo">
+
+                </div>
+
+
+                <div class="chooseModels p15">
+
+
+
+                    {{each $data.models model i}}
+                    <div class="chooseM">
+                        <div class="showModelTt tleft">{{model.specName||''}}</div>
+                        <div class="specificates clearfix">
+
+                            {{each model.cs subModel j}}
+                            <div class="specificateItem enable"
+                                 sid="{{subModel.goodsSpecId}}"
+                                 ind="{{subModel.ind}}"
+                                 pname="{{model.specName||''}}"
+                                 onclick="choosedSpect(this,{{subModel.goodsSpecId}},{{subModel.ind}})">{{subModel.specName||''}}</div>
+                            <!--active disable enable-->
+                            {{/each}}
+
+                        </div>
+                    </div>
+                    {{/each}}
+
+                </div>
+
+
+                <div class="flex_between p15">
+                    <div class="">购买数量</div>
+
+                    <div class="flex_between changeNumber">
+                        <div class="reduce" onclick="changeNum(-1)">-</div>
+                        <div class="number">{{num}}</div>
+                        <div class="increase" onclick="changeNum(1)">+</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="m15 col_white bg_trans center f18 lh50 br5 disable maskSure" onclick="maskSure(this);">确定</div>
+
+        </div>
+    </div>
+</script>
+
+
+<!--商品评论列表-->
+
+<script type="text/html" id="tp_id_EvaHead">
+
+    <div class="flex_between marg_v5">
+        <div class="bold f18">商品评价（{{goodsEvaluateCount.allevaluate}}）</div>
+        <div class="col_theme" onclick="Comm.go('goodEvaListDetail.html?gid={{gid}}')">
+            <span class="rIcon checkMore">查看更多</span>
+        </div>
+    </div>
+
+</script>
+
+<script type="text/html" id="tp_id_Eva">
+
+    <div class="evaluatList">
+
+
+        {{each $data model i}}
+
+        <div class="bg_white evaCell pad_v10">
+            <div class="flex flex_item_center flex_between">
+                <div class="flex flex_item_center">
+                    <span class="marr10">
+                        <img src="{{OSS(model.userFace,'s')}}" onerror="app.herrorimg(this)" width="30px" height="30px" style="border-radius: 15px"/>
+                    </span>
+                    <div>
+                        <div>{{model.nickName||''}}</div>
+                        <div class="star">
+                            <div class="star_get" style="width: {{widthPer(model.score)}}%"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="f12 col_lgray">{{formatDate(model.evaluateTime,'Y-m-d H:i')}}</div>
+            </div>
+            <div class="marl10 marr10 mart15" >
+                <div class="marb10">{{model.evaluateDs||''}}</div>
+                <div class="paddb20 bottomBorder" id="showImgId_{{model.goodsEvaluateId}}" onclick="addPhotoBroswer({{model.goodsEvaluateId}})" style="border-color:#EBEBEB;margin-right: -30px;">
+
+                    {{each model.imgs img j}}
+                    <img src="{{OSS(img,'m')}}" big="{{OSS(img,'l')}}" onerror="app.errorimg(this);" class="marr10 mt10 evaImg"/>
+                    {{/each}}
+
+                </div>
+
+                {{if model.replyDs}}
+                <div class="f10 col_lgray mart15">
+                    卖家回复：{{model.replyDs||''}}
+                </div>
+                {{/if}}
+
+            </div>
+        </div>
+        {{/each}}
+
+
+    </div>
+
+</script>
+
+
+
+
+<script src="js/z.js"></script>
+<script src="js/g.js"></script>
+<script src="js/comm.js"></script>
+<script src="js/api.js"></script>
+<script src="inc/side/side.js"></script>
+<script src="inc/mescroll/mescroll.min.js"></script>
+<script src="js/art-template.js"></script>
+<script src="inc/imageView/imageview.js"></script>
+<script>
+    var gid = Comm.query("gid");//商品id
+    var pageShared = Comm.query("share");
+    var userinfo = Comm.db('userinfo')||{};//用户信息
+    var pageData = {
+        models:[],
+        invenList:[],
+        selectedSpec:{},
+        num:1
+    };
+
+
+    function pageload() {
+        if (gid) {
+            getgoodInfo();
+            getCommentList();
+            getIsFav();
+        }
+        if (pageShared){
+            $('.navBar').remove();
+            $('footer').html(footCt);
+            Comm.resizeSection();
+        }
+
+
+        $('section').scroll(function () {
+            var st = $('section');
+            var top = st.scrollTop();
+            nslog(top);
+        })
+
+    }
+
+
+    //获取商品信息
+    function getgoodInfo() {
+        config.notDeal = true;
+        var params = {
+            goodsId: gid
+        }
+        SLNetwork('get', '/api/shoppingMall/goodsDetail/getAllDetail', params, function (data) {
+            if (data.code == 1) {
+
+                var m = data.data;
+                pageData.ginfo = m;
+                pageData.basic = m.basic;
+                pageData.detail = m.detail;
+                pageData.spec = m.spec;
+
+                var model_basic = pageData.basic;
+
+
+                //获取顶部滚动广告图
+                var arr = model_basic.imgList.split(',');
+                var banner = template('bannerTpl', arr);
+                $('#side').html(banner);
+                new Side('banner',true);
+
+
+
+                //商品信息 产地、品级
+                var model_detail = pageData.detail;
+                var content = model_detail.html;
+                var content_cd = '';
+                var arr = JSON.parse(model_detail.attr);
+
+                // for(var i=0;arr && arr.length>0 && i<arr.length;i++){
+                //     var m = arr[i];
+                //     content_cd += m.k+':'+m.v + '&nbsp;&nbsp;';
+                // }
+
+
+                //商品详情图文
+                $('.gdetal').html(content);
+                //商品产地、品级
+                $('.ct_attr').html(content_cd);
+
+
+                //商品描述规格
+                var model_spec = dealDic(pageData.spec);
+                var models = (model_spec['0']||{}).cs || [];
+                models = models.sort(function (a,b) {
+                    return (a.orderIndex - b.orderIndex);//从小到大
+                });
+
+                pageData.models = models;
+
+                var html_models = template('tp_id_parms',arr);
+
+                $('.ct_goodsModel').html(html_models);
+
+
+                //商品描述
+                checkBoxChoose('.bg_white','.goodDesTt',function (o,idx) {
+
+                    if ($(o).hasClass('active')){
+                        $('.ct_goodsModel').show();
+                    } else {
+                        $('.ct_goodsModel').hide();
+                    }
+                });
+                $('.getShow').show();
+
+
+
+                //商品信息
+                var goodsInfoHtml = template('tp_id_goodsInfo', pageData.basic);
+                $('.ct_goodsInfo').html(goodsInfoHtml);
+
+
+                var goodsInfoHtml = template('tp_id_yh', pageData.basic);
+                // if (pageData.basic.ticket > 0 || pageData.basic.packets > 0){
+                //     $('.hasYH').html(goodsInfoHtml);
+                // }
+
+                if (pageData.basic.packets > 0){
+                    $('.hasYH').html(goodsInfoHtml);
+                }
+
+
+
+                //蒙版规格数据
+                var html_chooseModel = template('tp_id_mask',pageData);
+                $('.mask').html(html_chooseModel);
+
+                getAllSpecInfo();
+
+            } else {
+                Comm.message(data.msg);
+            }
+        });
+    }
+
+
+    //获取商品评论列表
+    function getCommentList() {
+
+        var merefresh = new MERefresh();
+        //网络请求参数
+
+        merefresh.refreshOption.refreshUrl = '/api/shoppingMall/comment/getEvaluateList';
+        merefresh.refreshOption.refreshParm = {
+            goodsId:gid,
+        }
+
+        if (pageShared){
+            merefresh.refreshOption.needHeadRefresh = false;
+        }
+
+        //页面 <刷新> 的回调
+        merefresh.refreshOption.refresh_cb = function (refresh, data) {
+
+
+            if (data.code == 1) {
+
+                var tmodel = data.data;
+                tmodel.gid = gid;
+                var list = tmodel.goodsEvaluateList||[];
+
+                refresh.successEndRef(list.length, data.totalCount);
+
+
+                list.forEach(function (a) {
+                    a.imgs = [];
+                    if (a.imgurl && a.imgurl.length){
+                        a.imgs = a.imgurl.split(',');
+                    }
+                });
+
+
+                var evaEleHead = template('tp_id_EvaHead',tmodel);
+                $('.ev_head').html(evaEleHead);
+
+                var evaEle = template('tp_id_Eva',list);
+                merefresh.appendHtml(evaEle);
+
+            } else {
+                refresh.successEndRef(0, 0);
+                refresh.MeRefScroll.endUpScroll(true);
+            }
+        };
+        merefresh.configurationDone('refresh', 'list');
+    }
+
+
+    //获取库存列表
+    function getAllSpecInfo() {
+
+        var params = {
+            goodsId: gid
+        }
+        SLNetwork('get', '/api/shoppingMall/goodsDetail/getSpecInfos', params, function (data) {
+            if (data.code==1) {
+                var arr = data.data || [];
+                pageData.invenList = arr;
+
+                for (var i=0;i<arr.length;i++){
+                    var temp = arr[i];
+                    if (temp.stock >= 0){
+                        pageData.selectedSpec = temp;
+                        pageData.selectedSpecArr = temp.goodsSpecInfo.split('_');
+                        break;
+                    }
+                }
+            } else {
+                Comm.message(data.msg);
+            }
+            
+
+            for (var i=0;i<pageData.selectedSpecArr.length;i++){
+                if ($('.specificates')[i]){
+                    var arr = $('.specificates')[i].children;
+
+                    for (var j=0;j<arr.length;j++){
+                        var ele = arr[j];
+                        var ind = $(ele).attr('ind');
+
+                        if (ind == pageData.selectedSpecArr[i]){
+                            var sid = $(ele).attr('sid');
+                            activeSku(sid);
+                        }
+                    }
+                }
+            }
+
+            initialChoosedGoodsInfo();
+            checkGetGoodsSkuInfo();
+        });
+    }
+
+
+    //检查 是否需要获取新规格的 商品信息
+    function checkGetGoodsSkuInfo() {
+        var activeArr = $('.specificates .active')||[];
+        var shouldSelCount = ($('.specificates')||[]).length;
+        var activeCount = ($('.specificates .active')||[]).length;
+
+
+        if (shouldSelCount == activeCount){
+            //获取商品信息
+            var com = '';
+            var selDes = '';
+            var specText = '';
+            for (var i=0;i<activeArr.length;i++){
+                var temp = activeArr[i];
+                var sid = $(temp).attr('sid');
+                if (com.length){
+                    com+='-';
+                }
+
+                specText += $(temp).attr('pname') + ':' + $(temp).text() + ' ';
+                selDes += (selDes.length?'、':'') + $(temp).text();
+                com+=(sid+'');
+            }
+            pageData.selDes = selDes;
+            pageData.specText = specText;
+            getSkuDetail(com,selDes);
+        }
+    }
+
+
+
+    //获取对应规格  的 商品信息
+    function getSkuDetail(sidComb,selDes) {
+        var params = {
+            goodsSpecIds:sidComb,
+            goodsId:gid,
+        }
+        disableMaskSure(false);
+        SLNetwork('get','/api/shoppingMall/goodsDetail/getSpecInfo',params,function (data) {
+            if (data.code==1) {
+                nslog(data);
+                pageData.selectedSpec = data.data;
+                pageData.selectedSpec.selDes = selDes || '请选择规格';
+                $('.choosedDes').html(selDes);
+                initialChoosedGoodsInfo();
+                disableMaskSure(true);
+            } else {
+                Comm.message(data.msg);
+            }
+        });
+    }
+
+
+
+
+
+    //蒙版商品信息展示
+    function initialChoosedGoodsInfo() {
+        var ginfo = template('tp_id_mask_ginfo',pageData);
+        $('.specGoodsInfo').html(ginfo);
+    }
+
+
+    <!--****************************点击事件************************************-->
+
+    //显示或隐藏 规格选择 面板
+    function showChooseModel(isShow) {
+        if (isShow){
+            $('.maskBg').show();
+        } else {
+            $('.maskBg').hide();
+        }
+
+    }
+
+    //点击选择蒙版规格
+    function choosedSpect(o,sid,inx) {
+        if ($(o).hasClass('active')) return;
+        if ($(o).hasClass('enable')){
+            $(o).parent().find('.specificateItem').removeClass('active');
+            $(o).addClass('active');
+        }
+
+        nslog(sid+'_'+inx);
+        checkGetGoodsSkuInfo();
+    }
+
+
+    //改变购买数量
+    function changeNum(num) {
+        pageData.num += num;
+        pageData.num = pageData.num > 0 ? pageData.num : 1;
+
+        if (pageData.num > pageData.selectedSpec.stock){
+            $('.number').text(pageData.selectedSpec.stock);
+        } else {
+            $('.number').text(pageData.num);
+        }
+    }
+
+    //点击蒙版确定
+    function maskSure(o) {
+        if ($(o).hasClass('disable')) return;
+        if (pageShared) {
+            showDownLoad();
+            return;
+        }
+        preventRepeadClickDeal(function () {
+            buyNow();
+        },2)
+    }
+
+
+
+
+
+    <!--是否可以操作的处理****************************************************************-->
+    function disableMaskSure(enable) {
+
+        if (enable){
+            $('.maskSure').removeClass('disable');
+        } else {
+            $('.maskSure').removeClass('disable');
+        }
+    }
+
+    function disableSku(sid) {
+        $('.enable[sid="'+sid+'"]').removeClass('enable').removeClass('active').addClass('disable');
+    }
+
+    function activeSku(sid) {
+        $('.enable[sid="'+sid+'"]').removeClass('disable').addClass('active').addClass('enable');
+    }
+
+
+
+    <!--****************************************************************-->
+    //处理获取的规格字典
+    function dealDic(getDicArray) {
+        var dicModel = {};
+        var a = getDicArray;
+
+        for (var i=0;i<a.length;i++){
+            var m = a[i];
+            var sid = m.goodsSpecId;
+            var pid = m.pid;
+            if (!m.cs) m.cs = [];
+
+            if (!dicModel[pid]){
+                dicModel[pid]={};
+            }
+
+            if (!dicModel[pid].cs){
+                dicModel[pid].cs = [];
+            }
+            dicModel[pid].cs.push(m);
+            dicModel[sid]=m;
+        }
+
+        return dicModel;
+    }
+
+
+    function buyNow() {
+        if (needLoginCheck(true)) {
+            showChooseModel(false);
+            return;
+        }
+        if (!pageData.selectedSpec.stock || pageData.selectedSpec.stock<=0){
+            Comm.message('当前选择规格库存不足')
+            return;
+        }
+
+
+        if (pageData.selectedSpec){
+            if (!pageData.selectedSpec.goodsSpecInfoId) {
+                Comm.message('请选择规格');
+                return;
+            }
+            var subInfo = {
+                selDes:pageData.selDes,
+                price:pageData.selectedSpec.price*pageData.num||0,
+                unitPrice:pageData.selectedSpec.price||0,
+                goodsSpecInfoId:pageData.selectedSpec.goodsSpecInfoId,
+                num:pageData.num,
+                specText:pageData.specText,
+                ticket:0,//是否使用现金券
+                packets:0,//是否使用红包券
+
+                goodsId:gid,
+                addressId:'',
+                remark:'',
+            };
+
+            console.log(subInfo);
+            Comm.db('PData',null);
+            Comm.db('sure_order',subInfo);
+            Comm.go('sureOrder.html')
+        }
+    }
+
+
+
+    //设置收藏状态为已收藏 - - 默认不设置为未收藏
+    // $('.collect').addClass('active');
+
+
+
+    function getIsFav() {
+        var params = {
+            goodsId:gid,
+            customerId:userinfo.customerId||'',
+        }
+
+        SLNetwork('get','/api/customerFav/isCusFav',params,function (data) {
+            var isFav = data.code||false;
+            setIsFav(isFav);
+        });
+    }
+
+
+    //收藏、取消收藏商品
+    function collectionClicked(ele) {
+
+        if (needLoginCheck(true)) return;
+        preventRepeadClickDeal(function () {
+            var params = {
+                itemId:gid,
+                itemType:1,
+            }
+
+            SLNetwork('post','/api/customerfavdao/isCollect',params,function (data) {
+                setTimeout(function () {
+                    ele.disabled = true;
+                },2000);
+
+                if (data.code==1) {
+                    var isFave = data.data;
+                    setIsFav(isFave);
+                } else {
+                    Comm.message(data.msg);
+                }
+            });
+        },1);
+    }
+
+    function setIsFav(isFav) {
+        if (isFav){
+            $('.collect').addClass('active');
+        } else {
+            $('.collect').removeClass('active');
+        }
+    }
+
+
+
+    function shareGoods() {
+        if (!pageData) return;
+
+        var shareModel = {
+            pic: Comm.OSS.getImgUrl(pageData.basic.faceImg,'s'),//分享图片路径
+            title: "水车车，一个心系农村的电商平台",//分享标题
+            desc: pageData.basic.goodsName,//分享描述
+            url: config.SLShareBase + 'goodsDetail.html?share=1&gid='+gid,//分享路径
+        };
+
+        Comm.shareUrl(shareModel, function (d) {//回调
+            if (d == 1) {
+                Comm.message("分享成功");
+            }
+        });
+    }
+
+
+    function goodsContact() {
+        if (pageData && pageData.ginfo && pageData.ginfo.serPhone){
+            Comm.openUrlStr('tel:'+ pageData.ginfo.serPhone);
+        } else {
+            Comm.message('当前没有客服电话')
+        }
+    }
+
+    function addPhotoBroswer(i) {
+        var imgs = document.getElementById("showImgId_"+i);
+        ImageView.show({
+            pattern: 'default',
+            selector: 'img',
+            initDisplaySize: 'contain',
+            initDisplayPositionX: 'center',
+            initDisplayPositionY: 'center',
+        });
+    }
+
+</script>
+
+</html>

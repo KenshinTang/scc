@@ -1,0 +1,124 @@
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width,initial-scale=1.0,user-scalable=no" name="viewport">
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="format-detection" content="telephone=no,email=no,adress=no" />
+
+    <title>我的余额</title>
+
+    <link rel="stylesheet" href="css/g.css">
+    <link rel="stylesheet" href="css/comm.css">
+
+    <style>
+        body {
+            background-color: #F5F5F5;
+        }
+
+
+        .kuang {
+            background: url("img/tbmain/beij.png");
+            background-size: 350px 110px;
+            border-radius: 8px;
+            width: 100%;
+            box-shadow: 0px 3px 10px #EEEEEE;
+        }
+
+
+        .f10 {
+            font-size: 10px;
+        }
+
+        .white_btn {
+            background-color: #FFFFFF;
+            padding: 8px 27px;
+            border-radius: 15px;
+            color: #E30008;
+        }
+    </style>
+
+</head>
+
+<!--******************************************************************************-->
+
+<body>
+
+    <header>
+        <div>
+            <div class="grow1 bg_white">
+                <div class="navBar">
+                    <div class="navBackIcon" onclick="Comm.close()"></div>
+                    <div class=""></div>
+                    <div class="navTitle">我的余额</div>
+                </div>
+            </div>
+        </div>
+    </header>
+    <!--******************************************************************************-->
+
+    <section class="scroll-y">
+        <div class="bg_white flex p15" style="padding-bottom:20px;">
+            <div class="kuang flex_between paddt20 paddb20" style="padding-left:45px;padding-right:30px;">
+                <div class="col_white">
+                    <div class="f12">我的余额(元)</div>
+                    <div id="balance" class="center mart15">55000.00</div>
+                </div>
+                <div class="flex flex_item_center white_btn" onclick="Comm.go('withDrawal.html?comeType=2')">提现</div>
+            </div>
+        </div>
+        <div class="flex_between paddl15 paddr15">
+            <div class="mart10 marb10" style="color:#666666">本月</div>
+            <div><img src="img/tbmain/yfen.png" width="15px" height="15px" /></div>
+        </div>
+        <div id="data">
+        </div>
+
+    </section>
+
+    <!--******************************************************************************-->
+    <footer class="shared">
+    </footer>
+
+    <script src="js/z.js"></script>
+    <script src="js/g.js"></script>
+    <script src="js/comm.js"></script>
+    <script src="js/api.js"></script>
+
+    <script>
+        function pageload() {
+            var u = Comm.db('userinfo');
+            u.receiverId = u.storeId;
+            u.receiverType = 2;
+            AJAX.POST('/api/store/myStoreInfo', u, function (d) {
+                if (d.code == 1) {
+                    var data = d.data;
+                    //console.log(data);
+                    $('#balance').html(app.price(data.balance));
+                }
+            })
+            AJAX.POST('/api/store/myreceiverInfo', u, function (a) {
+                console.log(a);
+                if (a.data.length==0) {
+                    $('#data').append('<div class="flex_center col_lgray" style="margin-top:20%">本月暂无明细</div>');
+                } else {
+                    data = a.data;
+                    for (var i = 0; i < data.length; i++) {
+                        var money = app.price(data[i].money);
+                        if (money > 0) {
+                            money = '+' + money;
+                        }
+                        $('#data').append(
+                            '<div class="bg_white paddl15 paddr15"><div class="flex_between bottomBorder"><div class="mart20 marb20"><div>' +
+                            Comm.parseActType(data[i].actType) + '</div><div class="col_lgray f10 mart5">' +
+                            data[i].addTime + '</div></div><div class="f16 bold">' + money +
+                            '</div></div></div>');
+                    }
+                }
+            });
+        }
+    </script>
+
+</body>
+
+</html>

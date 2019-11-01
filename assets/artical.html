@@ -1,0 +1,183 @@
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width,initial-scale=1.0,user-scalable=no" name="viewport">
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="format-detection" content="telephone=no,email=no,adress=no" />
+
+    <title>详情</title>
+
+    <link rel="stylesheet" href="css/g.css">
+    <link rel="stylesheet" href="css/comm.css">
+
+    <style>
+        img {
+            max-width: 100% !important;
+            height: auto !important;
+            object-fit: contain;
+        }
+    </style>
+
+</head>
+
+<!--******************************************************************************-->
+
+<body>
+
+    <header>
+        <div class="navBar bottomShadow">
+            <div class="navBackIcon" onclick="Comm.close()"></div>
+            <!--<div class="navItemIcon mr10" onclick="shareMessage();"></div>-->
+            <div id="title" class="navTitle"></div>
+        </div>
+    </header>
+    <!--******************************************************************************-->
+
+    <section class="p10 scroll-y">
+
+
+        <div id="content" class=""></div>
+
+    </section>
+
+    <!--******************************************************************************-->
+    <footer></footer>
+
+    <script src="js/z.js"></script>
+    <script src="js/g.js"></script>
+    <script src="js/comm.js"></script>
+    <script src="js/api.js"></script>
+
+    <script>
+        var aid = Comm.query('aid');
+        var messageId = Comm.query('messageId');
+        var state = Comm.query('state');
+        var pageShared = Comm.query("share");
+
+        function pageload() {
+
+            if (pageShared) {
+                $('.navBar').remove();
+                Comm.resizeSection();
+            }
+            var o = {};
+            //系统消息
+            if (typeof (messageId) != 'undefined' && messageId != null) {
+                if (state == 1) {
+                    $('#title').html('系统消息');
+                }
+                var o = {};
+                o.messageId = messageId;
+                AJAX.POST('/api/message/detail', o, function (a) {
+                    console.log(a);
+                    var str = a.data[0].content;
+                    var x = /&lt;/g;
+                    var d = /&gt;/g;
+                    str = str.replace(x, '<');
+                    str = str.replace(d, '>');
+                    $('#content').html(str);
+                })
+                return;
+            }
+
+            if (aid == 'bzsm') {
+                o.title = '帮助说明';
+            } else if (aid == 'gywm') {
+                o.title = '关于我们';
+            } else if (aid == 'yhxy') {
+                o.title = '水车车用户协议';
+            } else if (aid == 'fwxy') {
+                o.title = '水车车用户协议';
+            } else if (aid == '') {
+                o.title = '降价处理了';
+            } else if (aid == '') {
+                o.title = '注册协议';
+            } else if (aid == '') {
+                o.title = '关于产品';
+            } else if (aid == 'rzxy') {
+                o.title = '入驻协议';
+            } else if (aid == '') {
+                o.title = '邀请规则';
+            } else if (aid == 'hhrRzxy') {
+                o.title = '合伙人协议';
+            } else if (aid == 'fpwz') {
+                o.title = '扶贫文章';
+            } else {
+                getArticalWithAid(aid);
+                return;
+            }
+
+
+
+            {
+                $('#title').html(o.title || '');;
+
+                AJAX.POST('/api/article/getArticle', o, function (a) {
+                    var str = a.data.content;
+                    var x = /&lt;/g;
+                    var d = /&gt;/g;
+                    str = str.replace(x, '<');
+                    str = str.replace(d, '>');
+                    $('#content').html(str);
+
+                })
+            }
+
+        }
+
+
+
+        function getArticalWithAid(artId) {
+            config.notDeal = true;
+            var params = {
+                articleId: artId
+            }
+            Comm.loading(true);
+            SLNetwork('get', '/api/article/show', params, function (data) {
+                Comm.loading();
+                if (data.code == 1) {
+                    nslog(data);
+                    $('.navTitle').html(data.data.articlename || '详情');
+                    $('#content').html(data.data.content);
+                } else {
+                    Comm.message(data.msg);
+                }
+            });
+        }
+
+
+        function shareMessage() {
+            // preventRepeadClickDeal(function () {
+            //     Comm.shareUrl({
+            //         platform:'',
+            //         pic: config.SLShareBase + 'img/appLogoIcon.png',//分享图片路径
+            //         title: "水车车，一个心系农村的电商平台",//分享标题
+            //         desc: '',//分享描述
+            //         url: config.SLShareBase + 'artical.html?share=1&messageId='+sid,//分享路径
+            //     }, function (d) {//回调
+            //         if (d == 1) {
+            //             Comm.message("分享成功");
+            //         }
+            //     });
+            // }, 3);
+        }
+    </script>
+
+</body>
+
+</html>
+
+
+<!--
+3	关于我们
+4	关于产品
+5	帮助说明
+6	注册协议
+7	水车车服务协议
+8	入驻协议
+9	邀请好友规则
+10	邀请好友文章1
+23	邀请好友文章2
+24	合伙人协议
+-->

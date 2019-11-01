@@ -1,0 +1,337 @@
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width,initial-scale=1.0,user-scalable=no" name="viewport">
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+    <meta name="format-detection" content="telephone=no,email=no,adress=no"/>
+
+    <title>合伙人升级</title>
+
+    <link rel="stylesheet" href="css/g.css">
+    <link rel="stylesheet" href="css/comm.css">
+
+    <style>
+        /*头部*/
+        .navBackIcon {
+            height: 100%;
+            width: 40px;
+            height: 44px;
+            background: url("img/generalIcon/back_b.png");
+            background-position: center center;
+            background-repeat: no-repeat;
+            background-size: auto 16px;
+            background-position-x: 10px;
+            float: left;
+        }
+
+        .grow1 {
+            flex: 1;
+        }
+
+        .grow2 {
+            flex: 2;
+        }
+
+        .grow3 {
+            flex: 3;
+        }
+
+        .h40P {
+            height: 15%;
+            text-align: center;
+        }
+
+        .headIcon {
+            height: 75px;
+            width: 75px;
+            margin-left: 10px;
+            margin-right: 10px;
+            border-radius: 50%;
+            overflow: hidden;
+        }
+
+        .leftText {
+            text-align: left;
+        }
+
+        .lIcon.phone {
+            background-image: url("img/tbmine/phone.png");
+        }
+
+        .iden {
+            background-image: url("img/tbmine/grzx.png");
+            background-size: 8px auto;
+            background-position: center right 15px;
+        }
+
+        ul {
+            height: 260px;
+            margin-bottom: 19px;
+        }
+
+        ul li {
+            height: 65px;
+            align-items: center;
+        }
+
+        ul li p {
+            font-size: 16px;
+            color: #333333;
+            font-weight: bold;
+        }
+
+        ul li span {
+            font-size: 12px;
+            color: #999999;
+        }
+
+        .meauItem {
+            height: 65px;
+        }
+
+        .cellSel {
+            width: 30px;
+            height: 30px;
+        }
+
+        .check, .agree {
+            background-image: url("img/generalIcon/agree_n.png");
+        }
+
+        .active .check, .active.agree {
+            background-image: url("img/generalIcon/agree_y.png");
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<header>
+    <div class="navBar">
+        <div class="navBackIcon" onclick="Comm.close()"></div>
+        <div class="navTitle">合伙人升级</div>
+    </div>
+</header>
+<!--******************************************************************************-->
+<section class="bg_lgray">
+
+
+
+    <div class="topPatner">
+
+    </div>
+
+    <div>
+
+        <div class="meauList levels">
+
+            <!--<div class="meauItem flex_start">-->
+                <!--<div class="check m10 lIcon cellSel"></div>-->
+                <!--<div class="">-->
+                    <!--<div class="col_title bold f16">二星</div>-->
+                    <!--<div class="col_sub bold f12">佣金4%，加盟费1000元</div>-->
+                <!--</div>-->
+            <!--</div>-->
+
+            <!--<div class="meauItem flex_start">-->
+                <!--<div class="check m10 lIcon cellSel"></div>-->
+                <!--<div class="">-->
+                    <!--<div class="col_title bold f16">三星</div>-->
+                    <!--<div class="col_sub bold f12">佣金4%，加盟费1000元</div>-->
+                <!--</div>-->
+            <!--</div>-->
+
+
+            <!--<div class="meauItem flex_start">-->
+                <!--<div class="check m10 lIcon cellSel"></div>-->
+                <!--<div class="">-->
+                    <!--<div class="col_title bold f16">四星</div>-->
+                    <!--<div class="col_sub bold f12">佣金4%，加盟费1000元</div>-->
+                <!--</div>-->
+            <!--</div>-->
+
+
+            <!--<div class="meauItem flex_start">-->
+                <!--<div class="check m10 lIcon cellSel"></div>-->
+                <!--<div class="">-->
+                    <!--<div class="col_title bold f16">五星</div>-->
+                    <!--<div class="col_sub bold f12">佣金4%，加盟费1000元</div>-->
+                <!--</div>-->
+            <!--</div>-->
+
+        </div>
+
+    </div>
+
+
+</section>
+
+<!--******************************************************************************-->
+<footer class="p10">
+    <div class="bg_trans col_white center lh50 f18 br5 getUpShow hide" onclick="submitApplication()">提交申请</div>
+</footer>
+
+
+<script src="js/z.js"></script>
+<script src="js/g.js"></script>
+<script src="js/comm.js"></script>
+<script src="js/api.js"></script>
+<script src="js/art-template.js"></script>
+
+
+
+<script>
+
+    var userinfo = Comm.db('userinfo')||{};
+    var levelSourse,choosedLevel,isAgree=false;
+    var pModel;
+
+
+
+    function pageload() {
+        getPartnerInfo();
+    }
+
+
+    //获取合伙人信息
+    function getPartnerInfo() {
+        var parms = {partnerId:userinfo.myPartnerId};
+        AJAX.POST('/api/partner/mypartner', parms, function (d) {
+            if (d.code == 1) {
+                var data = d.data;
+                var partner = data.partner;
+                pModel = partner;
+
+                var forward = '加盟费已交'+app.price((Number(partner.franchiseFee||0) + Number(partner.debtCount||0)))+'/'+app.price(Number(partner.franchiseFee||0));
+                data.forward = forward;
+                console.log(data);
+
+                $('.topPatner').html(template('tp_id_top',data));
+                getUpList();
+            } else {
+                Comm.message(d.msg);
+            }
+        })
+    }
+
+
+    //获取合伙人等级列表
+    function getUpList() {
+        var params = {
+            categroy:pModel.categroy
+        };
+        SLNetwork('get', '/api/partner/getLevelList', params, function (data) {
+            if (data.code == 1) {
+                var list = data.data||[];
+                levelSourse = list;
+                if (list && list.length) {
+                    $('.getUpShow').removeClass('hide');
+                }
+                var eleHtml = template('tp_id_level',list)
+                $('.levels').html(eleHtml);
+                initLevelChoose();
+            } else {
+                Comm.message(data.msg);
+            }
+        });
+
+    }
+
+    function initLevelChoose() {
+        meauChooseClick('.meauList','.meauItem',function (o,idx) {
+            choosedLevel = levelSourse[idx].level;
+        });
+
+        meauChooseClick('.meauList','.agree',function (o,idx) {
+            isAgree = !isAgree;
+        });
+    }
+
+
+
+    //提交申请
+    function submitApplication() {
+        if (!choosedLevel){
+            Comm.message('请选择等级');
+            return;
+        } else if (!isAgree){
+            Comm.message('请阅读并同意《入驻协议》');
+            return;
+        }
+
+        var params = {
+            partnerId:userinfo.myPartnerId,
+            level:choosedLevel
+        };
+        SLNetwork('get', '/api/partner/uppartnerlevel', params, function (data) {
+            if (data.code == 1) {
+                Comm.message('提交成功');
+                Comm.close();
+            } else {
+                Comm.message(data.msg);
+            }
+        });
+    }
+
+
+    
+
+
+
+
+</script>
+
+<script type="text/html" id="tp_id_top">
+
+    <div class="flex_start p10 bg_white paddb30">
+        <div class="baseH grow1">
+            <div class="flex_center">
+                <div class="imgContain headIcon">
+                    <img src="{{OSS(logo,'s')}}" onerror="app.herrorimg(this);">
+                </div>
+            </div>
+        </div>
+
+        <div class="grow3 infoText leftText">
+            <div class="f18 baseWH Bold mb10" id="storeName">{{partner.headName||''}}</div>
+            <div class="f12 lh20 flex_between" style="color: #666666;">
+                <div><span id="addr">{{cityName||''}}</span>丨<span id="score">{{levelName||''}}</span></div>
+                <div class="tright">{{forward}}</div>
+            </div>
+        </div>
+    </div>
+
+</script>
+
+
+<script type="text/html" id="tp_id_level">
+
+    <div class="f16 bg_white p10 lh30 bottomBorder col_title mt10">选择合伙人等级</div>
+
+    {{each $data model i}}
+    <div class="meauItem flex_start bg_white bottomBorder">
+        <div class="check m10 lIcon cellSel"></div>
+        <div class="">
+            <div class="col_title bold f16">{{model.p}}</div>
+            <div class="col_sub bold f12">佣金{{model.commission}}%，加盟费{{priceTp(model.money)||0}}元</div>
+        </div>
+    </div>
+    {{/each}}
+
+    <div class="flex_start">
+        <div class="lIcon cellSel agree m10"></div>
+        <div class="f12">我已阅读并且同意
+            <span onclick="Comm.go('artical.html?aid=hhrRzxy')">《入驻协议》</span>
+        </div>
+    </div>
+
+
+</script>
+
+
+</body>
+
+</html>

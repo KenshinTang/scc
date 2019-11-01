@@ -1,0 +1,388 @@
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width,initial-scale=1.0,user-scalable=no" name="viewport">
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+    <meta name="format-detection" content="telephone=no,email=no,adress=no"/>
+
+    <title>售后选择原因</title>
+
+    <link rel="stylesheet" href="css/g.css">
+    <link rel="stylesheet" href="css/comm.css">
+    <link rel="stylesheet" href="inc/keyboard/slKeyboard.css">
+
+    <style>
+
+        .iconContain {
+            width: 80px;
+            height: 80px;
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .lTitle {
+            min-width: 80px;
+        }
+
+        .rIcon {
+            background-image: url("img/order/thyy.png");
+        }
+
+        /* upimg 图片多选 S*/
+        .up-Img {
+            overflow: hidden;
+            padding: 22px 0;
+        }
+
+        .up-Img .box {
+            background-color: unset;
+            width: 65px;
+            height: 65px;
+            margin-right: 12px;
+            margin-bottom: 12px;
+            float: left;
+            border-radius: 5px;
+            position: relative;
+            line-height: unset;
+        }
+
+        .box, #upload {
+            width: 65px;
+            height: 65px;
+        }
+
+        .box img {
+            object-fit: cover;
+            width: 100%;
+            height: 100%;
+        }
+
+        .upimg-del {
+            width: 30px;
+            height: 30px;
+            position: absolute;
+            right: -10px;
+            top: -10px;
+            background: 10px center no-repeat url(img/delete.png);
+            background-size: 20px 20px;
+        }
+
+        .inputArea {
+            width: 100%;
+            min-height: 80px;
+        }
+
+        /* upimg 图片多选 S*/
+
+
+        footer{
+            z-index: 99 !important;
+        }
+
+    </style>
+
+</head>
+
+<!--******************************************************************************-->
+<body>
+
+<header>
+    <div class="navBar bottomShadow">
+        <div class="navBackIcon" onclick="Comm.close()"></div>
+        <div class="navTitle">申请售后</div>
+    </div>
+</header>
+<!--******************************************************************************-->
+
+<section onclick="moneyBoard.dissmissKeyBoard();">
+    <div class="contentV"></div>
+    <div id="keyBoardMoney"></div>
+</section>
+
+
+
+
+<!--******************************************************************************-->
+<footer>
+    <div class="bg_trans marl15 marr15 marb10 br5 col_white center lh50 f18" onclick="submit();">提交</div>
+</footer>
+
+<script src="js/z.js"></script>
+<script src="js/g.js"></script>
+<script src="js/comm.js"></script>
+<script src="js/api.js"></script>
+<script src="js/art-template.js"></script>
+<script src="js/picker.min.js"></script>
+<script src="inc/upimg/upload.js"></script>
+
+<script src="inc/ewm/jquery-1.11.1.js"></script>
+<script src="inc/keyboard/slKeyboard.js"></script>
+
+<script>
+
+    var gid = Comm.query('gid') || '', oid = Comm.query('oid') || '', type = Comm.query('type'),num = Comm.query('num');
+    var userinfo = Comm.db('userinfo')||{};
+    var resonPicker = null,upimg = null;pageModel = null,resonList = [];
+
+    var requestParms = {
+        ordersId: oid,
+        goodsId: gid,
+        type: type,
+        customerId: userinfo.customerId,
+        goodsCount:num,
+        
+        putinMoney:'',//申请退款金额
+        remark:'',//备注
+        imgUrl:'',//图片地址
+    }
+
+
+    function pageload() {
+        getNetData();
+        initKeyBoard();
+    }
+
+
+    function initKeyBoard() {
+        moneyBoard = new SLKeyBoard('keyBoardMoney','id_money',true);
+        moneyBoard.holderText = '请输入退款金额';
+        moneyBoard.init();
+    }
+
+    function getNetData() {
+        var params = {
+            ordersId: oid,
+            customerId: userinfo.customerId,
+        }
+        SLNetwork('get', '/api/ordersaftersale/orderSaleCommit', params, function (data) {
+            if (data.code == 1) {
+                var arr = data.data || [];
+                if (arr.length) {
+                    var model = arr[0] || {};
+                    model.type = type;
+                    pageModel = model;
+                    pageModel.num = num;
+                    requestParms.shopId = model.shopId;
+                    requestParms.storeId = model.storeId;
+
+                    $('.contentV').html(template('tp_id', model));
+                    upimg = new imgUploader("imgList", 5, "subbutton");
+                    initKeyBoard();
+                } else {
+                    Comm.message('获取信息失败');
+                }
+            } else {
+                Comm.message(data.msg);
+            }
+        });
+    }
+
+
+
+    function getResonList() {
+
+        if (!resonList||!resonList.length){
+            Comm.loading(1);
+            SLNetwork('get', '/api/dict/getDictByCode', {dictcode:'returnReason'}, function (data) {
+                Comm.loading();
+                if (data.code == 1) {
+                    var list = data.data||[];
+                    list.forEach(function (a) {
+                        a.i = a.dictId;
+                        a.text = a.dictname;
+                    })
+                    resonList = list;
+                    showResonPicker();
+                } else {
+                    Comm.message(data.msg);
+                }
+            });
+        } else {
+            showResonPicker();
+        }
+    }
+
+    function showResonPicker() {
+        if (!resonPicker){
+            resonPicker = new Commpicker("选择原因", [resonList], function (a, v, sid) {
+                $('.chooseReson').text(v);
+                requestParms.returnReason = sid;
+            });
+        }
+
+        resonPicker.show();
+    }
+
+
+    function submit() {
+        if (type == 1 && !moneyFen($('#id_money').text())){
+            Comm.message('输入退款金额')
+            return;
+        }
+
+        requestParms.imgUrl = upimg.imgList.join(',')||'';
+        requestParms.putinMoney = moneyFen($('#id_money').text());//申请退款金额
+        requestParms.remark = $('#id_remark').val()||'';//备注
+        debugger
+        if (requestParms.putinMoney > pageModel.totalMoney / pageModel.goodsCount  * pageModel.num){
+            Comm.message('不得高于商品金额');
+            return;
+        }
+
+        if (!requestParms.returnReason){
+            Comm.message('请选择原因');
+            return;
+        }
+
+        if (!upimg.imgList || !upimg.imgList.length){
+            Comm.message('请上传凭证')
+            return;
+        }
+
+        if(requestParms.remark.length>20){
+            Comm.message('说明最多20个字');
+            return;
+        }
+
+        // if (requestParms.putinMoney > pageModel.price * pageModel.goodsCount){
+        //     Comm.message('不得高于商品金额');
+        //     return;
+        // }
+
+
+
+        nslog(requestParms);
+
+        Comm.loading(1);
+        SLNetwork('post', '/api/ordersaftersale/createRecord', requestParms, function (data) {
+            Comm.loading();
+            if (data.code == 1) {
+                Comm.message('提交申请成功');
+                addNeedRefPage('afterSalesList');
+                setTimeout(function () {
+                    Comm.close(2);
+                },300);
+
+            } else {
+                Comm.message(data.msg);
+            }
+        });
+
+    }
+
+
+</script>
+
+
+<script type="text/html" id="tp_id">
+
+    <div class="paddl15 paddr15 bg_white">
+        <div class="bg_white paddt20 paddb20 bottomBorder ginfo">
+
+            <div class="flex f16 pad10">
+                <div class="br3 iconContain imgContain">
+                    <img src="{{OSS(faceImg,'s')}}" onerror="app.errorimg(this);">
+                </div>
+
+                <div class="column paddl10 grow1">
+
+                    <div class="f16 lh20 wordW2 lh20">{{goodsName||''}}</div>
+                    <div class="flex">
+                        <div class="baseWH col_sub f12 mt5 lh20">{{specText}}</div>
+                        <div class="baseWH col_sub f12 mt5 lh20 marl10">数量:{{num||1}}</div>
+                    </div>
+
+                    <div class="flex_between f12 lh20 mart15">
+                        <!--<div class="">-->
+                            <div class="price bold">¥{{priceTp(price||0)}}</div>
+                            <div class="price bold col_red">实付金额¥{{priceTp(totalMoney||0)}}</div>
+                        <!--</div>-->
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+
+
+    {{if type == 1}}
+
+    <div class="cell flex_start p15">
+        <div class="lTitle">退货原因</div>
+        <div class="chooseReson flex1 col_sub999 bg_lgray br3 p5 rIcon" onclick="getResonList();">选择退货原因</div>
+    </div>
+
+
+
+
+    <div class="cell flex_start p15">
+        <div class="lTitle">退款金额</div>
+        <div class="flex1 p5 bg_white br3">
+
+            <div id="id_money" class="col_red tleft w180 baseH" onclick="moneyBoard.showKeyBoard();"></div>
+            <!--<input id="id_money" type="text" placeholder="退款金额" class="h20 mainW col_red f15">-->
+        </div>
+    </div>
+
+
+    <div class="cell flex_start p15">
+        <div class="lTitle">退款说明</div>
+        <div class="flex1 p5 bg_white br3">
+            <input id="id_remark" type="text" placeholder="选填" class="h20 mainW f15">
+        </div>
+    </div>
+
+    {{else if type == 2}}
+
+    <div class="cell flex_start p15">
+        <div class="lTitle">换货原因</div>
+        <div class="chooseReson flex1 col_sub999 bg_lgray br3 p5 rIcon" onclick="getResonList();">选择换货原因</div>
+    </div>
+
+
+    <div class="cell flex_start p15">
+        <div class="lTitle">换货说明</div>
+        <div class="flex1 p5 bg_white br3">
+            <input id="id_remark" type="text" placeholder="选填" class="h20 mainW f15">
+        </div>
+    </div>
+
+    {{/if}}
+
+
+
+
+    <div class="cell p15">
+        <div class="lTitle">上传凭证</div>
+
+
+        <div class="mart10 marl10">
+            <div class="up-Img">
+                <div id="imgList"></div>
+
+
+                <div class="btn box">
+                    <div class="up-upBtn" id="subbutton">
+                        <img class="fullImg" src="img/camera.png" height="65" alt="">
+                        <span>最多5张</span>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <div>
+
+        </div>
+    </div>
+
+
+</script>
+
+
+</body>
+
+</html>

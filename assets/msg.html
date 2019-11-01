@@ -1,0 +1,165 @@
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width,initial-scale=1.0,user-scalable=no" name="viewport">
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+    <meta name="format-detection" content="telephone=no,email=no,adress=no"/>
+
+    <title>消息</title>
+
+    <link rel="stylesheet" href="css/g.css">
+    <link rel="stylesheet" href="css/comm.css">
+
+    <style>
+        .readAll {
+            background-image: url("img/msg/Clear.png");
+        }
+
+        .msCell {
+            padding-left: 15px;
+        }
+
+        .cellIcon {
+            height: 50px;
+            width: 50px;
+        }
+
+        .subTt {
+            max-width: 250px;
+        }
+
+        .goodsTitle {
+            height: 18px;
+            line-height: 10px;
+        }
+
+        .hasNew {
+            content: '•';
+        }
+
+        .goodsInfo{
+            min-height: 74px;
+        }
+
+
+    </style>
+
+</head>
+
+<!--******************************************************************************-->
+
+<body>
+
+<header>
+    <div class="navBar bottomShadow">
+        <div class="navBackIcon" onclick="Comm.close()"></div>
+        <div class="navTitle flex_center" onclick="readAll();">
+            <div class="rIcon readAll">消息</div>
+        </div>
+    </div>
+</header>
+<!--******************************************************************************-->
+
+<section class="bg_lgray">
+
+
+
+</section>
+
+<!--******************************************************************************-->
+<footer></footer>
+
+<script src="js/z.js"></script>
+<script src="js/g.js"></script>
+<script src="js/comm.js"></script>
+<script src="js/api.js"></script>
+<script src="js/art-template.js"></script>
+
+<script>
+    function pageresume() {
+        getMysPageInfo();
+    }
+
+    function pageload() {
+        getMysPageInfo();
+    }
+
+
+    function getMysPageInfo() {
+        AJAX.GET('/api/message/getHeadMess', function (a) {
+            if (a.code == 1) {
+                var tmodel = a.data;
+                tmodel.lastOrder = {};
+                if (tmodel.orderMessContent){
+                    tmodel.lastOrder =  JSON.parse(tmodel.orderMessContent);
+                }
+
+                nslog(tmodel);
+                var html = template('tp_id_msg', tmodel);
+                $('section').html(html);
+            }
+        })
+    }
+
+    function readAll() {
+        var params = {}
+        SLNetwork('post', '/api/message/isRead', params, function (data) {
+            if (data.code == 1) {
+                getMysPageInfo();
+            } else {
+                Comm.message(data.msg);
+            }
+        });
+    }
+
+
+</script>
+
+
+<script type="text/html" id="tp_id_msg">
+
+    <div class="msCell bg_white" onclick="Comm.go('message.html?type=2')">
+        <div class="cellCt br5">
+            <div class="goods flex_start flexItem_h br5">
+                <div class="cellIcon">
+                    <img src="img/msg/Order.png" class="imgCover br5" alt="">
+                </div>
+
+                <div class="goodsInfo p10 grow4">
+                    <div class="goodsTitle">
+                        {{if orderIsRead>0}}
+                        <span class="col_red f18 hasNew orderMsg">•</span>
+                        {{/if}}
+                        <span>订单消息</span>
+                    </div>
+                    <div id="orderMessContent" class="col_sub f12 mt5 subTt wordW">{{lastOrder.goodsName||'暂无新消息'}}</div>
+                    <div id="orderMessAddTime" class="time col_sub f12 marg_v5">{{formatDate(orderMessAddTime,'Y-m-d H:i')}}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="msCell bg_white" onclick="Comm.go('message.html?type=1')">
+        <div class="cellCt br5">
+            <div class="goods flex_start flexItem_h br5">
+                <img src="img/msg/System.png" class="cellIcon imgCover br5">
+                <div class="goodsInfo p10 flex1 topBorder">
+                    <div class="goodsTitle">
+                        {{if sysIsRead>0}}
+                        <span class="col_red f18 hasNew sysMsg">•</span>
+                        {{/if}}
+                        <span>系统消息</span>
+                    </div>
+                    <div id="sysMessContent" class="col_sub f12 mt5 subTt wordW">{{sysMessContent||'暂无新消息'}}</div>
+                    <div id="sysMessAddTime" class="time col_sub f12 marg_v5">{{formatDate(sysMessAddTime,'Y-m-d H:i')}}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</script>
+
+</body>
+
+</html>

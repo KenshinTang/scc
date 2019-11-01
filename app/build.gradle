@@ -8,12 +8,12 @@ android {
             keyPassword '20160516'
             keyAlias = 'yunlinker'
         }
-        debug {
-            storeFile file('B:\\android_scc\\Yunlinker-20160516.jks')
-            storePassword '20160516'
-            keyAlias = 'yunlinker'
-            keyPassword '20160516'
-        }
+//        debug {
+//            storeFile file('B:\\android_scc\\Yunlinker-20160516.jks')
+//            storePassword '20160516'
+//            keyAlias = 'yunlinker'
+//            keyPassword '20160516'
+//        }
     }
     compileSdkVersion 28
     buildToolsVersion '28.0.0'

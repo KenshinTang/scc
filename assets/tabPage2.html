@@ -1,0 +1,634 @@
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width,initial-scale=1.0,user-scalable=no" name="viewport">
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="format-detection" content="telephone=no,email=no,adress=no" />
+
+    <title>店铺</title>
+
+    <link rel="stylesheet" href="css/g.css">
+    <link rel="stylesheet" href="css/comm.css">
+    <link rel="stylesheet" href="inc/side/side.css">
+    <link rel="stylesheet" href="inc/mescroll/mescroll.min.css">
+
+    <style>
+        /*头部*/
+        .navTitle {
+            margin: 0px 80px;
+            background: url("img/tbhome/logo.png") center center no-repeat;
+            background-size: auto 20px;
+        }
+
+        .navItemIcon.msg {
+            background-image: url("img/tbhome/xiaoxi.png");
+        }
+
+        .navItemIcon {
+            height: 44px;
+            width: 30px;
+            background: url(../stIconfile/share.png);
+            background-position: center right;
+            background-repeat: no-repeat;
+            background-size: auto 19px;
+            float: right;
+        }
+
+        .position {
+            background-image: url("img/tbhome/position.png");
+        }
+
+        /*快捷入口*/
+        .quickItem {
+            width: 50px;
+            height: 50px;
+        }
+
+        .nearbyShop {
+            padding-top: 60%;
+            background: url('') center center no-repeat;
+            background-size: 100% auto;
+        }
+
+        .nearbyShop .quickItem {
+            width: 60% !important;
+        }
+
+        /*附近店铺*/
+        .threeItem {
+            min-width: 30%;
+            max-width: 32%;
+        }
+
+        .m5 {
+            margin: 5px;
+        }
+
+        .m5h {
+            margin-left: 5px;
+            margin-right: 5px;
+        }
+
+        .threeItemIcon {
+            padding-top: 100%;
+            margin-top: 15px;
+            margin-bottom: 10px;
+        }
+
+        /*附近店铺列表*/
+        .recommentShop {}
+
+        .headTt {
+            padding: 15px;
+            /*padding-left: 15px;*/
+        }
+
+        .cell {
+            padding: 20px 15px;
+            background-color: white;
+            margin-bottom: 10px;
+        }
+
+        .cellIcon {
+            height: 90px;
+            width: 90px;
+            flex-basis: 90px;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        .cellRight {
+            height: 90px;
+            padding: 0px 10px;
+            flex: 1;
+        }
+
+        .breakLine_v {
+            width: 1px;
+            height: 16px;
+            background-color: #EBEBEB;
+        }
+
+        .star {
+            width: 50px;
+            height: 10px;
+            background: url("img/tbshop/Star_n.png") repeat-x center center;
+            background-size: 10px auto;
+        }
+
+        .star_get {
+            width: 60%;
+            height: 100%;
+            background: url("img/tbshop/Star.png") repeat-x left center;
+            background-size: 10px auto;
+        }
+
+        .benefit {
+            width: auto;
+            border-radius: 10px 1px;
+            padding: 2px 8px;
+        }
+
+        .mv5 {
+            margin: 5px 0px;
+        }
+
+        .lIcon.distance {
+            background-image: url("img/tbhome/position.png");
+        }
+
+        .headItem {
+            line-height: 44px;
+            height: 44px;
+        }
+
+        .headItem.msg {
+            background-image: url("img/tbhome/xiaoxi.png");
+        }
+
+        .base80 {
+            min-width: 20px;
+            max-width: 100px;
+        }
+
+        .searchBar {
+            height: 30px;
+            margin: 7px 2%;
+            line-height: 30px;
+            border-radius: 15px;
+            text-align: left;
+        }
+
+        .searchBar.lIcon {
+            background-position-x: 15px;
+            padding-left: 35px;
+            background-image: url("img/tbshop/sousuo.png");
+            color: #A8ADBA;
+        }
+
+        .bg_g_jb {
+            background: linear-gradient(to right, #7ACC52, #68AF47)
+        }
+
+        .hasNew {
+            line-height: 30px;
+            float: right;
+            font-size: 20px;
+        }
+
+        .tyc {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            width: 70%;
+        }
+
+        .benefit2 {
+            width: auto;
+            padding: 3px 10px;
+        }
+
+        .bgG {
+            background: url('img/tbshop/Certification.png');
+            background-repeat: no-repeat;
+            background-size: 100% 100%;
+        }
+    </style>
+
+</head>
+
+<!--******************************************************************************-->
+
+<body>
+
+    <header>
+
+        <div class="navBar flex_between">
+            <div class="headItem rIcon position marl15 base80" onclick="Comm.go('choosePosition.html')"></div>
+            <div class="headItem flex1" onclick="Comm.go('searchPage.html?type=shop')">
+                <div class="searchBar bg_lgray lIcon">
+                    请输入店铺名称
+                </div>
+            </div>
+
+            <div class="headItem navItemIcon msg marr15" onclick="if (needLoginCheck(true)) return;Comm.go('msg.html')">
+                <div class="hasNew col_red hide">•</div>
+            </div>
+        </div>
+
+        <!--<div class="navBar flex">-->
+        <!--<div class="navBack rIcon position marl10" onclick="logText('地址')">武侯区</div>-->
+        <!--<div class="navItemIcon msg hasNew marr10"></div>-->
+        <!--<div class="navTitle border">-->
+        <!--<div class="searchBar">请输入店铺名称</div>-->
+        <!--</div>-->
+        <!--</div>-->
+    </header>
+    <!--******************************************************************************-->
+
+    <section id="section" class="bg_lgray mescroll">
+        <div class="bg_white">
+            <div class="p15 paddb5" style="padding-top:0px;">
+
+                <div class="wrap  br5">
+                    <div class="wrap_ct">
+
+                        <div class="mainW mainH br5 ohide bg_lgray" id="id_banner">
+                            <ul class="list fullImg side_ul br5 ohide" id="id_side">
+
+                            </ul>
+                        </div>
+
+                        <!--轮播-->
+                        <!--<div class="banner bg_place bg_lgray br5 swiper-container">-->
+                        <!--<div id="lbt" class="swiper-wrapper">-->
+
+                        <!--</div>-->
+                        <!--<div class="swiper-pagination"></div>-->
+                        <!--</div>-->
+                    </div>
+                </div>
+
+
+                <div>
+                    <div id="fenl1" class="flex_around">
+                    </div>
+
+                    <div id="fenl2" class="flex_around">
+                    </div>
+
+                </div>
+            </div>
+            <div style="width:100%;height:10px;background-color: #F5F5F5"></div>
+
+            <div class="p15 bg_white">
+                <div class="flex_between">
+                    <div class="bold f18">附近店铺</div>
+                    <div class="col_sub" onclick="Comm.go('storeList.html')">
+                        <span>全部店铺</span>
+                        <span><img src="img/generalIcon/iden.png" width="6" alt=""></span>
+                    </div>
+                </div>
+
+
+                <div class="mart20 wrap bg_place br5 nearbyShop" id="bg_shop">
+                    <div class="wrap_ct">
+
+                        <div id="mengc" class="hide"
+                            style="position:absolute;background-color:#000;width:100%;height:100%;opacity: 0.1"></div>
+                        <div class="flex flexItem_v flexItem_between mainH" style="position: relative;">
+                            <div id="titleText" class="f18 col_white p15 mt10 pb10"></div>
+                            <div id="xdp" class="flex_between p15" style="height: 70%;padding-top: 0px">
+                            </div>
+
+                        </div>
+
+
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="bg_white recommentShop">
+                <div class="bold f18 headTt">推荐店铺</div>
+
+                <div id="storeList" class="cellList bg_lgray">
+
+                </div>
+
+
+            </div>
+        </div>
+
+    </section>
+
+    <!--******************************************************************************-->
+    <footer class="shared"></footer>
+
+    <script src="js/z.js"></script>
+    <script src="js/g.js"></script>
+    <script src="js/comm.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/art-template.js"></script>
+    <script src="inc/side/side.js"></script>
+    <script src="js/dict.js"></script>
+    <script src="js/area.js"></script>
+    <script src="inc/mescroll/mescroll.min.js"></script>
+
+    <script>
+        var requestPamrm = {};
+        var merefresh;
+        var html = '';
+        Foot.init();
+
+        function pageresume() {
+            if (!app.isLogin()){
+                clearUserData();
+            }
+            getPosition();
+        }
+
+
+        function getPosition(cb) {
+            hasNewMessage();
+
+            var aaa = Comm.db('showArea');
+            Comm.db('showArea', null);
+
+            if (aaa) {
+                var position = UserJWD.JWD();
+                position.dis = aaa.text;
+                position.aid = aaa.i;
+                Comm.db('JWD', position);
+                getNearByShop();
+            }
+
+            var startStatus = Comm.db('startApp')||1;
+
+            if (!UserJWD.hasGetPosition() || startStatus == 1) {
+                Comm.loading(1);
+                Comm.position(function (a) {
+                    Comm.loading();
+                    if (a.code == 1) {
+
+                        if (!UserJWD.hasGetPosition() || startStatus == 1) {
+                            Comm.db('startApp',2);
+                            UserJWD.saveJWDValue(a);
+                        } else {
+                            UserJWD.updateJWDValue(a);
+                        }
+                    }
+                    $('.position').text(UserJWD.dis());
+                    cb && cb();
+                })
+            } else {
+                $('.position').text(UserJWD.dis());
+                cb && cb();
+            }
+            addRefresh();
+        }
+
+
+        function addRefresh() {
+            requestPamrm.lng = UserJWD.lng();
+            requestPamrm.lat = UserJWD.lat();
+            requestPamrm.areaId = UserJWD.aid();
+            if (!merefresh) {
+                merefresh = new MERefresh();
+                //网络请求参数
+                merefresh.refreshOption.refreshUrl = '/api/store/storeIsMain';
+                merefresh.refreshOption.refreshParm = requestPamrm;
+
+                //页面 <刷新> 的回调
+                merefresh.refreshOption.refresh_cb = function (refresh, d) {
+                    if (d.code == 1) {
+                        html = '';
+                        addrData = d.data || [];
+                        refresh.successEndRef(d.data.length, d.totalCount);
+                        refresh.appendHtml(getRecommendShop(d));
+                    } else {
+                        refresh.successEndRef(0, 0);
+                        refresh.MeRefScroll.endUpScroll(true);
+                    }
+                };
+                merefresh.configurationDone('section', 'storeList');
+            } else {
+                merefresh.refreshFunction(merefresh);
+            }
+        }
+
+        function pageload() {
+            getPosition(function () {
+                addRefresh();
+            });
+
+            getBanner();
+            getCatogoryClass();
+            getNearByShop();
+            Comm.storage('startApp',function (d) {
+                if (d == 1) {
+                    Comm.db('startApp',1);
+                    getPosition();
+                    Comm.storageValue('startApp',2)
+                }
+            });
+        }
+
+
+        //获取广告图
+        function getBanner() {
+            //轮播图接口
+            var oo = {};
+            oo.postion = 29;
+            AJAX.POST('/api/advert/apiList', oo, function (a) {
+                if (a.code == 1 && a.data) {
+                    if (a.code == 1) {
+                        var showArr = a.data || [];
+                        if (!showArr.length) {
+                            $('.banner').addClass('hide');
+                            return;
+                        }
+                        $('.banner').removeClass('hide');
+                        showArr.sort(function (a, b) {
+                            return a.orderIndex - b.orderIndex;
+                        });
+
+                        var banner = template('tp_bannerId', showArr);
+
+                        $('#id_side').html(banner);
+                        new Side('id_banner', true);
+                    }
+                }
+
+
+                oo.postion = 58;
+                AJAX.POST('/api/advert/apiList', oo, function (a) {
+                    if (a.code == 1) {
+                        var list = a.data || [];
+                        if (list.length) {
+                            var model = list[0];
+                            var imgUrl = Comm.OSS.getImgUrl(model.falce, 'l');
+                            $('#bg_shop').get(0).style.backgroundImage = 'url(' + imgUrl + ')';
+                            if (imgUrl) {
+                                $('#mengc').removeClass('hide');
+                            }
+                            $('#titleText').html(model.title);
+                        }
+                    }
+                });
+            })
+        }
+
+
+        //获取分类
+        function getCatogoryClass() {
+
+            GDict.init(function () {
+                var arr = GDict.get('storeCategory');
+                var data = arr;
+                for (var i = 0; i < data.length; i++) {
+                    var d = data[i];
+                    if (i < 4) {
+                        $('#fenl1').append(
+                            '<div class="paddt15 paddb15 center" onclick="Comm.go(' +
+                            "'" + 'storeList.html?type=' + d.dictId +
+                            "'" +
+                            ')"><img src="' + Comm.OSS.getImgUrl(d.remark) +
+                            '" class="quickItem bg_place"><div class="f12 mart10">' + d.dictname +
+                            '</div></div>'
+                        );
+                    }
+                    if (i > 3 && i < 8) {
+                        $('#fenl2').append(
+                            '<div class="ppaddt15 paddb15 center" onclick="Comm.go(' +
+                            "'" + 'storeList.html?type=' + d.dictId +
+                            "'" +
+                            ')"><img src="' + Comm.OSS.getImgUrl(d.remark) +
+                            '" class="quickItem bg_place"><div class="f12 mart10">' + d.dictname +
+                            '</div></div>'
+                        );
+                    }
+                }
+                if (i > 3 && i < 8) {
+                    $('#fenl2').append(
+                        '<div class="p15 center pt0" onclick="Comm.go(' +
+                        "'" + 'storeList.html?type=' + d.dictId +
+                        "'" +
+                        ')"><img src="' + Comm.OSS.getImgUrl(d.remark) +
+                        '" class="quickItem bg_place"><div class="f12 mart10">' + d.dictname +
+                        '</div></div>'
+                    );
+                }
+            });
+        }
+
+
+
+
+        //附近店铺
+        function getNearByShop() {
+            //附近店铺
+            var storeInfo = {};
+            storeInfo.lng = UserJWD.lng();
+            storeInfo.lat = UserJWD.lat();
+            storeInfo.areaId = UserJWD.aid();
+            storeInfo.type = 1;
+            AJAX.POST('/api/store/storeNear', storeInfo, function (a) {
+                if (a.code == 1) {
+                    var data = a.data;
+                    var shopEleHtml = '';
+                    for (var i = 0; i < data.length; i++) {
+                        var d = data[i];
+                        if (d.storeds == '') {
+                            d.storeds = '暂无店铺简介';
+                        }
+                        var str = d.storeds;
+                        var xxx = /&lt;/g;
+                        var ddd = /&gt;/g;
+                        var k = /%26nbsp;/g;
+                        var img = /<img[^>]*>/gi;
+                        str = str.replace(xxx, '<');
+                        str = str.replace(ddd, '>');
+                        str = str.replace(k, ' ');
+                        str = str.replace(img, ''); //替换调简介中的图片
+                        shopEleHtml += '<div class="threeItem center bg_white mainH br5" onclick="Comm.go(' +
+                            "'" + 'store.html?storeId=' + d.storeId + "'" +
+                            ')"><div><div style="width: 60%;margin: auto"><div class="wrap threeItemIcon br5"><div class="wrap_ct imgContain bg_place"><img src="' +
+                            Comm.OSS.getImgUrl(d.doorPic) +
+                            '"></div></div></div><div class="col_title f12 wordW threeItemTt m5h">' + d
+                            .storeName + '</div><div class="col_sub f12 m5 wordW">' + str +
+                            '</div></div></div>';
+                    }
+                    $('#xdp').html(shopEleHtml);
+                }
+            });
+        }
+
+
+
+
+        //获取推荐店铺
+        function getRecommendShop(a) {
+            if (a.code == 1) {
+                var data = a.data;
+                for (var i = 0; i < data.length; i++) {
+                    var d = data[i];
+                    Area.init(function () {
+                        var ad = Area.getFullName(d.addrId);
+                        d.addr = ad + '  ' + d.addr;
+                    });
+                    if (d.isChain == 1) {
+                        rr = '<span class="marl5 f12 col_white bgG benefit2"><span class="marl10">连锁认证</span></span>'
+                    } else {
+                        rr = ''
+                    }
+                    var withPer = Number(d.score) / 5 * 100;
+                    // html += '<div class="cell flex_start" onclick="Comm.go(' + "'" +
+                    //     'store.html?storeId=' + d.storeId + "'" +
+                    //     ')"><div class="imgContain cellIcon" style="width:40%"><img src="' + Comm.OSS.getImgUrl(d
+                    //         .doorPic) + '"></div><div class="cellRight" style="width:60%"><div class="f16 bold">' +
+                    //     d.storeName +
+                    //     '</div><div class="mv5"><span class="f12 col_white bg_g_jb benefit">让利' + d
+                    //     .rebate / 100 +
+                    //     '%</span>' + rr +
+                    //     '</div><div class="evaluate flex_start"><div class="star bg_place"><div class="star_get" style="width: ' +
+                    //     withPer +
+                    //     '%"></div></div><div class="f12 lineSpan"><span class="col_red ml5">' +
+                    //     d.score +
+                    //     '分</span><span class="col_lgray f14">丨</span><span class="col_sub">' +
+                    //     app.price(d.consumption) +
+                    //     '</span><span class="col_sub">/人</span></div></div><div class="f12 col_sub flex_between mt5"><div class="tyc">地点：' +
+                    //     d.addr + '</div><div class="lIcon distance">' + Math.round(d.distance / 1000 *
+                    //         100) / 100 + 'km</div></div></div></div>';
+
+
+                    html += '<div class="cell flex_start" onclick="Comm.go(' + "'" +
+                        'store.html?storeId=' + d.storeId + "'" +
+                        ')"><div class="imgContain cellIcon" style="width:40%"><img src="' + Comm.OSS.getImgUrl(d
+                            .doorPic) + '"></div><div class="cellRight" style="width:60%"><div class="f16 bold">' +
+                        d.storeName +
+                        '</div><div class="mv5"><span class="f12 col_white bg_g_jb benefit">付款返红包券</span>' + rr +
+                        '</div><div class="evaluate flex_start"><div class="star bg_place"><div class="star_get" style="width: ' +
+                        withPer +
+                        '%"></div></div><div class="f12 lineSpan"><span class="col_red ml5">' +
+                        d.score +
+                        '分</span><span class="col_lgray f14">丨</span><span class="col_sub">' +
+                        app.price(d.consumption) +
+                        '</span><span class="col_sub">/人</span></div></div><div class="f12 col_sub flex_between mt5"><div class="tyc">地点：' +
+                        d.addr + '</div><div class="lIcon distance">' + Math.round(d.distance / 1000 *
+                            100) / 100 + 'km</div></div></div></div>';
+                }
+                return html;
+            }
+        }
+
+
+        function hasNewMessage() {
+
+            if (app.isLogin()) {
+                AJAX.GET('/api/message/messIsRead', function (a) {
+                    //console.log(a);
+                    if (a.code == 1) {
+                        if (a.data > 0) {
+                            $('.hasNew').removeClass('hide');
+                        } else {
+                            $('.hasNew').addClass('hide');
+                        }
+                    }
+                })
+            }
+        }
+    </script>
+
+    <script type="text/html" id="tp_bannerId">
+        {{each $data model i}}
+        <li class="imgCt_cover br5 ohide" onclick="showAdver('{{model.advertId}}');">
+            <img src="{{OSS(model.falce,'l')}}" class="bannerImg" alt="" onerror="app.errorimg(this);">
+        </li>
+        {{/each}}
+    </script>
+
+</body>
+
+</html>

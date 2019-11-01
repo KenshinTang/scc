@@ -1,0 +1,97 @@
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width,initial-scale=1.0,user-scalable=no" name="viewport">
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="format-detection" content="telephone=no,email=no,adress=no" />
+
+    <title>邀请名单</title>
+
+    <link rel="stylesheet" href="css/g.css">
+    <link rel="stylesheet" href="css/comm.css">
+    <link rel="stylesheet" href="inc/mescroll/mescroll.min.css">
+    <style>
+        li {
+            width: 100%;
+        }
+    </style>
+
+</head>
+
+<!--******************************************************************************-->
+
+<body>
+
+    <header>
+        <div class="navBar">
+            <div class="navBackIcon" onclick="Comm.close()"></div>
+            <div class="navTitle f17">我的邀请</div>
+        </div>
+    </header>
+    <section id="section" class="bg_lgray">
+        <ul class="flex flex_center marl20 mart15 marb15 f15">
+            <li>头像</li>
+            <li>昵称</li>
+            <li>获得奖金</li>
+            <li>注册日期</li>
+        </ul>
+        <div id="list" class="bg_white paddl15 paddr15">
+        </div>
+    </section>
+
+    <script src="js/z.js"></script>
+    <script src="js/g.js"></script>
+    <script src="js/comm.js"></script>
+    <script src="js/api.js"></script>
+    <script src="inc/mescroll/mescroll.min.js"></script>
+
+    <script type="text/javascript">
+        var userinfo = Comm.db('userinfo');
+        var html = '';
+        var merefresh;
+        var requestPamrm = {};
+
+        function pageload() {
+            addRefresh();
+        }
+        function getList(d){
+            var dd = d;
+            var data = dd.data;
+            for (var i = 0; i < data.length; i++) {
+                var d = data[i];
+                d.regDate = d.regDate.substr(0,d.regDate.indexOf(' '));
+                html += '<ul class="f12 flex flex_between paddt10 paddb10 bottomBorder" style="color:#5C5C5C"><li class=""><img src="'+Comm.OSS.getImgUrl(d.face,'s')+'" width="30px" height="30px" style="border-radius:30px;"/></li><li class="marl20">'+d.nickName+'</li><li class="marl30">'+d.money/100+'红包券</li><li class="marl10">'+d.regDate+'</li></ul>';
+            }
+            return html;
+        }
+
+        function addRefresh() {
+            requestPamrm.customerId = userinfo.customerId;
+            if (!merefresh) {
+                merefresh = new MERefresh();
+                //网络请求参数
+                merefresh.refreshOption.refreshUrl = '/api/customer/getUserRefList';
+                merefresh.refreshOption.refreshParm = requestPamrm;
+
+                //页面 <刷新> 的回调
+                merefresh.refreshOption.refresh_cb = function (refresh, d) {
+                    if (d.code == 1) {
+                        html = '';
+                        addrData = d.data||[];
+                        refresh.successEndRef(addrData.length, d.totalCount);
+                        refresh.appendHtml(getList(d));
+                    } else {
+                        refresh.successEndRef(0, 0);
+                        refresh.MeRefScroll.endUpScroll(true);
+                    }
+                };
+                merefresh.configurationDone('section', 'list');
+            } else {
+                merefresh.refreshFunction(merefresh);
+            }
+        }
+    </script>
+</body>
+
+</html>

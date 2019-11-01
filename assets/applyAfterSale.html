@@ -1,0 +1,198 @@
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width,initial-scale=1.0,user-scalable=no" name="viewport">
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+    <meta name="format-detection" content="telephone=no,email=no,adress=no"/>
+
+    <title>申请售后</title>
+
+    <link rel="stylesheet" href="css/g.css">
+    <link rel="stylesheet" href="css/comm.css">
+
+    <style>
+        .iconContain {
+            width: 90px;
+            height: 90px;
+            border-radius: 3px;
+            overflow: hidden;
+        }
+        .calculate{
+            width: 80px;
+            border: 1px solid #C2C2C2;
+            height: 25px;
+            border-radius: 12.5px;
+        }
+
+        .calculateItem{
+            font-weight: bold;
+            font-size: 18px;
+            min-width: 25px;
+            text-align: center;
+        }
+        .linebod{
+            background-color: #F7F7F7;
+            height: 5px;
+        }
+
+        .cell{
+            height: 55px;
+        }
+
+        .indicator{
+            background-position: right 15px center;
+        }
+
+    </style>
+
+</head>
+
+<!--******************************************************************************-->
+<body>
+
+<header>
+    <div class="navBar bottomShadow">
+        <div class="navBackIcon" onclick="Comm.close()"></div>
+        <div class="navTitle">申请售后</div>
+    </div>
+</header>
+<!--******************************************************************************-->
+
+<section class="bg_lgray">
+
+    <div class="paddl15 paddr15 bg_white">
+        <div class="bg_white paddt20 paddb20 bottomBorder ginfo">
+
+        </div>
+
+        <div class="flex_between h50 bg_white">
+            <div class="bold f17 ml5">申请数量</div>
+            <div class="flex_around calculate">
+                <div class="minus calculateItem col_sub999" onclick="changeNum(-1)">-</div>
+                <div class="count f15 number">1</div>
+                <div class="add calculateItem" onclick="changeNum(1)">+</div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="linebod"></div>
+
+    <div class="bg_white">
+        <div class="flex_start cell indicator pl15 bottomBorder" onclick="goType(1)">
+            <img src="img/order/tuih.png" alt="" width="20">
+            <div class="ml5 f16">退货</div>
+        </div>
+
+        <div class="flex_start cell indicator pl15" onclick="goType(2)">
+            <img src="img/order/hhuo.png" alt="" width="20">
+            <div class="ml5 f16">换货</div>
+        </div>
+    </div>
+
+    
+</section>
+
+<!--******************************************************************************-->
+<footer></footer>
+
+<script src="js/z.js"></script>
+<script src="js/g.js"></script>
+<script src="js/comm.js"></script>
+<script src="js/api.js"></script>
+<script src="js/art-template.js"></script>
+
+<script>
+
+    var gid = Comm.query('gid')||'',oid = Comm.query('oid')||'';
+    var userinfo = Comm.db('userinfo')||{};
+    var pageData = {
+        goodsModel:{},
+    };
+
+    function pageload() {
+        getNetData();
+    }
+
+
+    function getNetData() {
+        var params = {
+            ordersId:oid,
+            customerId:userinfo.customerId,
+        }
+        SLNetwork('get', '/api/ordersaftersale/orderSaleCommit', params, function (data) {
+            if (data.code == 1) {
+                var arr = data.data || [];
+                if (arr.length){
+                    var model = arr[0]||{};
+                    pageData.goodsModel = model;
+                    pageData.num = parseInt(model.goodsCount);
+                    $('.number').text(pageData.num);
+                    $('.ginfo').html(template('tp_id_ginfo',model));
+                }
+
+            } else {
+                Comm.message(data.msg);
+            }
+        });
+    }
+
+
+
+    //改变购买数量
+    function changeNum(num) {
+        pageData.num += num;
+        pageData.num = pageData.num > 0 ? pageData.num : 1;
+
+        //这里应该可能存在申请数量高于购买数量的情况
+        pageData.num = parseInt(pageData.num > pageData.goodsModel.goodsCount ? pageData.goodsModel.goodsCount : pageData.num);
+
+        $('.number').text(pageData.num);
+    }
+
+
+
+    function goType(t) {
+        Comm.go('afterSaleReson.html?type='+t + '&oid='+oid + '&gid='+gid + '&num='+pageData.num);
+    }
+
+
+</script>
+
+
+
+
+<script type="text/html" id="tp_id_ginfo">
+
+
+    <div class="flex f16 pad10">
+        <div class="br3 iconContain imgContain">
+            <img src="{{OSS(faceImg,'s')}}" onerror="app.errorimg(this);">
+        </div>
+
+        <div class="column paddl10 grow1" style="min-height: 75px;width:100%;">
+
+            <div class="f16 lh20 wordW2 lh20">{{goodsName||''}}</div>
+            <div class="baseWH col_sub f12 mt5 lh20">{{specText}}</div>
+
+            <div class="flex_start f12 lh20 mart15">
+                <div class="flex_start">
+                    <div class="col_sub">价格：</div>
+                    <div class="price bold">¥{{priceTp(price||0)}}</div>
+                </div>
+
+                <div class="flex_start ml10">
+                    <div class="col_sub">购买数量：</div>
+                    <div class="price bold">{{goodsCount}}</div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+
+</script>
+
+</body>
+
+</html>

@@ -1,0 +1,465 @@
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width,initial-scale=1.0,user-scalable=no" name="viewport">
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="format-detection" content="telephone=no,email=no,adress=no" />
+
+    <title>商品列表</title>
+
+    <link rel="stylesheet" href="css/g.css">
+    <link rel="stylesheet" href="css/comm.css">
+    <link rel="stylesheet" href="inc/mescroll/mescroll.min.css">
+
+    <style>
+        .navBackIcon {
+            background-position-x: 14px;
+        }
+
+        /*search header*/
+        .searchBar {
+            height: 30px;
+            margin: 7px 0%;
+            line-height: 30px;
+            border-radius: 15px;
+            text-align: left;
+        }
+
+        .searchBar.lIcon {
+            background-position-x: 15px;
+            padding-left: 35px;
+            background-image: url("img/tbshop/Search.png");
+            color: #A8ADBA;
+        }
+
+        .navMore {
+            background-image: url("img/tbmall/more.png");
+        }
+
+        .topScrollBar,
+        .filterBar {
+            height: 45px;
+            /*line-height: 45px;*/
+        }
+
+        /* 顶部滚动选择栏 */
+
+        .segBar {
+            white-space: nowrap;
+            align-content: center;
+            align-items: center;
+        }
+
+        .topBarOpt {
+            margin: 10px 15px;
+            display: inline-block;
+        }
+
+        .segBar>.active {
+            font-weight: bold;
+            font-size: 16px;
+            position: relative;
+            padding-bottom: 5px;
+        }
+
+        .segBar>.active::after {
+            height: 3px;
+            width: 90%;
+            position: absolute;
+            left: 5%;
+            bottom: 0px;
+            background-color: red;
+            display: block;
+            content: ' ';
+        }
+
+        .filterBar>.active {
+            color: red;
+        }
+
+        /*.filterBar > .active::after {*/
+        /*height: 2px;*/
+        /*width: 90%;*/
+        /*position: absolute;*/
+        /*left: 5%;*/
+        /*bottom: 0px;*/
+        /*background-color: #3DBB65;*/
+        /*display: block;*/
+        /*content: ' ';*/
+        /*}*/
+
+        .rIcon.price {
+            background-image: url("img/tbshop/Price.png");
+            background-size: 10px auto;
+            padding-right: 15px;
+            background-position-x: right;
+        }
+
+        .rIcon.price.active {
+            background-image: url("img/tbshop/Price_up.png");
+            background-size: 10px auto;
+            padding-right: 15px;
+            background-position-x: right;
+        }
+
+        .rIcon.price.active.down {
+            background-image: url("img/tbshop/Price_low.png");
+            background-size: 10px auto;
+            padding-right: 15px;
+            background-position-x: right;
+        }
+
+        /* 扶贫专场 */
+
+        .ptypeOther>.navBackIcon {
+            background-image: url("img/generalIcon/back_w.png");
+        }
+
+        .adver {
+            padding-left: 10px;
+            padding-right: 10px;
+            border-radius: 15px;
+            background-color: #FF8878;
+        }
+
+        .adver>img {
+            width: 15px;
+            height: 15px;
+        }
+
+        .label {
+            font-size: 12px;
+            border: unset;
+            padding: 2px 5px;
+            color: #FF8878;
+            background-color: #FFFFFF;
+            line-height: 14px;
+            border-radius: 3px;
+            margin: 0px;
+            /*margin-left: 5px;*/
+        }
+
+        .checkShow {
+            display: none;
+        }
+    </style>
+
+
+</head>
+
+<!--******************************************************************************-->
+
+<body>
+
+    <header>
+
+        <div class="checkShow PT">
+            <div class="navBar flex_between">
+                <div class="navBackIcon" onclick="Comm.close();"></div>
+                <!--<div class="flex1 bg_lgray searchRadiu">-->
+                <!--<div class="searchBar">-->
+                <!--<input type="text" id="searchBar" class="bg_lgray" placeholder="搜索关键字"-->
+                <!--onkeyup="textChanged(event)">-->
+                <!--</div>-->
+                <!--</div>-->
+
+                <div class="headItem flex1" onclick="Comm.go('searchPage.html?type=goods')">
+                    <div class="searchBar bg_lgray lIcon">
+                        请输入商品名称
+                    </div>
+                </div>
+
+                <div class="navItemIcon mr10 navMore" onclick="Comm.go('goodsClass.html');"></div>
+            </div>
+        </div>
+
+
+        <div class="navBar bg_trans ptypeOther col_white checkShow FP">
+            <div class="navBackIcon" onclick="Comm.close();"></div>
+            <div class="navTitle col_white">公告</div>
+            <div class="lh30 p5" onclick="Comm.go('artical.html?aid=fpwz')">
+                <div class="adver flex_between">
+                    <img src="img/tbmall/ggao.png" alt="" class="mr5">
+
+                    <div class="label">最新</div>
+                    <div class="h30"></div>
+                    <div class="grow1 wordW tleft marg_h5 h30 ohide" id="id_fp_Text"></div>
+
+                    <img src="img/tbmall/ckgg.png" alt="">
+                </div>
+            </div>
+        </div>
+
+
+        <!--类别-->
+        <div class="topScrollBar bottomBorder mainH segBar scroll-x"></div>
+
+
+        <!--筛选-->
+        <div class="filterBar flex_around bottomBorder">
+            <div class="topBarOptd active">销量</div>
+            <div class="topBarOptd">人气</div>
+            <div class="topBarOptd">最新</div>
+            <div class="topBarOptd rIcon price">价格</div>
+        </div>
+
+    </header>
+    <!--******************************************************************************-->
+
+    <section class="mescroll" id="id_refresh">
+
+
+        <div class="goodsList p10 flex_wrap f12" id="id_list">
+
+        </div>
+
+    </section>
+
+    <!--******************************************************************************-->
+    <footer></footer>
+
+    <script src="js/z.js"></script>
+    <script src="js/g.js"></script>
+    <script src="js/comm.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/dict.js"></script>
+    <script src="js/art-template.js"></script>
+    <script src="inc/mescroll/mescroll.min.js"></script>
+
+
+    <script>
+        var type = Comm.query('type'); //[type == FP(扶贫专场) PT(普通商品 有一级分类) TM(特卖)  XP(新品)]
+        var merefresh;
+        var refreshParm = {};
+
+        var pageModel = {
+            ftid: Comm.query('ftid'), //一级
+            stid: Comm.query('stid'), //二级
+            list: [], //所有分类
+        }
+
+        function pageload() {
+
+            if (type == 'FP') { //扶贫商品
+                $('.FP').show();
+                GDict.init(function () {
+                    var arr = GDict.get('poorCategory');
+                    if (!pageModel.stid) pageModel.activeStid = arr[0].dictId;
+                    fillWithClassfication(arr);
+                });
+
+                getFPArtical();
+
+            } else { //if (type == 'PT')//普通商品
+                $('.PT').show();
+                GDict.init(function () {
+                    if (pageModel.ftid) {
+                        var arr = GDict.getItem(pageModel.ftid).cs;
+                        if (arr && arr.length) {
+                            if (!pageModel.stid) {
+                                pageModel.stid = pageModel.activeStid = arr[0].dictId;
+                            } else {
+                                pageModel.stid = pageModel.activeStid = pageModel.stid
+                            }
+                        } else {
+                            $('.topScrollBar').remove();
+                            Comm.resizeSection();
+                        }
+
+
+                        fillWithClassfication(arr);
+                    } else {
+                        var arr = GDict.get('goodsCategory');
+                        var tmodel = arr[0] || {};
+                        var subArr = GDict.getItem(tmodel.dictId).cs;
+                        var subTmodel = subArr[0] || {};
+                        pageModel.ftid = tmodel.dictId;
+                        pageModel.activeStid = tmodel.dictId;
+                        fillWithClassfication(arr);
+                    }
+                });
+            }
+
+        };
+
+
+        function getFPArtical() {
+
+            AJAX.POST('/api/article/getArticle', {
+                title: '扶贫文章'
+            }, function (a) {
+                var str = a.data.content;
+                var x = /&lt;/g;
+                var d = /&gt;/g;
+                str = str.replace(x, '<');
+                str = str.replace(d, '>');
+                $('#id_fp_Text').html(str || '&nbsp;');
+            })
+
+
+        }
+
+
+        //添加刷新控件
+        function addrefresh() {
+            merefresh = new MERefresh();
+
+            merefresh.refreshOption.noMoreSize = 2;
+
+            refreshParm = {
+                category1: pageModel.ftid,
+                category2: pageModel.stid,
+                tagType: ''
+            };
+
+
+            merefresh.refreshOption.refreshUrl = '/api/shoppingMall/goods/list';
+            if (type == 'FP') {
+                merefresh.refreshOption.refreshUrl = '/api/shoppingMall/goods/poorList';
+                refreshParm = {
+                    category1: pageModel.activeStid,
+                };
+            } else if (type == 'TM') {
+                refreshParm.tagType = 1;
+            } else if (type == 'XP') {
+                refreshParm.tagType = 2;
+            }
+
+            merefresh.refreshOption.refreshParm = refreshParm;
+
+
+            //页面 <刷新> 的回调
+            merefresh.refreshOption.refresh_cb = function (refresh, d) {
+
+
+                refresh.successEndRef(d.data && d.data.length || 0, d.totalCount);
+
+                if (d.code == 1) {
+                    var list = d.data || [];
+                    var html = template('tp_goodsCell', list);
+                    merefresh.appendHtml(html);
+                } else {
+                    Comm.message(d.msg);
+                }
+
+            };
+            merefresh.configurationDone('id_refresh', 'id_list');
+        }
+
+
+        function fillWithClassfication(listArr) {
+            pageModel.list = listArr; //所有分类
+            var list = template('tp_id_class', pageModel);
+            $('.topScrollBar').html(list);
+
+
+            //点击类别
+            meauChooseClick('.topScrollBar', '.topBarOpt', function (o, idx) {
+                var stid = $(o).attr('stid');
+                if (stid) {
+                    if (pageModel.stid || type == 'PT') {
+                        pageModel.activeStid = stid;
+                        refreshParm.category2 = stid;
+                    } else {
+                        pageModel.ftid = stid;
+                        refreshParm.category1 = stid;
+                    }
+
+                    refreshData();
+                }
+            });
+            addrefresh();
+        }
+
+
+        //销量、人气、最新、价格 筛选
+        meauChooseClick('.filterBar', '.topBarOptd', function (o, idx) {
+            var sortPrice = 0;
+            if (o.classList.contains('price')) {
+                $(o).toggleClass('down');
+                if ($(o).hasClass('down')) {
+                    sortPrice = 1;
+                } else {
+                    sortPrice = 2;
+                }
+            }
+
+            refreshParm.sortXl = (idx == 0 ? 1 : 0);
+            refreshParm.sortRq = (idx == 1 ? 1 : 0);
+            refreshParm.sortZx = (idx == 2 ? 1 : 0);
+            refreshParm.sortPrice = sortPrice;
+            refreshData();
+
+        });
+
+        function refreshData() {
+            merefresh.refreshOption.refreshParm = refreshParm;
+            merefresh.refreshFunction(merefresh);
+        }
+
+
+        //搜索输入框改变
+        function textChanged() {
+
+        }
+    </script>
+
+
+    <script type="text/html" id="tp_id_class">
+        {{each $data.list model i}}
+        {{if model.enable!=0}}<div class="topBarOpt {{activeStid==model.dictId?'active':''}}" stid="{{model.dictId}}">
+            {{model.dictname}}</div>
+        {{/if}}
+        {{/each}}
+    </script>
+
+
+    <script type="text/html" id="tp_goodsCell">
+        {{each $data model i}}
+        <div class="rcm_goodsCell" onclick="Comm.go('goodsDetail.html?gid={{model.goodsId}}');">
+
+            <div class="wrap rcm_goodsFace">
+                <div class="wrap_ct imgContain ">
+                    <img src="{{OSS(model.faceImg,'m')}}" alt="" onerror="app.errorimg(this)">
+                </div>
+            </div>
+
+            <div class="p5 bg_white">
+                <div class="goodsTitle line2">{{model.goodsName}}</div>
+                <div class="flex_wrap h40">
+
+                    {{if model.specialTag == '1'}}
+                    <div class="label">特卖</div>
+                    {{/if}}
+
+                    {{if model.newTag == 1}}
+                    <div class="label">新品</div>
+                    {{/if}}
+
+                    {{if model.hotTag == 1}}
+                    <div class="label">热门</div>
+                    {{/if}}
+
+                    {{if model.offersTag == 1}}
+                    <div class="label">特价</div>
+                    {{/if}}
+
+                    {{if model.isPoor == '1'}}
+                    <div class="label">扶贫</div>
+                    {{/if}}
+
+                </div>
+                <div class="flex_start">
+                    <div class="col_theme">¥{{priceTp(model.price)}}</div>
+                    <!--<div class="col_sub mline ml5">¥{{model.oldprice}}</div>-->
+                </div>
+            </div>
+        </div>
+        {{/each}}
+    </script>
+
+
+</body>
+
+</html>

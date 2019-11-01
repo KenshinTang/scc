@@ -1,0 +1,234 @@
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width,initial-scale=1.0,user-scalable=no" name="viewport">
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="format-detection" content="telephone=no,email=no,adress=no" />
+
+    <title>首页</title>
+
+    <link rel="stylesheet" href="css/g.css">
+    <link rel="stylesheet" href="css/comm.css">
+
+    <style>
+        header {
+            background: url("img/tbmine/Background_wallet.png") no-repeat top center;
+            background-size: 100% 100%;
+        }
+
+        /*头部*/
+        .navBar {
+            background: rgba(0, 0, 0, 0);
+        }
+
+        .topH {
+            padding-top: 72%;
+        }
+
+        svg {
+            width: 100%;
+        }
+
+        .navBackIcon {
+            background-image: url("img/generalIcon/back_w.png");
+        }
+
+        .code-btn {
+            width: 90px;
+            height: 30px;
+            line-height: 30px;
+            font-size: 13px;
+            margin-top: 10px;
+            float: right;
+            border-radius: 5px;
+        }
+    </style>
+
+</head>
+
+<!--******************************************************************************-->
+
+<body>
+
+    <header>
+        <div class="wrap topH col_white">
+            <div class="wrap_ct">
+
+                <div class="">
+                    <div class="grow1">
+                        <div class="navBar">
+                            <div class="navBackIcon" onclick="Comm.close()"></div>
+                            <div class="navItem mr10" onclick="model.list()">明细记录</div>
+                            <div class="navTitle col_white">我的钱包</div>
+                        </div>
+                    </div>
+
+                    <div id="balance" class="f36 center mart30">0</div>
+                    <div class="f12 mt10 center">我的余额(元)</div>
+                </div>
+            </div>
+        </div>
+
+    </header>
+    <!--******************************************************************************-->
+
+    <section class="scroll-y">
+        <div id="tx">
+            <!-- <div class="paddb10 bottomBorder">提现(1)</div>
+            <div class="flex_between">
+                <div>
+                    <div class="mart10">提现金额<span class="bold marl10">100元</span></div>
+                    <div class="mart5 f12 col_lgray">622*********222</div>
+                </div>
+                <div><button id="yzm" type="button" onclick="yzm(this);"
+                        class="bg_trans code-btn col_white f12">发送验证码</button></div>
+            </div> -->
+        </div>
+
+        <div id="button1" class="hide bg_trans m10 br5 col_white center lh50 f18" style="margin-top: 50px"
+            onclick="Comm.go('withDrawal.html?comeType=4')">提现</div>
+
+    </section>
+
+    <!--******************************************************************************-->
+    <footer></footer>
+
+    <script src="js/z.js"></script>
+    <script src="js/g.js"></script>
+    <script src="js/comm.js"></script>
+    <script src="js/api.js"></script>
+
+    <script>
+        var u = Comm.db('userinfo');
+        var balance = Comm.query('balance');
+
+        function pageresume() {
+            window.location.reload();
+        }
+
+        function pageload() {
+            if (balance) {
+
+                AJAX.POST('api/store/getMyCashAuditingList', u, function (a) {
+                    if (a.code == 1) {
+                        for (var i = 0; i < a.data.length; i++) {
+                            $('#tx').append(
+                                '<div id="tx' + a.data[i].cashId +
+                                '" class="shadow m15 p10 br5"><div class="paddb10 bottomBorder">提现</div><div class="flex_between"><div><div class="mart10">提现金额<span class="bold marl10">' +
+                                app.price(a.data[i].money) +
+                                '元</span></div><div class="mart5 f12 col_lgray">' + a.data[i].cardNo
+                                .substring(0, 4) + '********' + a.data[i].cardNo.substring(a.data[i].cardNo
+                                    .length - 4, a.data[i].cardNo.length) +
+                                '</div></div><div><button id="yzm' + a.data[i].cashId +
+                                '" type="button" onclick="yzm(' + a.data[i].cashId +
+                                ');" class="bg_trans code-btn col_white f12">发送验证码</button></div></div></div>'
+                            );
+
+                        }
+                    }
+                })
+                $('#tx').removeClass('hide');
+                $('#balance').html(app.price(balance));
+            } else {
+                $('#button1').removeClass('hide');
+                AJAX.GET('/api/customer/my', function (a) {
+                    if (a.code == 1) {
+                        var data = a.data;
+                        console.log(data);
+                        $('#balance').html(app.price(data.balance));
+                    }
+                });
+            }
+        }
+        var model = {
+            list: function () {
+                if (balance) {
+                    Comm.go('coupon.html?type=dpye');
+                } else {
+                    Comm.go('myMoneylist.html');
+                }
+            },
+            quer: function (i) {
+                var m = $('#input' + i).val();
+                var o = {};
+                o.authCode = m;
+                o.cashId = i;
+                o.storeId = u.storeId;
+                AJAX.POST('api/store/cashByCode', o, function (a) {
+                    if (a.code == 1) {
+                        Comm.message('提现成功');
+                        setTimeout(function () {
+                            window.location.reload();
+                        }, 600);
+                    } else {
+                        Comm.message(a.msg);
+                    }
+                })
+
+            }
+        }
+
+        function yzm(i) {
+            var tlength = $('#tx' + i).children().length;
+            if (tlength < 3) {
+                $('#tx' + i).append(
+                    '<div class="yzStyle flex_between mart10 p10 br5" style="background-color:#FAF5F5"><div><input type="text" id="input' +
+                    i +
+                    '" placeholder="请输入验证码" style="background-color:#FAF5F5"/></div><div class="col_red" onclick="model.quer(' +
+                    i + ');">确定</div></div>'
+                );
+            }
+            getCode(i);
+        }
+        //获取验证码
+        function getCode(t) {
+            var o = {};
+            var time = 60;
+            o.type = 5; //1：注册 2：找回密码  5：手机验证
+            o.storeId = u.storeId;
+            AJAX.POST('api/store/sendAuthCode', o, function (a) {
+                var codeType = -1;
+                if (a.code == 1) {
+                    Comm.message('验证码已发送!');
+                    codeType = 1;
+                } else {
+                    Comm.message(a.msg);
+                    codeType = 0;
+                }
+                if (codeType == 1) {
+                    settime();
+                }
+
+                function settime() {
+                    var yzm = $('#yzm' + t);
+                    if (time == 0) {
+                        // $("#yzm").addClass("bg_trans");
+                        // $("#yzm").addClass("col_white");
+                        yzm.text("发送验证码");
+                        yzm.css("background-color", "#FFFFFF");
+                        yzm.css("border-color", "#E23339");
+                        yzm.css("color", "#E23339");
+                        yzm.removeAttr("disabled");
+                        return;
+                    } else {
+                        // $("#yzm").removeClass("bg_trans");
+                        // $("#yzm").removeClass("col_white");
+                        yzm.text(time + "S重新发送");
+                        yzm.css("background-color", "#FFFFFF");
+                        yzm.css("border-color", "#FFFFFF");
+                        yzm.css("color", "#E4161D");
+                        yzm.attr("disabled", "disabled");
+                        time--;
+                    }
+                    setTimeout(function () {
+                        settime()
+                    }, 1000)
+                }
+            });
+        }
+    </script>
+
+</body>
+
+</html>

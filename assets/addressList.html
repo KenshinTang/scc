@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0,user-scalable=no"/>
+    <meta http-equiv="X-UA-Compatible" content="ie=edge"/>
+    <title>我的地址</title>
+    <link href="css/g.css" type="text/css" rel="stylesheet"/>
+    <link href="css/comm.css" type="text/css" rel="stylesheet"/>
+    <link href="inc/mescroll/mescroll.min.css" type="text/css" rel="stylesheet"/>
+
+
+    <style>
+        section {
+            background: #F4F4F4;
+        }
+
+        .address {
+            width: 100%;
+            margin: 0 auto;
+            height: 120px;
+        }
+
+        .address .up {
+            border-bottom: 1px solid #B5B5B5;
+            width: 90%;
+            margin: 0 auto;
+        }
+
+        .address .down {
+            width: 90%;
+            margin: 0 auto;
+        }
+
+        .sureBtn {
+            width: 90%;
+            margin: 5px auto;
+            font-size: 16px;
+            text-align: center;
+            height: 40px;
+            line-height: 40px;
+            background: #ffffff;
+            border-radius: 3px;
+            border: 1px solid #D83636;
+            color: #D83636;
+        }
+
+        .down img {
+            margin-top: -4px;
+        }
+
+        .isDefaut {
+        }
+    </style>
+</head>
+
+<body>
+<header>
+    <div class="navBar bottomShadow">
+        <div class="navBackIcon" onclick="backClicked();"></div>
+        <div class="navTitle">我的地址</div>
+    </div>
+</header>
+
+<section id="mescroll" class="mescroll">
+    <div class="linebod"></div>
+    <div id="listId">
+
+    </div>
+
+</section>
+
+<footer class="bg_white">
+    <div class="sureBtn col_white bg_theme" onclick="Comm.go('addAddress.html?type=1')">+ 新增地址</div>
+</footer>
+
+</body>
+
+<script src="js/g.js"></script>
+<script src="js/z.js"></script>
+<script src="js/comm.js"></script>
+<script src="js/area.js"></script>
+<script src="js/art-template.js"></script>
+
+<script src="inc/mescroll/mescroll.min.js"></script>
+
+
+<!-- area -->
+<script type="text/javascript">
+    var userinfo = Comm.db("userinfo"),pageData = Comm.db('PData');
+    var merefresh = null;
+    var dataDic = {};
+
+
+    function pageload() {
+        Area.init();
+        addRefresh();
+    }
+
+
+    function pageresume() {
+        // merefresh.MeRefScroll.triggerDownScroll();
+        merefresh.refreshFunction();
+    }
+
+
+    function addRefresh() {
+        merefresh = new MERefresh();
+        //网络请求参数
+        merefresh.refreshOption.refreshUrl = '/api/customerAddr/query';
+
+        //页面 <刷新> 的回调
+        merefresh.refreshOption.refresh_cb = function (refresh, d) {
+            if (d.code == 1 && d.data && d.data.length) {
+                refresh.successEndRef(d.data.length, d.totalCount);
+                refresh.appendHtml(template('tp_address', d.data));
+
+                (d.data).forEach(function (d, idx) {
+                    dataDic[d.customerAddrId] = d;
+                    if (pageData && pageData.address && pageData.address.customerAddrId == d.customerAddrId){
+                        pageData.address = d;
+                    }
+                })
+
+            } else {
+                refresh.successEndRef(0, 0);
+                refresh.MeRefScroll.endUpScroll(true);
+            }
+        };
+        merefresh.configurationDone('mescroll', 'listId');
+    }
+
+
+    //设置默认地址
+    function setDefault(i, t) {
+        debugger
+        var arr = $('.address')||[];
+        if (arr.length == 1){
+            return;
+        }
+        var parm = {};
+        parm.customerAddrId = i;
+        Comm.confirm("确定修改默认地址?", function (a) {
+            if (a) {
+                Comm.loading(1);
+                AJAX.POST("/api/customerAddr/editDefault", parm, function (a) {
+                    Comm.loading();
+                    if (a.code == 1) {
+                        merefresh.refreshFunction(merefresh);
+                    }
+                    Comm.message(a.msg);
+                });
+            }
+        });
+    }
+
+    function del(i) {
+
+        var parm = {};
+        parm.customerAddrId = i;
+        parm.customerId = userinfo.customerId;
+        Comm.confirm("确定删除该地址?", function (a) {
+            if (a) {
+                Comm.loading(1);
+                AJAX.POST("/api/customerAddr/delete", parm, function (a) {
+                    Comm.loading();
+                    if (a.code == 1) {
+                        Comm.message("删除成功");
+                        merefresh.refreshFunction(merefresh);
+                    } else {
+                        Comm.message(a.msg);
+                    }
+                });
+            }
+        });
+    }
+
+
+    function backClicked() {
+        if (pageData){
+            Comm.db('PData',pageData);
+            Comm.close();
+        } else {
+            Comm.close();
+        }
+    }
+
+    function cellClicked(o) {
+        if (pageData){
+            var aid = $(o).attr('aid');
+            var address = dataDic[aid];
+            pageData.address = address;
+            Comm.db('PData',pageData);
+            Comm.close();
+        }
+    }
+
+    // function chooseAddress(customerAddrId) {
+    //     var a = Comm.query('aid');
+    //     if (a != '' && a != null) {
+    //         for (var i = 0; i < addrData.length; i++) {
+    //             if (addrData[i].customerAddrId == customerAddrId) {
+    //                 Comm.db('addrData', addrData[i]);
+    //                 Comm.close();
+    //             }
+    //         }
+    //     }
+    // }
+</script>
+
+
+<script type="text/html" id="tp_address">
+    {{each $data model i}}
+
+    <div class="address bg_white" aid="{{model.customerAddrId}}" onclick="cellClicked(this);">
+        <div class="up paddt20" onclick="chooseAddress('{{model.customerAddrId}}')">
+            <span class="f16 ">{{model.userName}} &nbsp; {{model.phone}}</span>
+            <br>
+            <span class="f14 color9e lh40 wordW">{{getFullName(model.addrId)}}&nbsp;{{model.address}}</span></div>
+        <div class="down">
+
+            {{if model.defaultAddr == 1}}
+            <div class="left" onclick="setDefault('{{model.customerAddrId}}',this);event.stopPropagation();">
+                <img class="marr10" src="img/address/sel_yes.png" height="14"><span class="f14 color9e lh40">默认地址</span>
+            </div>
+            {{else}}
+            <div class="left" onclick="setDefault('{{model.customerAddrId}}',this);event.stopPropagation();">
+                <img class="marr10" src="img/address/uncheck.png" height="14"><span class="f14 color9e lh40">默认地址</span>
+            </div>
+            {{/if}}
+
+
+            <div class="right">
+                <p class="address-edit">
+                    <span
+                            onclick="Comm.db('choosedAddr',dataDic[{{model.customerAddrId}}]);Comm.go('addAddress.html?id={{model.customerAddrId}}');event.stopPropagation();">
+                        <img src="img/address/bianji.png" height="14">
+                        <span class="mr10 f14 color9e lh40">编辑</span>
+                    </span>
+                    <span onclick="del('{{model.customerAddrId}}');event.stopPropagation();">
+                        <img src="img/address/delete.png" height="14">
+                        <span class="f14 color9e lh40">删除</span>
+                    </span>
+                </p>
+            </div>
+        </div>
+    </div>
+    <div class="linebod"></div>
+    {{/each}}
+</script>
+
+
+</html>

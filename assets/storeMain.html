@@ -1,0 +1,475 @@
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width,initial-scale=1.0,user-scalable=no" name="viewport">
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="format-detection" content="telephone=no,email=no,adress=no" />
+
+    <title>店铺首页</title>
+
+    <link rel="stylesheet" href="css/g.css">
+    <link rel="stylesheet" href="css/comm.css">
+
+    <style>
+        .navBar {
+            background-color: rgba(0, 0, 0, 0);
+            /*background: url("img/tbmain/beij.png") no-repeat top center;*/
+            /*background-size: 100% 304px;*/
+        }
+
+        .topHeader {
+            position: absolute;
+            z-index: 1001;
+        }
+
+        .bg {
+            background: url("img/tbmain/beij.png") no-repeat top center;
+            background-size: 100% 304px;
+            background-position-y: -44px;
+        }
+
+        /*头部*/
+
+        .navBackIcon {
+            height: 100%;
+            width: 40px;
+            height: 44px;
+            background: url("img/generalIcon/back_w.png");
+            background-position: center center;
+            background-repeat: no-repeat;
+            background-size: auto 16px;
+            background-position-x: 10px;
+            float: left;
+        }
+
+        svg {
+            width: 100%;
+        }
+
+        .grow1 {
+            flex: 1;
+        }
+
+        .grow2 {
+            flex: 2;
+        }
+
+        .h40P {
+            height: 15%;
+            text-align: center;
+        }
+
+        .headIcon {
+            height: 60px;
+            width: 60px;
+
+            margin-left: 10px;
+            margin-right: 10px;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        .infoText {}
+
+        .leftText {
+            text-align: left;
+        }
+
+        .iden {
+            background-image: url("img/tbmine/grzx.png");
+            background-size: 8px auto;
+            background-position: center right 15px;
+        }
+
+        .marr4 {
+            margin-right: 4px;
+        }
+
+        .kuang {
+            border-radius: 5px;
+            width: 350px;
+            box-shadow: 0px 2px 10px #EEEEEE;
+        }
+
+        .bg_s {
+            padding: 5px 10px;
+            color: #FFFFFF;
+            border-radius: 10px;
+            font-size: 10px;
+            background: -webkit-linear-gradient(#FB5E3D, #E30008);
+            /* Safari 5.1 - 6.0 */
+            background: -o-linear-gradient(#FB5E3D, #E30008);
+            /* Opera 11.1 - 12.0 */
+            background: -moz-linear-gradient(#FB5E3D, #E30008);
+            /* Firefox 3.6 - 15 */
+            background: linear-gradient(#FB5E3D, #E30008);
+            /* 标准的语法（必须放在最后） */
+        }
+
+        .kuai {
+            width: 165px;
+            height: 130px;
+            border-radius: 8px;
+        }
+
+        .k1 {
+            background-image: url("img/tbmain/Wallet.png");
+            background-repeat: no-repeat;
+            background-size: 40px 40px;
+            background-position: center 20px;
+            background-color: #FCF0F8;
+        }
+
+        .k2 {
+            background-image: url("img/tbmain/spgl.png");
+            background-repeat: no-repeat;
+            background-size: 40px 40px;
+            background-position: center 20px;
+            background-color: #FCF6E6;
+        }
+
+        .k3 {
+            background-image: url("img/tbmain/plgl.png");
+            background-repeat: no-repeat;
+            background-size: 40px 40px;
+            background-position: center 20px;
+            background-color: #EBEBFF;
+        }
+
+        .k4 {
+            background-image: url("img/tbmain/dpsz.png");
+            background-repeat: no-repeat;
+            background-size: 40px 40px;
+            background-position: center 20px;
+            background-color: #EBF7EC;
+        }
+
+        .col_black {
+            color: #000000;
+        }
+
+        .f10_mar10 {
+            margin-top: 5px;
+            font-size: 10px;
+            color: #999999;
+        }
+
+        .bg_jrsk {
+            padding-left: 20px;
+            background-image: url("img/tbmain/jrsk.png");
+            background-repeat: no-repeat;
+            background-size: 16px 16px;
+            background-position-y: center;
+        }
+
+        .ptb {
+            padding-top: 12px;
+            padding-bottom: 13px;
+        }
+
+        .h40P {
+            height: 10%;
+            text-align: center;
+        }
+
+        .selectImg img[src=""] {
+
+            opacity: 0;
+
+        }
+
+        .yc {
+            overflow: hidden;
+        }
+    </style>
+
+</head>
+
+<!--******************************************************************************-->
+
+<body>
+    <!--******************************************************************************-->
+    <header>
+        <div class="navBar topHeader iosDeal">
+            <div class="navBackIcon" onclick="Comm.close()"></div>
+            <div class="navTitle col_white">店铺主页</div>
+        </div>
+    </header>
+
+
+    <section class="scroll-y">
+
+
+        <div class="bg" style="padding-top:44px">
+            <div class="col_white">
+                <div class="grow2 h40P paddt15" onclick="model.goStoreInfo();">
+                    <div class="flex_start">
+
+                        <div class="baseH grow1">
+                            <div class="flex_center">
+                                <div class="selectImg imgContain headIcon">
+                                    <img id="doorPic" src="">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="infoText leftText" style="width:60%">
+                            <div class="f16 baseWH mb10"><span id="storeName"></span><span id="open"></span>
+                            </div>
+                            <div class="f12 baseWH lh20 flex">
+                                <div id="addr" class="flex flex_item_center"></div>
+                                <div class="flex flex_item_center">丨</div>
+                                <div class="flex flex_item_center" style="margin-right:2%;margin-left:2%;width:30%">
+                                    <div id="scoreImg" class="flex yc" style="width:100%">
+                                        <img src="img/tbshop/Star_n.png" width="10px" height="10px" class="marr4" />
+                                        <img src="img/tbshop/Star_n.png" width="10px" height="10px" class="marr4" />
+                                        <img src="img/tbshop/Star_n.png" width="10px" height="10px" class="marr4" />
+                                        <img src="img/tbshop/Star_n.png" width="10px" height="10px" class="marr4" />
+                                        <img src="img/tbshop/Star_n.png" width="10px" height="10px" class="marr4" />
+                                    </div>
+                                </div>
+                                <div id="score" class="flex flex_item_center" style="width:20%"></div>
+                            </div>
+                        </div>
+                        <div class="baseH grow2">
+                            <div class="rIcon iden tright" style="width:100%;height:19px;"></div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="grow2 h40P mart25">
+                    <div class="flex_start">
+                        <div class="baseH grow1">
+                            <div id="shouldIncome" class="f16 baseWH m10" style="margin-top:5px;"></div>
+                            <div class="f12 baseWH">应收余额(元)</div>
+                        </div>
+                        <div class="baseH grow1">
+                            <div id="totalIncome" class="f16 baseWH m10" style="margin-top:5px;"></div>
+                            <div class="f12 baseWH">已收余额(元)</div>
+                        </div>
+                        <!--<div class="baseH grow1">-->
+                        <!--<div id="giveIncome" class="f16 baseWH m10" style="margin-top:5px;"></div>-->
+                        <!--<div class="f12 baseWH">让利余额(元)</div>-->
+                        <!--</div>-->
+                    </div>
+                </div>
+                <div class="flex_center mart10 marl15 marr15">
+                    <div class="bg_white kuang paddl10 paddr10">
+                        <div class="flex">
+                            <div style="width:70%;" onclick="Comm.go('moneyRecord.html?type=dp');">
+                                <div class="bottomBorder bg_jrsk" style="padding-top:11px;height:44px">
+                                    <div class="f16 bold col_black">今日收款</div>
+                                </div>
+                            </div>
+                            <div style="width:30%">
+                                <div class="flex_between bottomBorder paddt10 paddb10"
+                                    style="justify-content:flex-end;height:44px">
+                                    <div class="bg_s" onclick="Comm.go('paymentCode.html?type=get');">发起收款</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div onclick="Comm.go('moneyRecord.html?type=dp');">
+                            <div class="col_red f22 flex_center paddt20">
+                                ￥<span id="todayIncome"></span>
+                            </div>
+                            <div class="flex_center mart20 paddb20 f12">
+                                <div class="">
+                                    <span class="col_lgray">总交易：</span><span class="col_black"><span
+                                            id="todayPay"></span>笔</span><span class="col_lgray">丨</span>
+                                </div>
+                                <div class="">
+                                    <span class="col_lgray">单笔均价：</span>
+                                    <span id="junj" class="col_black"></span>
+                                    <span class="col_black">元</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="flex_between center p20">
+                <div class="flex_wrap" style="width:33%;"
+                    onclick="Comm.go('myVip.html?rebateIncome='+model.data.rebateIncome+'&&memberCount='+model.data.memberCount+'');">
+                    <span id="kjsy" class="bold f18" style="width:100%"></span>
+                    <span class="f12 mart10 col_lgray" style="width:100%">店铺跨界收益(元)</span>
+                </div>
+                <div class="flex_wrap" style="width:33%;"
+                    onclick="Comm.go('myVip.html?rebateIncome='+model.data.rebateIncome+'&&memberCount='+model.data.memberCount+'');">
+                    <span id="memberCount" class="bold f18" style="width:100%"></span>
+                    <span class="f12 mart10 col_lgray" style="width:100%">会员总数(人)</span>
+                </div>
+                <div class="flex_wrap" style="width:33%;" onclick="Comm.go('storeSetting.html');">
+                    <span id="onsaleCount" class="bold f18" style="width:100%"></span>
+                    <span class="f12 mart10 col_lgray" style="width:100%">在售商品(件)</span>
+                </div>
+            </div>
+            <div class="section">
+                <div style="padding-bottom:0px;" class="flex_between p20">
+                    <div class="bold f18">为你推荐</div>
+                </div>
+                <div class="p20" style="padding-top:0px;">
+                    <div class="flex_center mart15">
+                        <div class="k1 flex flex_center flex_item_center kuai f16"
+                            onclick="model.goWallet();">
+                            <div style="display: inline-block;margin-top:50px;">
+                                <div class="flex_center f16">钱包</div>
+                                <div class="flex_center f10_mar10">￥<span id="balance"></span></div>
+                            </div>
+                        </div>
+                        <div class="k2 flex flex_center flex_item_center kuai f16 marl15"
+                            onclick="Comm.go('storeSetting.html');">
+                            <div style="display: inline-block;margin-top:50px;">
+                                <div class="flex_center f16">商品管理</div>
+                                <div class="flex_center f10_mar10">全部商品</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex_center mart15">
+                        <div class="k3 flex flex_center flex_item_center kuai f16"
+                            onclick="Comm.go('storeEvaluate.html');">
+                            <div style="display: inline-block;margin-top:50px;">
+                                <div class="flex_center f16">评论管理</div>
+                                <div class="flex_center f10_mar10">评价<span id="evaluateCount"></span></div>
+                            </div>
+                        </div>
+                        <div class="k4 flex flex_center flex_item_center kuai f16 marl15"
+                            onclick="Comm.go('dpSetting.html');">
+                            <div style="display: inline-block;margin-top:50px;">
+                                <div class="flex_center f16">店铺设置</div>
+                                <div class="flex_center f10_mar10">店铺信息</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </section>
+
+    <!--******************************************************************************-->
+    <footer class="shared"></footer>
+
+    <script src="js/z.js"></script>
+    <script src="js/g.js"></script>
+    <script src="js/comm.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/area.js"></script>
+
+    <script>
+        var u = Comm.db('userinfo');
+        var uu = u;
+        var money;
+
+        function pageresume() {
+            window.location.reload();
+        }
+
+        function pageload() {
+            Comm.loading('加载中,请稍后...');
+            //导航栏变色
+            var ih = 0;
+            $("section").scroll(function () {
+                ih = $("section").scrollTop() / 40;
+                ih = ih > 1 ? 1 : ih;
+                $('.navBar').css('background-color', 'rgba(235,32,26,' + ih + ')');
+            });
+
+            // function getScrollTop() {
+            //     var scrollTop = 0;
+            //     if (document.documentElement && document.documentElement.scrollTop) {
+            //         scrollTop = document.documentElement.scrollTop;
+            //     } else if (document.body) {
+            //         scrollTop = document.body.scrollTop;
+            //     }
+            //     return scrollTop;
+            // }
+
+            AJAX.POST('/api/store/myStoreInfo', u, function (d) {
+                Comm.loading();
+                if (d.code == 1) {
+                    uu.storeId = d.data.storeId;
+                    model.data = d.data;
+                    var data = d.data;
+                    u.storeId = data.storeId;
+                    Comm.db('userinfo', u);
+                    $('#storeName').text(data.storeName);
+                    if (data.open == 0) {
+                        $('#open').text('（未营业）');
+                    } else if (data.open == 1) {
+                        $('#open').text('（营业中）');
+                    }
+                    if (data.doorPic == '') {
+                        $('#doorPic').attr('src', 'img/login/user.png');
+                    } else {
+                        $('#doorPic').attr('src', Comm.OSS.getImgUrl(data.doorPic));
+                    }
+
+                    Area.init(function () {
+                        var ad = '';
+                        var area = Area.getFullName(data.addrId);
+                        ad = area.substr(area.indexOf(" ") + 1, area.length);
+                        //m.addr = ad + '  ' + m.addr;
+                        $('#addr').text(ad);
+                    });
+                    $('#score').text(data.score + '分');
+                    var withPer = Number(data.score) / 5 * 100;
+                    $('#scoreImg').width(withPer + '%');
+                    $('#totalIncome').text(app.price(data.totalIncome || 0));
+                    $('#balance').text(app.price(data.balance || 0));
+                    money = data.balance;
+                    $('#giveIncome').text(app.price(data.giveIncome));
+                    $('#shouldIncome').text(app.price(data.shouldIncome));
+                    $('#kjsy').text(app.price(data.rebateIncome));
+                    $('#todayIncome').text(app.price(data.todayIncome));
+                    $('#todayPay').text(data.todayPay);
+                    $('#memberCount').text(data.memberCount || 0);
+                    $('#onsaleCount').text(data.onsaleCount);
+                    if (data.todayIncome == 0 || data.todayPay == 0) {
+                        $('#junj').text(0);
+                    } else {
+                        var junj = app.price(data.todayIncome) / data.todayPay;
+                        junj = Math.round(junj * 100) / 100; //小数点后两位
+                        $('#junj').text(junj);
+                    }
+                    AJAX.POST('/api/store/getstoreevaluate', uu, function (d) {
+                        if (d.code == 1) {
+                            var data = d.data||[];
+                            $('#evaluateCount').html(data.length);
+                        }
+                    })
+                }
+            })
+        }
+
+        var model = {
+            data: {},
+            goStoreInfo: function () {
+                preventRepeadClickDeal(function () {
+                    var u = Comm.db('userinfo');
+                    AJAX.POST('api/store/myStoreState', u, function (a) {
+                        Comm.loading();
+                        if (a.data.code == 1) {
+                            setTimeout(function () {
+                                Comm.go('storeInfo.html');
+                            }, 300);
+                        } else if (a.data.code == 4) {
+                            Comm.go('storeInfo.html?type=shz');
+                        } else if (a.data.code == 5) {
+                            Comm.go('storeInfo.html');
+                        } else {
+                            Comm.message(a.msg);
+                        }
+                    });
+                }, 1)
+            },
+            goWallet:function(){
+                Comm.go('wallet.html?balance='+money);
+            }
+        }
+    </script>
+
+</body>
+
+</html>

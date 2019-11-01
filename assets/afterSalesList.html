@@ -1,0 +1,343 @@
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width,initial-scale=1.0,user-scalable=no" name="viewport">
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+    <meta name="format-detection" content="telephone=no,email=no,adress=no"/>
+
+    <title>售后列表</title>
+
+    <link rel="stylesheet" href="css/g.css">
+    <link rel="stylesheet" href="css/comm.css">
+    <link rel="stylesheet" href="inc/mescroll/mescroll.min.css">
+
+    <style>
+
+        .page {
+            display: none;
+        }
+
+        .segBar {
+            height: 50px;
+        }
+
+        .segItem {
+            color: #717171;
+            line-height: 25px;
+        }
+
+        .segItem.active {
+            color: black;
+            font-weight: bold;
+            font-size: 16px;
+            position: relative;
+        }
+
+        .segBar > .active::after {
+            height: 3px;
+            width: 90%;
+            position: absolute;
+            left: 5%;
+            bottom: 5px;
+            background-color: #E30008;
+            display: block;
+            content: ' ';
+            opacity: 0.8;
+            top:100%;
+        }
+
+        .statuBar {
+            height: 40px;
+            line-height: 15px;
+            box-sizing: unset;
+        }
+
+        .p15h {
+            padding-left: 15px;
+            padding-right: 15px;
+        }
+
+        .iconContain {
+            width: 75px;
+            height: 75px;
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .optionItem {
+            border: 1px solid #DCDCDC;
+            width: 80px;
+            line-height: 30px;
+            border-radius: 15px;
+            text-align: center;
+            margin-right: 10px;
+        }
+
+
+    </style>
+
+</head>
+
+<!--******************************************************************************-->
+<body>
+
+<header>
+    <div class="navBar bottomShadow">
+        <div class="navBackIcon" onclick="Comm.close()"></div>
+        <div class="navTitle">售后</div>
+    </div>
+
+
+    <div class="segBar flex_around">
+        <div class="segItem active">申请售后</div>
+        <div class="segItem">处理中</div>
+        <div class="segItem">申请记录</div>
+    </div>
+
+</header>
+<!--******************************************************************************-->
+
+<section class="bg_lgray">
+
+    <div class="page mescroll" id="refreshId0">
+        <div id="id_list0">
+
+
+        </div>
+    </div>
+
+
+    <div class="page mescroll" id="refreshId1">
+        <div id="id_list1">
+
+        </div>
+    </div>
+
+    <div class="page mescroll" id="refreshId2">
+        <div id="id_list2">
+
+        </div>
+    </div>
+
+
+</section>
+
+<!--******************************************************************************-->
+<footer></footer>
+
+<script src="js/z.js"></script>
+<script src="js/g.js"></script>
+<script src="js/comm.js"></script>
+<script src="js/api.js"></script>
+<script src="js/art-template.js"></script>
+<script src="inc/mescroll/mescroll.min.js"></script>
+
+
+<script type="text/html" id="tp_id_orderCell">
+
+    {{each $data.list as model i}}
+
+    <div class="orderCell mt10">
+
+        <div class="flex_between bg_white p15h statuBar">
+
+            {{if type == 1}}
+            <div>订单编号:{{model.ordersNo||''}}</div>
+            {{else}}
+            <div>处理时间:{{formatDate(model.addTime,'Y-m-d H:i')}}</div>
+            <div class="statu col_red">{{getDealState(model.state)}}</div>
+            {{/if}}
+        </div>
+
+
+        <!--商品信息-->
+        <div class="bg_lgray p15">
+            <div class="flex f16 pad10">
+                <div class="br3 iconContain imgContain">
+                    <img src="{{OSS(model.face||model.faceImg,'s')}}" onerror="app.errorimg(this);">
+                </div>
+
+                <div class="column paddl10 grow1" style="min-height: 75px;width:100%;">
+
+                    <div class="f15 lh20 wordW2">{{model.goodsName||' '}}</div>
+                    <div class="baseWH col_sub f12 mt5">{{model.specText||' '}}</div>
+                    <div class="baseWH col_sub f12 mt5">{{model.goodsCount||' '}}</div>
+
+                </div>
+            </div>
+        </div>
+
+        <div class="flex_between pad_v10 bg_white h50">
+
+            {{if type == 1}}
+
+            {{if model.ofterSaleState == 1}}
+            <div></div>
+            <div class="optionItem f12" onclick="Comm.go('applyAfterSale.html?oid={{model.ordersId}}&gid={{model.goodsId}}')">申请售后</div>
+            {{else}}
+            <div class="col_sub999 marl15 f12">该商品已超过售后期</div>
+            {{/if}}
+
+
+            {{else}}
+            <div></div>
+            <div class="optionItem f12" onclick="Comm.go('afterDetail.html?oid={{model.ordersId}}')">查看详情</div>
+            {{/if}}
+
+        </div>
+
+
+    </div>
+
+    {{/each}}
+
+</script>
+
+
+<script>
+
+    var curPageIdx = Comm.query('type') || 0;
+    var pageRefArr = [];
+    var userinfo = Comm.db('userinfo')||{};
+
+
+    function pageload() {
+        showWithPageIndex(curPageIdx);
+    }
+
+
+    clickList('.segBar', '.segItem', function (o, idx) {
+        showWithPageIndex(idx);
+    });
+
+    function pageresume(){
+        checkNeedRefreshPage(function () {
+            var merefresh = pageRefArr[curPageIdx];
+            merefresh.MeRefScroll.resetUpScroll();
+        })
+    }
+
+
+    function showWithPageIndex(pageIndex) {
+        curPageIdx = pageIndex;
+        $('.page').removeClass('show');
+        $($('.page')[pageIndex]).addClass('show');
+
+        $('.segBar .segItem').removeClass('active');
+        $($('.segBar .segItem')[pageIndex]).addClass('active');
+
+        addrefresh(pageIndex)
+    }
+
+
+    function addrefresh(idx) {
+        var merefresh = pageRefArr[idx];
+
+        if (!merefresh) {
+            merefresh = new MERefresh();
+            merefresh.refreshOption.noMoreSize = 10;
+            merefresh.refreshOption.refreshParm = {
+                customerId: userinfo.customerId
+            }
+
+            switch (idx) {
+                case 0: {//申请列表
+                    merefresh.refreshOption.refreshUrl = '/api/ordersaftersale/orderSleList';
+                }
+                    break;
+
+                case 1: {//
+                    merefresh.refreshOption.refreshUrl = '/api/ordersaftersale/beginAfterSale';
+                }
+                    break;
+
+                case 2: {//
+                    merefresh.refreshOption.refreshUrl = '/api/ordersaftersale/endAfterSale';
+                }
+                    break;
+
+
+                default:
+                    break;
+            }
+
+
+            //页面 <刷新> 的回调
+            merefresh.refreshOption.refresh_cb = function (refresh, d) {
+
+                refresh.successEndRef(d.data && d.data.length||0, d.totalCount);
+
+                var tmodel = {
+                    type:idx+1,
+                    list:d.data||[],
+                }
+
+                var html = template('tp_id_orderCell', tmodel);
+                merefresh.appendHtml(html);
+                return;
+
+
+                if (d.code == 1) {
+                    var list = d.data;
+                    var html = template('chatListId' + idx, list);
+                    merefresh.appendHtml(html);
+                } else {
+                    Comm.message(d.msg);
+                }
+            };
+            merefresh.configurationDone('refreshId' + idx, 'id_list' + idx);
+            pageRefArr[idx] = merefresh;
+        } else {
+
+        }
+    }
+
+
+    template.defaults.imports.getDealState = function (t) {
+        switch (parseInt(t)) {
+            case 1: {
+                return '审核中';
+            }
+                break;
+            case 2: {
+                return '审核成功,补充资料';
+            }
+                break;
+            case 3: {
+                return '审核失败';
+            }
+                break;
+            case 4: {
+                return '等待商家收货';
+            }
+                break;
+            case 5: {
+                return '商家已收货';
+            }
+                break;
+            case 6: {
+                return '审核成功';
+            }
+                break;
+            case 10: {
+                return '已撤销';
+            }
+                break;
+
+
+            default:
+                return '';
+                break;
+
+        }
+
+    };
+
+
+</script>
+
+
+</body>
+
+</html>

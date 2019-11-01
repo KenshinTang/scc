@@ -1,0 +1,265 @@
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width,initial-scale=1.0,user-scalable=no" name="viewport">
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="format-detection" content="telephone=no,email=no,adress=no" />
+
+    <title>消费明细</title>
+
+    <link rel="stylesheet" href="css/g.css">
+    <link rel="stylesheet" href="css/comm.css">
+    <link rel="stylesheet" href="inc/mescroll/mescroll.min.css">
+
+    <style>
+        .topV {
+            padding: 10px 5px;
+        }
+
+        .half {
+            width: 50%;
+            padding: 10px;
+        }
+
+        .bg_lgray {
+            background-color: #FCFAFB;
+            border-radius: 5px;
+        }
+
+        .item {
+            padding: 20px;
+        }
+
+        .price {
+            margin-bottom: 15px;
+        }
+
+        .navItemIcon {
+            background-image: url('img/tbshop/Search.png');
+            background-size: 20px;
+        }
+
+        /*筛选*/
+        #MainBg,
+        #WTDBOX {
+            z-index: 99;
+        }
+
+        #start {
+            background-color: #FFFFFF;
+        }
+
+        #end {
+            background-color: #FFFFFF;
+        }
+
+        /*筛选*/
+    </style>
+
+</head>
+
+<!--******************************************************************************-->
+
+<body>
+
+    <header>
+        <div class="navBar bottomShadow">
+            <div class="navBackIcon" onclick="Comm.close()"></div>
+            <div class="navItemIcon marr10" onclick="showFilter();"></div>
+            <div class="navTitle">消费明细</div>
+        </div>
+    </header>
+    <!--******************************************************************************-->
+
+    <section id="section" class="mescroll">
+
+
+        <div class="topV flex_between">
+            <div class="half center">
+                <div class="bg_lgray item">
+                    <div id="ljxf" class="price f18 bold"></div>
+                    <div class="flex_center f12">
+                        <img src="img/order/ljxf.png" alt="" width="13" height="13" class="marr5">
+                        累计消费(元)
+                    </div>
+                </div>
+            </div>
+            <div class="half center">
+                <div class="bg_lgray item">
+                    <div id="ggsj" class="price f18 bold"></div>
+                    <div class="flex_center f12">
+                        <img src="img/order/ggsj.png" alt="" width="13" height="13" class="marr5">
+                        光顾商家(个)
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="linebod"></div>
+
+
+        <div id="xfmx" class="statementList">
+            <div id="list"></div>
+        </div>
+
+    </section>
+    <div id="time_filter" wtd="sinboxTemp">
+        <div class="item p20 pt10">
+            <div class="colorb5 left">时间筛选：</div>
+            <div class="tleft">
+                <input type="button" id="start" placeholder="开始时间" onclick="datePickerstart.show();"
+                    class="baseH center timeChooseItem" />
+                <span>&nbsp;至&nbsp;</span>
+                <input type="button" id="end" onclick="datePickerend.show();" placeholder="结束时间"
+                    class="baseH center timeChooseItem" />
+            </div>
+        </div>
+
+
+        <div class="tb">
+            <div class="td f18 bg_lred" onclick="filterReset()">重置</div>
+            <div class="td f18 r btn bg_trans" onclick="filterSure()">确定</div>
+        </div>
+    </div>
+
+    <!--******************************************************************************-->
+    <footer></footer>
+
+    <script src="js/z.js"></script>
+    <script src="js/g.js"></script>
+    <script src="js/comm.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/art-template.js"></script>
+    <script type="text/javascript" src="js/picker.min.js"></script>
+    <script src="inc/mescroll/mescroll.min.js"></script>
+
+    <script>
+        var requestPamrm = {};
+        var html = '';
+        var merefresh;
+        var u = Comm.db('userinfo');
+        var requestModel = {
+            beginTime: "",
+            endTime: "",
+        }
+
+        function initPicker() {
+            datePickerstart = new Datepicker("开始时间", function (a, b, c) {
+
+                var days = checkDays(b, requestModel.endTime);
+                if (days > 0) {
+                    Comm.message('开始时间不得大于结束时间');
+                    return;
+                }
+                $("#WTDBOX #start").val(b);
+                requestModel.beginTime = b;
+
+            });
+            datePickerend = new Datepicker("结束时间", function (a, b, c) {
+                var days = checkDays(requestModel.beginTime, b);
+
+                if (days > 0) {
+                    Comm.message('结束时间不得小于开始时间');
+                    return;
+                }
+                $("#WTDBOX #end").val(b);
+                requestModel.endTime = b;
+            });
+        }
+
+        //显示筛选界面
+        function showFilter() {
+            Comm.showWindow('sinboxTemp', true);
+            automaticalTop();
+            $("#WTDBOX #start").val(requestModel.beginTime || '');
+            $("#WTDBOX #end").val(requestModel.endTime || '');
+        }
+
+        function pageload() {
+            //累计消费金额
+            AJAX.POST('/api/orders/consumelogWriter', u, function (d) {
+                if (d.data != null) {
+                    var data = d.data;
+                    $('#ljxf').html(app.price(data));
+                }
+            })
+            //光顾商家
+            AJAX.POST('/api/orders/consumelogStore', u, function (d) {
+                if (d.data != null) {
+                    var data = d.data;
+                    $('#ggsj').html(data);
+                }
+            })
+            initPicker();
+            //消费明细列表
+            addRefresh();
+        }
+        //重置筛选
+        function filterReset() {
+            requestModel.beginTime = '';
+            requestModel.endTime = '';
+            // Comm.showWindow();
+            // getList(requestModel);
+        }
+
+        //确定筛选
+        function filterSure() {
+            requestPamrm.beginTime =  requestModel.beginTime;
+            requestPamrm.endTime =  requestModel.endTime;
+            Comm.showWindow();
+            addRefresh();
+
+            // getList(requestModel);
+            $('#time').html(requestModel.beginTime + '至' + requestModel.endTime);
+            // Comm.db('requestModel', requestModel);
+            //Comm.go('searchMoneyListResult.html');
+        }
+        //处理蒙层尺寸
+        function automaticalTop() {
+            $("#MainBg,#WTDBOX").css("top", $(".navBar").height());
+        }
+
+        function getList(data) {
+            for (var i = 0; i < data.length; i++) {
+                html +=
+                    '<div class="paddl15 bg_white"><div class="cellContent bottomBorder" style="padding-top:0px;padding-bottom:0px;"><div class="label f16 icon_pre icon_phone mart20 marb20"><p class="bold">' +
+                    Comm.parseActType(data[i].receiverType) +
+                    '</p><p class="f12 mart10" style="color:#999999;">' + data[i].addTime +
+                    '</p></div><span class="moneyRed f18 bold">-' + app.price(data[i].money) +
+                    '</span></div></div>';
+            }
+            return html;
+        }
+
+        function addRefresh() {
+            requestPamrm.customerId = u.customerId;
+            if (!merefresh) {
+                merefresh = new MERefresh();
+                //网络请求参数
+                merefresh.refreshOption.refreshUrl = '/api/orders/consumelogDetail';
+                merefresh.refreshOption.refreshParm = requestPamrm;
+
+                //页面 <刷新> 的回调
+                merefresh.refreshOption.refresh_cb = function (refresh, d) {
+                    if (d.code == 1) {
+                        html = '';
+                        addrData = d.data||[];
+                        refresh.successEndRef(addrData.length, d.totalCount);
+                        refresh.appendHtml(getList(addrData));
+                    } else {
+                        refresh.successEndRef(0, 0);
+                        refresh.MeRefScroll.endUpScroll(true);
+                    }
+                };
+                merefresh.configurationDone('section', 'list');
+            } else {
+                merefresh.refreshFunction(merefresh);
+            }
+        }
+    </script>
+
+</body>
+
+</html>

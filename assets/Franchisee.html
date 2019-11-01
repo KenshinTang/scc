@@ -1,0 +1,309 @@
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width,initial-scale=1.0,user-scalable=no" name="viewport">
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+    <meta name="format-detection" content="telephone=no,email=no,adress=no"/>
+
+    <title>加盟商详情</title>
+
+    <link rel="stylesheet" href="css/g.css">
+    <link rel="stylesheet" href="css/comm.css">
+
+    <style>
+        body {
+            background: url("img/tbmain/beij.png") no-repeat top center;
+            background-size: 100% 170px;
+        }
+
+        /*头部*/
+        .navBar {
+            background: rgba(0,0,0,0);
+        }
+
+        .navBackIcon {
+            height: 100%;
+            width: 40px;
+            height: 44px;
+            background: url("img/generalIcon/back_w.png");
+            background-position: center center;
+            background-repeat: no-repeat;
+            background-size: auto 16px;
+            background-position-x: 10px;
+            float: left;
+        }
+
+        svg {
+            width: 130px;
+        }
+
+        .grow1 {
+            flex: 1;
+        }
+
+        .grow2 {
+            flex: 2;
+        }
+
+        .grow3 {
+            flex: 3;
+        }
+
+        .h40P {
+            height: 22px;
+            text-align: center;
+        }
+
+        .headIcon {
+            height: 60px;
+            width: 60px;
+            margin-left: 10px;
+            margin-right: 10px;
+        }
+
+        .leftText {
+            text-align: left;
+        }
+
+        .iden {
+            background-image: url("img/tbmine/grzx.png");
+            background-size: 8px auto;
+            background-position: center right 15px;
+        }
+
+        .kuang {
+            border-radius: 5px;
+            width: 46%;
+            height: 75px;
+            margin-top: 18px;
+            box-shadow: 0px 2px 10px #EEEEEE;
+        }
+
+        .bg_ljgxje {
+            background: url("img/tbmain/ljgxje.png");
+            background-repeat: no-repeat;
+            background-size: 13px 13px;
+            background-position: 38px center;
+            padding-left: 15px;
+        }
+
+        .bg_ljgxje {
+            background: url("img/tbmain/ljgxje.png");
+            background-repeat: no-repeat;
+            background-size: 16px 16px;
+            background-position: 0px center;
+            padding-left: 25px;
+        }
+
+        .ht {
+            height: 70px;
+        }
+
+        .star {
+            width: 50px;
+            height: 10px;
+            background: url("img/tbmall/shca.png") repeat-x left center;
+            background-size: 10px auto;
+        }
+
+        .star_get {
+            width: 0%;
+            height: 100%;
+            background: url("img/tbshop/Star_n.png") repeat-x left center;
+            background-size: 10px auto;
+        }
+
+    </style>
+
+</head>
+
+<!--******************************************************************************-->
+
+<body>
+
+<header class="col_white" style="height: 225px;">
+
+
+    <div class="navBar">
+        <div class="navBackIcon" onclick="Comm.close()"></div>
+        <div class="marr15"></div>
+        <div class="navTitle col_white">加盟商详情</div>
+    </div>
+
+
+    <div class="col_white headInfo"></div>
+
+
+</header>
+
+<section class="scroll-y f15 mart5">
+
+
+</section>
+
+<!--******************************************************************************-->
+<footer class="shared"></footer>
+
+<script src="js/z.js"></script>
+<script src="js/g.js"></script>
+<script src="js/comm.js"></script>
+<script src="js/api.js"></script>
+<script src="js/area.js"></script>
+<script src="js/art-template.js"></script>
+
+
+
+<script>
+
+    var userinfo = Comm.db('userinfo')||{};
+    var sid = Comm.query('sid') || '';
+    var devoteCount;
+
+    function pageload() {
+        Area.init(function () {
+
+        })
+        getStoreDetail();
+
+    }
+
+
+    //获取合伙人详情
+    function getStoreDetail() {
+        var params = {
+            storeId: sid
+        }
+        var api = '/api/partner/storedevotedetails';
+        SLNetwork('get', api, params, function (data) {
+            if (data.code == 1) {
+                getSubStoreGetList();
+                var model = data.data || {};
+                devoteCount = model.devoteCount||0;
+                $('.headInfo').html(template('tp_id_head', model));
+            } else {
+                Comm.message(data.msg);
+            }
+        });
+    }
+
+    //获取下属合伙人贡献记录列表
+    function getSubStoreGetList() {
+        var api = '/api/partner/nextStoreConsumelogList';
+        var params = {
+            partnerId1: userinfo.myPartnerId,
+            storeId: sid
+        }
+        SLNetwork('get', api, params, function (data) {
+            if (data.code == 1) {
+                nslog(data);
+                var model = {
+                    devoteCount:devoteCount,
+                    list: data.data || [],
+                }
+                $('section').html(template('tp_id_list', model));
+            } else {
+                Comm.message(data.msg);
+            }
+        });
+    }
+
+</script>
+
+
+<script type="text/html" id="tp_id_head">
+
+
+    <div class="grow3 h40P mart15">
+        <div class="flex_start mainH">
+
+            <div class="baseH grow1">
+                <div class="flex_center">
+                    <div class="imgContain headIcon">
+                        <img src="{{OSS(doorPic,'s')}}" onerror="app.herrorimg(this);">
+                    </div>
+                </div>
+            </div>
+
+            <div class="grow3 infoText leftText">
+                <div class="f16 baseWH mb10">{{storeName}}{{if rebate}}{{/if}}
+                <!--<div class="f16 baseWH mb10">{{storeName}}{{if rebate}}（让利{{rebate/100}}%）{{/if}}-->
+
+                </div>
+                <div class="f12 baseWH lh20 flex_start">
+                    <div>{{getFullName(addrId)}}丨</div>
+
+                    <div class="star bg_place">
+                        <div class="star_get" style="width: {{scorePer(score||0)}}%"></div>
+                    </div>
+
+                    <div class="ml5">{{score}}分</div>
+                </div>
+            </div>
+
+            <div class="baseWH">
+                <!--<div class="rIcon iden tright" style="width:100%;height:19px;"></div>-->
+            </div>
+
+        </div>
+    </div>
+
+
+    <div class="grow1 h40P mart15 marb15 ">
+        <div class="flex_around">
+            <div class="baseH kuang bg_white">
+                <div class="f13 baseWH bold m10 col_title">{{priceTp(totalIncome||0)}}</div>
+                <div class="flex_center mart15 f12 col_lgray">
+                    <img src="img/tbmain/ljgxje.png" width="13" alt="">
+                    <span class="ml5">累计收款(元)</span>
+                </div>
+            </div>
+            <div class="baseH kuang bg_white">
+                <div class="f16 baseWH bold m10 col_title">{{onsaleCount||0}}</div>
+                <div class="flex_center mart15 f12 col_lgray">
+                    <img src="img/tbmain/ggsj.png" width="13" alt="">
+                    <span class="ml5">在售商品(件)</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</script>
+
+
+<script type="text/html" id="tp_id_list">
+
+    <div>
+
+        <div style="height: 5px; background-color: #F4F4F4;"></div>
+        <div class="bg_white paddl15 paddr15 marb5 f16">
+            <div class="flex_between bottomBorder ">
+                <div class="mart20 marb20 flex_center f16 bold bg_ljgxje">累计贡献金额</div>
+                <div class="flex_center col_red">￥{{priceTp(devoteCount||0)}}</div>
+            </div>
+
+            <div class="bg_white mart10 paddl15 paddr15 marb5">
+
+                {{each $data.list model i}}
+                <div class="flex_between bottomBorder ht">
+                    <div class="mart20 marb20">
+                        <div class=" bold">{{model.actTypeName}}</div>
+                        <div class="col_lgray f10 mart5">{{formatDate(model.addTime,'Y-m-d H:i')}}</div>
+                    </div>
+                    <div class="f14 bold">+{{priceTp(model.money||0)}}</div>
+                </div>
+                {{/each}}
+
+
+            </div>
+        </div>
+
+    </div>
+
+</script>
+
+
+</body>
+
+</html>

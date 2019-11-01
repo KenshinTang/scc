@@ -1,0 +1,378 @@
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width,initial-scale=1.0,user-scalable=no" name="viewport">
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+    <meta name="format-detection" content="telephone=no,email=no,adress=no"/>
+
+    <title>发出/收到的红包</title>
+
+    <link rel="stylesheet" href="css/g.css">
+    <link rel="stylesheet" href="css/comm.css">
+
+    <style>
+
+        .top {
+            padding: 30px 15px;
+        }
+
+        .headIcon {
+            width: 100px;
+            height: 100px;
+            margin: 10px auto;
+        }
+        .headIcon img{
+            border-radius: 50%;
+        }
+
+        .timeChoose {
+            background-image: url("img/redbag/xznf.png");
+        }
+
+        .cell {
+            padding: 10px 20px;
+        }
+
+        .checkShow {
+            display: none;
+        }
+
+        .change{
+            background-image: url("img/redbag/more.png");
+            background-size: 5px auto;
+            background-position: center center;
+            margin-right: 5px;
+        }
+
+    </style>
+
+</head>
+
+<!--******************************************************************************-->
+<body>
+
+<header>
+    <div class="navBar bottomBorder">
+        <div class="navBackIcon" onclick="Comm.close()"></div>
+
+
+        <div class="navItem" id="id_rIcon"></div>
+
+        <div class="navTitle flex_center">
+            <div class="checkShow FC">发出</div>
+            <div class="checkShow SD">收到</div>
+            <div class="">的红包</div>
+        </div>
+
+    </div>
+</header>
+<!--******************************************************************************-->
+
+<section class="bg_lgray scroll-y">
+
+    <div class="top bg_white">
+
+    </div>
+
+    <div class="tableList mt10 bg_white">
+
+
+
+        <!--<div class="cell flex_between bottomBorder">-->
+            <!--<div>-->
+                <!--<div class="bold f16">发红包</div>-->
+                <!--<div class="f12">2019-05-20</div>-->
+            <!--</div>-->
+
+            <!--<div class="tRight">-->
+
+                <!--<div class="f18">100.00</div>-->
+                <!--<div class="flex_between col_sub tRight f12 col_sub">-->
+                    <!--<div></div>-->
+                    <!--<div>已过期</div>-->
+                    <!--<div>20/20</div>-->
+                <!--</div>-->
+
+            <!--</div>-->
+        <!--</div>-->
+
+
+
+    </div>
+
+
+    <style>
+        .actionSheet,.mask{
+            background-color: #F6F6F6;
+            display: none;
+
+            position: fixed;
+            z-index: 1000;
+            background: #f5f5f5;
+            width: 100%;
+            bottom: 0;
+
+        }
+        .actionSheet .actionItem{
+            background-color: white;
+            line-height: 40px;
+            margin: 5px;
+            border-radius: 3px;
+            text-align: center;
+        }
+
+        .actionSheet .cancelItem{
+            color: #E30008;
+        }
+
+        .mask{
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            right: 0;
+            z-index: 999;
+            background-color: rgba(0,0,0,0.5);
+        }
+
+    </style>
+
+
+</section>
+
+<div class="mask"></div>
+<div class="actionSheet shadow">
+    <div class="actionItem" onclick="type='FC';resetData()">发出的红包</div>
+    <div class="actionItem" onclick="type='SD';resetData()">收到的红包</div>
+    <div class="actionItem cancelItem">取消</div>
+</div>
+
+
+
+
+<!--******************************************************************************-->
+<footer></footer>
+
+<script src="js/z.js"></script>
+<script src="js/g.js"></script>
+<script src="js/comm.js"></script>
+<script src="js/api.js"></script>
+<script src="inc/ewm/jquery-1.11.1.js"></script>
+<script src="js/art-template.js"></script>
+<script src="js/picker.min.js"></script>
+
+
+
+
+<script>
+
+    var type = Comm.query('type');//SD:收到的红包
+    var timePicker;//选择时间
+    var userinfo = Comm.db('userinfo')||{};
+    var nowyear = new Date().getFullYear();
+
+    //请求的参数
+    var requestParams = {
+        addTime: '',
+    };
+
+    function pageload() {
+        resetData();
+        $('.actionSheet .actionItem').click(function () {
+            $('.mask').hide();
+            $('.actionSheet').slideUp(300);
+        });
+
+        if (canSendRB()){
+            $('#id_rIcon').html('<div class="navItem rIcon change" onclick="showMore();"></div>');
+        }
+    }
+
+
+    //重置页面
+    function resetData() {
+        initPicker();
+        getPageData();
+    }
+
+
+    //点击更多图标
+    function showMore() {
+        $('.mask').show();
+        $('.actionSheet').slideDown(300);
+    }
+
+
+    function getPageData() {
+        if (type == 'SD'){
+            getReceiveRedBagList();
+        } else if (type == 'FC') {
+            getPublishRedBagList();
+        }
+    }
+
+
+    function checkShow() {
+        $('.checkShow').hide();
+        $('.' + type).show();
+    }
+
+
+    function initPicker() {
+        var _data = [];
+        for (var i = nowyear; i >= 2018; i--) {
+            var model = {
+                text: '' + i,
+                i: i
+            }
+            _data.push(model);
+        }
+        setYear(nowyear);
+        timePicker = new Commpicker('选择年份', [_data], function (a, v, sid) {
+            setYear(sid);
+            getPageData();
+        })
+    }
+
+
+    //获取发出的红包统计
+    function getPublishRedBagList() {
+        requestParams.partnerId = userinfo.myPartnerId;
+        var apiStr = '/api/rpacket/getSendRpacketList';//发出的红包统计
+
+        SLNetwork('post', apiStr, requestParams, function (data) {
+            if (data.code == 1) {
+                nslog(data);
+                var model = data.data||{};
+                model.timeYear = requestParams.addTime;
+                $('.top').html(template('tp_id_top',model))
+                $('.statistical').html(template('tp_id_FC',model));
+                $('.tableList').html(template('tp_id_Cell',model));
+                checkShow();
+
+            } else {
+                Comm.message(data.msg);
+            }
+        });
+    }
+
+
+
+    //获取收到的红包统计
+    function getReceiveRedBagList() {
+        var apiStr = '/api/rpacket/getRobRpacketList';//收到的红包统计
+
+        SLNetwork('post', apiStr, requestParams, function (data) {
+            if (data.code == 1) {
+                nslog(data);
+                var model = data.data||{};
+                model.timeYear = requestParams.addTime;
+                $('.top').html(template('tp_id_top',model));
+                $('.statistical').html(template('tp_id_FC',model));
+                $('.tableList').html(template('tp_id_Cell',model));
+                checkShow();
+
+            } else {
+                Comm.message(data.msg);
+            }
+        });
+    }
+
+
+    function setYear(chooseYear) {
+        requestParams.addTime = '' + chooseYear;
+        $('.timeChoose').text(chooseYear + '年');
+    }
+
+
+</script>
+
+
+<script type="text/html" id="tp_id_top">
+    <div class="center">
+        <div class="col_red fr rIcon timeChoose" onclick="timePicker.show();">{{timeYear||2019}}年</div>
+        <div class="headIcon imgContain m10">
+            <img src="{{OSS(face,'s')}}" alt="" onerror="app.herrorimg(this);">
+        </div>
+
+        <div class="flex_center f16">
+            <div class="">{{nickName}}</div>
+            <div class="checkShow FC">共发出</div>
+            <div class="checkShow SD">共收到</div>
+        </div>
+
+        <div class="f36 bold m10">{{priceTp(money)}}</div>
+
+        <div class="checkShow FC statistical">
+
+        </div>
+
+    </div>
+</script>
+
+
+
+<script type="text/html" id="tp_id_FC">
+    <div class="col_sub f14 flex_center">
+        <div>发出红包总数</div>
+        <div class="col_red">{{count}}</div>
+        <div>个，本期剩余可发</div>
+        <div>{{priceTp(rpacketRemain)}}</div>
+        <div>元</div>
+    </div>
+</script>
+
+
+
+<!--state 1.可抢，2抢完，3过期',-->
+
+<script type="text/html" id="tp_id_Cell">
+
+    {{each sendList model i}}
+    <div class="cell flex_between bottomBorder">
+        <div>
+            <div class="bold f16">发红包</div>
+            <div class="f12">{{formatDate(model.addTime,'Y-m-d H:i')}}</div>
+        </div>
+
+        <div class="tRight">
+
+            <div class="f18">{{priceTp(model.totalmoney)}}</div>
+            <div class="flex_between col_sub tRight f12 col_sub">
+                <div></div>
+                {{if model.state == 1}}
+                <!--<div>可抢</div>-->
+                {{else if model.state == 2}}
+                <div>已抢完</div>
+                {{else if model.state == 2}}
+                <div>已过期</div>
+                {{/if}}
+
+                <div class="ml5">{{model.packetCount -model.remainCont}}/{{model.packetCount}}</div>
+            </div>
+
+        </div>
+    </div>
+    {{/each}}
+
+
+    {{each robList model i}}
+    <div class="cell flex_between bottomBorder">
+        <div>
+            <div class="f15">来自{{model.nickName||''}}的红包</div>
+            <div class="f12">{{formatDate(model.addTime,'Y-m-d H:i')}}</div>
+        </div>
+
+        <div class="tRight">
+            <div class="f13">{{priceTp(model.money)||'0.00'}}元</div>
+        </div>
+    </div>
+    {{/each}}
+
+</script>
+
+
+</body>
+
+</html>

@@ -1,0 +1,158 @@
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width,initial-scale=1.0,user-scalable=no" name="viewport">
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="format-detection" content="telephone=no,email=no,adress=no" />
+
+    <title>会员详情</title>
+
+    <link rel="stylesheet" href="css/g.css">
+    <link rel="stylesheet" href="css/comm.css">
+    <link rel="stylesheet" href="inc/mescroll/mescroll.min.css">
+
+    <style>
+        body {
+            background-color: #F5F5F5;
+        }
+
+        .f10 {
+            font-size: 10px;
+        }
+
+        .bg_ljgxje {
+            background: url("img/tbmain/ljgxje.png");
+            background-repeat: no-repeat;
+            background-size: 16px 16px;
+            background-position: 0px center;
+            padding-left: 25px;
+        }
+    </style>
+
+</head>
+
+<!--******************************************************************************-->
+
+<body>
+
+    <header class="">
+        <div>
+            <div class="grow1 bg_white">
+                <div class="navBar">
+                    <div class="navBackIcon" onclick="Comm.close()"></div>
+                    <div class=""></div>
+                    <div class="navTitle">会员详情</div>
+                </div>
+            </div>
+        </div>
+    </header>
+    <!--******************************************************************************-->
+
+    <section id="section" class="mescroll scroll-y f15 mart5">
+        <div class="bg_white paddl15 paddr15 marb10">
+            <div class="flex_between bottomBorder">
+                <div class="mart20 marb20 flex_center">会员昵称</div>
+                <div id="nickName" class="flex_center"></div>
+            </div>
+            <div class="flex_between bottomBorder">
+                <div class="mart20 marb20 flex_center">手机号码</div>
+                <div id="phone" class="flex_center"></div>
+            </div>
+            <div class="flex_between">
+                <div class="mart20 marb20 flex_center">绑定日期</div>
+                <div id="bindTime" class="flex_center"></div>
+            </div>
+        </div>
+        <div class="bg_white paddl15 paddr15 marb5">
+            <div class="flex_between bottomBorder">
+                <div class="mart20 marb20 flex_center f16 bold bg_ljgxje">累计贡献金额</div>
+                <div class="flex_center col_red">￥<span id="allMoney"></span></div>
+            </div>
+            <div id="list"></div>
+        </div>
+
+    </section>
+
+    <!--******************************************************************************-->
+    <footer class="shared">
+    </footer>
+
+    <script src="js/z.js"></script>
+    <script src="js/g.js"></script>
+    <script src="js/comm.js"></script>
+    <script src="js/api.js"></script>
+    <script src="inc/mescroll/mescroll.min.js"></script>
+
+    <script>
+        var requestPamrm = {};
+        var merefresh;
+        var html = '';
+        var u = Comm.db('userinfo');
+        var customerId = Comm.query('customerId');
+
+        function pageload() {
+            var allMoney = Comm.query('allMoney');
+            $('#allMoney').html(allMoney);
+            var o = {};
+            o.customerId = customerId;
+            AJAX.POST('/api/customer/getCustomerVipInfo', o, function (d) {
+                if (d.code == 1) {
+                    if (typeof(d.data)!='undefined') {
+                        $('#nickName').html(d.data.nickName);
+                        d.data.phone = d.data.phone.substring(0, 3) + '****' + d.data.phone.substring(7, 11);
+                        $('#phone').html(d.data.phone);
+                        var bindTime = d.data.bindTime;
+                        bindTime = bindTime.substr(0, bindTime.indexOf(' '));
+                        $('#bindTime').html(bindTime);
+                    }
+                }
+            })
+            addRefresh();
+        }
+
+        function getHtml(d) {
+            if (d.code == 1) {
+                var data = d.data;
+                for (var i = 0; i < data.length; i++) {
+                    var d = data[i];
+                    d.addupMoney = app.price(d.addupMoney);
+                    d.boundTime = d.boundTime.substr(0, d.boundTime.indexOf(' '));
+                    html += '<div class="flex_between bottomBorder"><div class="mart15 marb15 flex_center f10">' + d
+                        .boundTime + '</div><div class="flex_center f10">￥' + d.addupMoney + '</div></div>';
+                }
+                return html;
+            }
+        }
+
+        function addRefresh() {
+            requestPamrm.storeId = u.storeId;
+            requestPamrm.customerId = customerId;
+            if (!merefresh) {
+                merefresh = new MERefresh();
+                //网络请求参数
+                merefresh.refreshOption.refreshUrl = '/api/store/getmystoreAvipContributelist';
+                merefresh.refreshOption.refreshParm = requestPamrm;
+
+                //页面 <刷新> 的回调
+                merefresh.refreshOption.refresh_cb = function (refresh, d) {
+                    if (d.code == 1) {
+                        html = '';
+                        addrData = d.data||[];
+                        refresh.successEndRef(addrData.length, d.totalCount);
+                        refresh.appendHtml(getHtml(d));
+                    } else {
+                        refresh.successEndRef(0, 0);
+                        refresh.MeRefScroll.endUpScroll(true);
+                    }
+                };
+                merefresh.configurationDone('section', 'list');
+            } else {
+                merefresh.refreshFunction(merefresh);
+            }
+        }
+    </script>
+
+</body>
+
+</html>

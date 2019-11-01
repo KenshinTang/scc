@@ -1,0 +1,193 @@
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width,initial-scale=1.0,user-scalable=no" name="viewport">
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="format-detection" content="telephone=no,email=no,adress=no" />
+
+    <title>我的会员</title>
+
+    <link rel="stylesheet" href="css/g.css">
+    <link rel="stylesheet" href="css/comm.css">
+    <link rel="stylesheet" href="inc/mescroll/mescroll.min.css">
+
+    <style>
+        body {
+            background-color: #F5F5F5;
+        }
+
+
+        .kuang {
+            background-color: #FCFAFB;
+            border-radius: 8px;
+            width: 165px;
+            box-shadow: 0px 3px 10px #EEEEEE;
+        }
+
+        .bg_ljgxje {
+            background: url("img/tbmain/ljsky.png");
+            background-repeat: no-repeat;
+            background-size: 13px 13px;
+            background-position: 28px center;
+            padding-left: 15px;
+        }
+
+        .bg_ggsj {
+            background: url("img/tbmain/ggsj.png");
+            background-repeat: no-repeat;
+            background-size: 13px 13px;
+            background-position: 38px center;
+            padding-left: 15px;
+        }
+
+        .f10 {
+            font-size: 10px;
+        }
+
+        @media (device-height:568px) and (-webkit-min-device-pixel-ratio:2) {
+            .bg_ggsj {
+                background: url(img/tbmain/ggsj.png);
+                background-repeat: no-repeat;
+                background-size: 13px 13px;
+                background-position: 20% center;
+                padding-left: 15px;
+            }
+
+            .bg_ljgxje {
+                background: url(img/tbmain/ljsky.png);
+                background-repeat: no-repeat;
+                background-size: 13px 13px;
+                background-position: 10% center;
+                padding-left: 15px;
+            }
+        }
+    </style>
+
+</head>
+
+<!--******************************************************************************-->
+
+<body>
+
+    <header class="bottomBorder">
+        <div>
+            <div class="grow1 bg_white">
+                <div class="navBar">
+                    <div class="navBackIcon" onclick="Comm.close()"></div>
+                    <div class=""></div>
+                    <div class="navTitle">我的会员</div>
+                </div>
+            </div>
+        </div>
+    </header>
+    <!--******************************************************************************-->
+
+    <section id="section" class="mescroll scroll-y">
+        <div class="bg_white flex p15" style="padding-bottom:20px;">
+            <div class="kuang">
+                <div id="rebateIncome" class="flex_center mart15 bold f16" style="margin-left:45px;margin-right:45px;">
+                </div>
+                <div class="flex_center mart15 marb15 f12 col_lgray bg_ljgxje">店铺跨界收益(元)</div>
+            </div>
+            <div class="kuang marl20">
+                <div id="memberCount" class="flex_center mart15 bold f16" style="margin-left:45px;margin-right:45px;">
+                </div>
+                <div class="flex_center mart15 marb15 f12 col_lgray bg_ggsj">会员人数(人)</div>
+            </div>
+        </div>
+        <div class="bg_lgray">
+            <div class="flex_between paddl15 paddr15">
+                <div class="mart15 marb15 flex_center" style="width:33%;">会员昵称</div>
+                <div class="mart15 marb15 flex_center" style="width:33%;">手机号码</div>
+                <div class="flex_center" style="width:33%;">累计贡献金额</div>
+            </div>
+            <div id="list" class="bg_white paddl15 paddr15 marb5">
+            </div>
+        </div>
+
+    </section>
+
+    <!--******************************************************************************-->
+    <footer class="shared">
+    </footer>
+
+    <script src="js/z.js"></script>
+    <script src="js/g.js"></script>
+    <script src="js/comm.js"></script>
+    <script src="js/api.js"></script>
+    <script src="inc/mescroll/mescroll.min.js"></script>
+
+    <script>
+        var requestPamrm = {};
+        var merefresh;
+        var html = '';
+        var u = Comm.db('userinfo');
+
+        function pageload() {
+            var rebateIncome = Comm.query('rebateIncome');
+            var memberCount = Comm.query('memberCount');
+            $('#rebateIncome').html(rebateIncome / 100);
+            $('#memberCount').html(memberCount);
+            addRefresh();
+        }
+
+        function getHtml(d) {
+            if (d.code == 1) {
+                var data = d.data;
+                for (var i = 0; i < data.length; i++) {
+                    var d = data[i];
+                    d.money = app.price(d.money);
+                    if (i == data.length - 1) {
+                        html += '<div class="flex_between" onclick="Comm.go(' + "'" +
+                            'vipInfo.html?customerId=' + d.customerId + '&allMoney=' + d.money + "'" +
+                            ');"><div class="mart15 marb15 flex_center" style="width:33%;">' + d
+                            .nickName +
+                            '</div><div class="mart15 marb15 flex_center" style="width:33%;">' + d.phone
+                            .substring(0, 3) + "****" + d.phone.substring(7, 11) +
+                            '</div><div class="flex_center" style="width:33%;">￥' + d.money +
+                            '</div></div>';
+                    } else {
+                        html += '<div class="flex_between bottomBorder" onclick="Comm.go(' +
+                            "'" + 'vipInfo.html?customerId=' + d.customerId + "'" +
+                            ');"><div class="mart15 marb15 flex_center" style="width:33%;">' + d
+                            .nickName +
+                            '</div><div class="mart15 marb15 flex_center" style="width:33%;">' + d
+                            .phone + '</div><div class="flex_center" style="width:33%;">￥' + d.money +
+                            '</div></div>';
+                    }
+                }
+                return html;
+            }
+        }
+
+        function addRefresh() {
+            requestPamrm.storeId = u.storeId;
+            if (!merefresh) {
+                merefresh = new MERefresh();
+                //网络请求参数
+                merefresh.refreshOption.refreshUrl = '/api/store/getmystoreVipContributelist';
+                merefresh.refreshOption.refreshParm = requestPamrm;
+
+                //页面 <刷新> 的回调
+                merefresh.refreshOption.refresh_cb = function (refresh, d) {
+                    if (d.code == 1) {
+                        html = '';
+                        addrData = d.data || [];
+                        refresh.successEndRef(d.data.length, d.totalCount);
+                        refresh.appendHtml(getHtml(d));
+                    } else {
+                        refresh.successEndRef(0, 0);
+                        refresh.MeRefScroll.endUpScroll(true);
+                    }
+                };
+                merefresh.configurationDone('section', 'list');
+            } else {
+                merefresh.refreshFunction(merefresh);
+            }
+        }
+    </script>
+
+</body>
+
+</html>

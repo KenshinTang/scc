@@ -1,0 +1,313 @@
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width,initial-scale=1.0,user-scalable=no" name="viewport">
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="format-detection" content="telephone=no,email=no,adress=no" />
+
+    <title>店铺评价</title>
+
+    <link rel="stylesheet" href="css/g.css">
+    <link rel="stylesheet" href="css/comm.css">
+    <link rel="stylesheet" href="inc/mescroll/mescroll.min.css">
+
+    <style>
+        body {
+            background-color: #F5F5F5;
+        }
+
+
+        .k {
+            background-color: #FEF2F1;
+            padding: 8px 13px;
+            margin-right: 15px;
+            border-radius: 14px;
+        }
+
+        .f10 {
+            font-size: 10px;
+        }
+
+        .cell {
+            padding: 15px 15px;
+            background-color: white;
+            margin-bottom: 10px;
+        }
+
+        .msg_bg {
+            background-image: url("img/tbmain/hfu.png");
+            background-repeat: no-repeat;
+            background-size: 20px 15px;
+            background-position: left center;
+            margin-left: 85%;
+        }
+
+        .bg_jian {
+            background: linear-gradient(#FB5E3D, #E30008);
+            /* 标准的语法 */
+        }
+
+        .bg_jian2 {
+            background: linear-gradient(#FFFD34, #FFC62E);
+        }
+
+        @media (device-height:568px) and (-webkit-min-device-pixel-ratio:2) {
+            .k {
+                background-color: #FEF2F1;
+                padding: 6px 8px;
+                margin-right: 15px;
+                border-radius: 14px;
+            }
+
+            .msg_bg {
+                background-image: url(img/tbmain/hfu.png);
+                background-repeat: no-repeat;
+                background-size: 20px 15px;
+                background-position: left center;
+                margin-left: 83%;
+            }
+        }
+    </style>
+
+</head>
+
+<!--******************************************************************************-->
+
+<body>
+
+    <header class="bottomBorder">
+        <div>
+            <div class="grow1 bg_white">
+                <div class="navBar">
+                    <div class="navBackIcon" onclick="Comm.close()"></div>
+                    <div class=""></div>
+                    <div class="navTitle">店铺评价</div>
+                </div>
+            </div>
+        </div>
+    </header>
+    <!--******************************************************************************-->
+
+    <section id="section" class="mescroll scroll-y">
+        <div class="flex_between p15 bg_white">
+            <div class="bold">商品评价&nbsp;（<span id="pjCount">0</span>）</div>
+            <div>综合评分：&nbsp;<span id="avgStore" class="col_red"></span></div>
+        </div>
+        <div class="bg_white flex_center f10 paddl15 paddr15 paddb15 marb10">
+            <div class="k" onclick="r(1)">全部&nbsp;<span id="allCount"></span></div>
+            <div class="k" onclick="r(2)">好评&nbsp;<span id="goodCount"></span></div>
+            <div class="k" onclick="r(3)">中评&nbsp;<span id="centerCount"></span></div>
+            <div class="k" onclick="r(4)" style="margin-right:0px;">差评&nbsp;<span id="badCount"></span></div>
+        </div>
+        <div id="list"></div>
+    </section>
+
+    <!--******************************************************************************-->
+    <footer class="shared">
+    </footer>
+    <div id="sinbox" wtd="sinboxTemp" class="clickBgImg">
+        <div class="bg_white flex_center" style="height:40px;line-height:40px;margin-left:10%;margin-right:10%">卖家回复
+        </div>
+        <textarea class="paddl20 paddr20 paddt10" style="resize : none; border:0px;border:none;width:80%;height:140px"
+            placeholder="请输入卖家回复"></textarea>
+        <div class="bg_white flex_center paddb20" style="height:40px;line-height:40px;margin-left:10%;margin-right:10%">
+            <button class="bg_jian2 col_white marr20" style="padding:10px 30px;border-radius:4px;"
+                onclick="Comm.showWindow();">返回</button>
+            <button class="bg_jian col_white marl20" style="padding:10px 30px;border-radius:4px;"
+                onclick="preventRepeadClickDeal(function () {submit()}, 1)">回复</button>
+        </div>
+    </div>
+
+    <script src="js/z.js"></script>
+    <script src="js/g.js"></script>
+    <script src="js/comm.js"></script>
+    <script src="js/api.js"></script>
+    <script src="inc/mescroll/mescroll.min.js"></script>
+
+    <script>
+        var u = Comm.db('userinfo');
+        var requestPamrm = {};
+        var merefresh;
+        var html = '';
+        var storeEvaluateId = '';
+
+        function pageload() {
+            addRefresh();
+            //add(u);
+            AJAX.POST('/api/store/getStoreEvaluateCount', u, function (d) {
+                if (d.code == 1) {
+                    var data = d.data;
+                    for (x in data) {
+                        if (data[x] == 0) {
+                            $('#' + x).text(0);
+                        } else {
+                            if (x == 'avgStore') {
+                                var junj = data[x];
+                                junj = Math.round(junj * 100) / 100; //小数点后两位
+                                $('#' + x).text(junj);
+                            } else {
+                                $('#' + x).text(data[x]);
+                            }
+                        }
+                    }
+                }
+            })
+        }
+
+        function addRefresh() {
+            requestPamrm.storeId = u.storeId;
+            if (!merefresh) {
+                merefresh = new MERefresh();
+                //网络请求参数
+                merefresh.refreshOption.refreshUrl = '/api/store/getstoreevaluate';
+                merefresh.refreshOption.refreshParm = requestPamrm;
+
+                //页面 <刷新> 的回调
+                merefresh.refreshOption.refresh_cb = function (refresh, d) {
+                    if (d.code == 1) {
+                        html = '';
+                        addrData = d.data||[];
+                        refresh.successEndRef(addrData.length, d.totalCount);
+                        refresh.appendHtml(add(d));
+                        //设置星级
+                        for (var i = 0; i < d.data.length; i++) {
+                            var n = i + 1;
+                            commentPraise(d.data[i].score, n);
+                        }
+                    } else {
+                        refresh.successEndRef(0, 0);
+                        refresh.MeRefScroll.endUpScroll(true);
+                    }
+                };
+                merefresh.configurationDone('section', 'list');
+            } else {
+                merefresh.refreshFunction(merefresh);
+            }
+        }
+
+        function commentPraise(num, id) {
+
+
+            var imgUrl = '<img src="img/tbmall/shca.png" height="8" width="8" class="marr5"/>';
+            var imgUrl1 = '<img src="img/tbmall/shca-1.png" height="8" width="8" class="marr5"/>';
+            var i = 0;
+            for (i; i < num; i++) {
+                if (i < 6) {
+                    $('#comment' + id).append(imgUrl1);
+                }
+            }
+            if (i < 5) {
+                for (var a = 0; a < 5 - i; a++) {
+                    $('#comment' + id).append(imgUrl);
+                }
+            }
+        }
+
+        function r(a) {
+            if (a == 1) {
+                requestPamrm.score = undefined;
+                addRefresh();
+            } else if (a == 2) {
+                requestPamrm.score = 'goods';
+                addRefresh();
+            } else if (a == 3) {
+                requestPamrm.score = 'ok';
+                addRefresh();
+            } else if (a == 4) {
+                requestPamrm.score = 'bad';
+                addRefresh();
+            }
+        }
+
+        function add(d) {
+            if (d.code == 1) {
+                var data = d.data
+                $('#pjCount').html(data.length);
+                if (data.length == 0) {
+                    html += '<div class="flex_center col_lgray" style="height:50%;">暂无店铺评价</div>';
+                }
+                for (var i = 0; i < data.length; i++) {
+                    var n = i + 1;
+                    if (!data[i].replyDs) {
+                        html +=
+                            '<div class="bg_white cell" style="margin-bottom:10px;"><div class="flex flex_item_center flex_between"><div class="flex flex_item_center"><span class="marr10"><img src="' +
+                            Comm.OSS.getImgUrl(data[i].face) +
+                            '" width="30px" height="30px" /></span><div><div>' + data[i].nickName +
+                            '</div><div id="comment' +
+                            n +
+                            '"></div></div></div><div class="f10 col_lgray">' + data[i].addTime +
+                            '</div></div><div class="marl10 marr10 mart15"><div class="marb10">' + data[i]
+                            .ds +
+                            '</div></div><div class="msg_bg flex f12 col_lgray" style="justify-content:flex-end" onclick="savestoreevaluate(' +
+                            data[i].storeEvaluateId + ')">回复</div></div>';
+                    } else {
+                        html +=
+                            '<div class="bg_white cell" style="margin-bottom:10px;"><div class="flex flex_item_center flex_between"><div class="flex flex_item_center"><span class="marr10"><img src="' +
+                            Comm.OSS.getImgUrl(data[i].face) +
+                            '" width="30px" height="30px" /></span><div><div>' + data[i].nickName +
+                            '</div><div id="comment' +
+                            n +
+                            '"></div></div></div><div class="f10 col_lgray">' + data[i].addTime +
+                            '</div></div><div class="marl10 marr10 mart15"><div class="marb10">' + data[i]
+                            .ds +
+                            '</div></div><div class="msg_bg flex f12 col_lgray" style="margin-left:78%;margin-bottom:10px;justify-content:flex-end" onclick="preventRepeadClickDeal(function () {delstoreevaluate(' +
+                            data[i].storeEvaluateId +
+                            ')}, 1)">删除回复</div><div style="margin-left:10px;" class="topBorder f10 col_lgray paddt15 text">卖家回复：' +
+                            data[i].replyDs + '</div></div>';
+                    }
+                }
+                return html;
+            }
+        }
+
+        function savestoreevaluate(sId) {
+            storeEvaluateId = sId;
+            Comm.showWindow('sinboxTemp', false);
+            $('#WTDBOXTD').css('width', '100%');
+        }
+
+        function delstoreevaluate(sId) {
+            Comm.confirm('您确定要删除该回复？', function (a) {
+                if (parseInt(a) > 0) {
+                    var o = {};
+                    o.storeEvaluateId = sId;
+                    AJAX.POST('/mainstore/storeevaluate/delReply', o, function (d) {
+                        if (d.code == 1) {
+                            Comm.message('删除成功');
+                            setTimeout(function () {
+                                window.location.reload();
+                            }, 400);
+                        } else {
+                            Comm.message(d.msg);
+                        }
+                    })
+                }
+            })
+
+        }
+
+        function submit() {
+            preventRepeadClickDeal(function () {
+                var t = $('textarea').eq(1).val();
+                var o = {};
+                o.ds = t;
+                o.storeEvaluateId = storeEvaluateId;
+                Comm.showWindow();
+                Comm.loading('正在回复。。。');
+                AJAX.POST('/api/store/savestoreevaluate', o, function (d) {
+                    if (d.code == 1) {
+                        Comm.loading();
+                        Comm.message('回复成功');
+                        setTimeout(function () {
+                            window.location.reload();
+                        }, 500);
+                    }
+                })
+            }, 10)
+        }
+    </script>
+
+</body>
+
+</html>

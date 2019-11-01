@@ -1,0 +1,537 @@
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width,initial-scale=1.0,user-scalable=no" name="viewport">
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="format-detection" content="telephone=no,email=no,adress=no" />
+
+    <title>我要创业</title>
+
+    <link rel="stylesheet" href="css/g.css">
+    <link rel="stylesheet" href="css/comm.css">
+    <link rel="stylesheet" href="inc/mescroll/mescroll.min.css">
+
+    <style>
+        .cellContent {
+            height: 55px;
+            padding-left: 15px;
+            padding-right: 15px;
+        }
+
+        .cellContent input {
+            text-align: right;
+            font-size: 15px;
+            height: 30px;
+        }
+
+        .zp1,
+        .zp2 {
+            width: 50%;
+            padding: 5px;
+        }
+
+        .zp3 {
+            width: 100px;
+        }
+
+        /************************************************************/
+        .meauItem {
+            padding-top: 10px;
+            padding-bottom: 10px;
+        }
+
+        .cellSel {
+            width: 30px;
+            height: 30px;
+        }
+
+        .check,
+        .agree {
+            background-image: url("img/generalIcon/agree_n.png");
+        }
+
+        .active .check,
+        .active.agree {
+            background-image: url("img/generalIcon/agree_y.png");
+        }
+
+        footer {
+            z-index: 99 !important;
+        }
+
+        .xu {
+            border: dashed 1px #DCDCDC;
+            border-radius: 3px;
+        }
+
+        .coverImg {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /*.picker{*/
+        /*z-index: 1001 !important;*/
+        /*}*/
+        /*.picker .picker-mask{*/
+        /*z-index: 1000 !important;*/
+        /*}*/
+    </style>
+
+
+</head>
+
+<!--******************************************************************************-->
+
+<body>
+
+    <header>
+        <div class="navBar bottomShadow">
+            <div class="navBackIcon" onclick="Comm.close()"></div>
+            <div class="navTitle">申请成为合伙人</div>
+        </div>
+    </header>
+
+
+    <section class="bg_lgray">
+
+
+        <div class="content upimgContent"></div>
+
+
+        <!-- ********************************************************8 -->
+
+
+        <div class="marb25">
+            <div class="bg_white p10 pl15 lh30 bottomBorder col_title mt5">*选择合伙人等级</div>
+            <div class="meauList levels bg_white">
+
+
+            </div>
+        </div>
+
+
+    </section>
+
+    <footer class="bg_white">
+
+        <dif class="flex_between m10">
+            <div class="flex_start">
+                <div class="lIcon cellSel agree"></div>
+                <div class="f12">我已阅读并且同意
+                    <span onclick="showArtical();">《入驻协议》</span>
+                </div>
+            </div>
+
+            <div style="color:#E30008">提示：*标注的为必填项</div>
+        </dif>
+
+        <div class="bg_trans marl15 marr15 marb10 br5 col_white center lh50 f18" onclick="model.submitApply();">
+            提交申请
+        </div>
+    </footer>
+
+
+    <style>
+        .alertFrame {
+            width: 80%;
+            margin: auto;
+            border-radius: 10px;
+            overflow: hidden;
+
+        }
+
+        .alertContent {
+            min-width: 200px;
+            min-height: 50px;
+            max-height: 300px;
+            overflow-x: hidden;
+            overflow-y: scroll;
+        }
+    </style>
+
+
+    <div wtd="articalWindow">
+
+        <div class="alertFrame bg_lgray br5 center">
+
+            <div class="alertTt lh50 f18 bottomBorder bg_white"></div>
+
+            <div class="alertContent mt10 mb10 pl10 pr10 bg_white"></div>
+
+            <div class="tab">
+                <div class="bg_trans col_white center lh50 f18" onclick="Comm.showWindow()">关闭
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- *************************** -->
+
+
+    <script src="js/z.js"></script>
+    <script src="js/g.js"></script>
+    <script src="js/comm.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/picker.min.js"></script>
+    <script src="js/area.js"></script>
+    <script src="js/art-template.js"></script>
+    <script src="inc/upimg/upload.js"></script>
+    <script src="js/dict.js"></script>
+
+    <script type="text/javascript">
+        var userinfo = Comm.db('userinfo') || {};
+        var requestParms = {},
+            levelSourse = [],
+            pageData;
+        var isAgree = false;
+
+        function pageload() {
+            Area.init();
+            getPartnerInfo();
+            getArtical();
+        }
+
+        var model = {
+
+            //提交申请
+            submitApply: function () {
+                requestParms.headName = $("#headName").val();
+                requestParms.headPhone = $("#headPhone").val();
+                requestParms.rePhone = $("#rePhone").val();
+
+                if (!model.checkParms()) {
+                    return;
+                }
+
+                Comm.loading('正在提交...');
+                SLNetwork('post', '/api/partner/add', requestParms, function (data) {
+                    Comm.loading();
+                    if (data.code == 1) {
+                        Comm.message('提交成功!');
+                        setTimeout(function () {
+                            if (!userinfo.myPartnerId) {
+                                Comm.go("examine.html?skip=2")
+                            } else {
+                                Comm.go("examine.html?skip=3")
+                            }
+
+                        }, 300);
+                    } else {
+                        Comm.message(data.msg);
+                    }
+                });
+
+            },
+            showAddress: function () {
+                Area.init(function () {
+                    areaPicker = new Areapicker("选择地区", function (obj, name, sid) {
+                        $("#cityId").val(name);
+                        requestParms.cityId = sid;
+                        requestParms.cityName = name;
+                    });
+                    areaPicker.show();
+                });
+            },
+            clear: function () {
+                Comm.db('customer', null)
+            },
+
+            checkParms: function () {
+
+                if (!Check.reg.nickName.e.test(requestParms.headName)) { //
+                    Comm.message('请填写姓名');
+                    return false;
+                } else if (!Check.reg.m.e.test(requestParms.headPhone)) { //
+                    Comm.message(Check.reg.m.t);
+                    return false;
+                } else if (!requestParms.cardZ) { //身份证正面
+                    Comm.message('请上传身份证正面照片');
+                    return false;
+                } else if (!requestParms.cardF) { //身份证反面
+                    Comm.message('请上传身份证反面照片');
+                    return false;
+                } else if (!requestParms.handCard) { //手持身份证
+                    Comm.message('请上传手持身份证照片');
+                    return false;
+                } else if (!requestParms.categroy) { //等级
+                    Comm.message('请选择合伙人等级');
+                    return false;
+                } else if (!isAgree) {
+                    Comm.message('请阅读并同意《入驻协议》');
+                    return false;
+                }
+
+                if (requestParms.rePhone && requestParms.rePhone.length && !Check.reg.m.e.test(requestParms
+                        .rePhone)) { //
+                    Comm.message(Check.reg.m.t);
+                    return false;
+                }
+
+                return true;
+            }
+        }
+
+
+        //获取合伙人信息
+        function getPartnerInfo() {
+
+            if (userinfo.myPartnerId == -1) {
+                pageData = {};
+                pageData.partner = pageData.partner || {};
+                getUpList();
+                var ctHtml = template('tp_id_ct', pageData);
+                $('.content').html(ctHtml);
+                regAddImgEvent();
+                return;
+            } else {
+                var parms = {
+                    partnerId: userinfo.myPartnerId
+                }
+                SLNetwork('get', '/api/partner/mypartner', parms, function (data) {
+                    if (data.code == 1) {
+                        pageData = data.data || {};
+                        pageData.partner = pageData.partner || {};
+                        setRequestParmData();
+
+                        var ctHtml = template('tp_id_ct', pageData);
+                        $('.content').html(ctHtml);
+                        regAddImgEvent();
+                        getUpList();
+                    } else {
+                        Comm.message(data.msg);
+                    }
+                });
+            }
+        }
+
+
+        function setRequestParmData() {
+            requestParms.cardF = pageData.cardf;
+            requestParms.cardZ = pageData.cardz;
+            requestParms.handCard = pageData.cards;
+
+            requestParms.cityId = pageData.partner.cityId;
+            requestParms.cityName = Area.getFullName(pageData.partner.cityId) || '';
+            requestParms.categroy = pageData.partner.categroy;
+        }
+
+
+        //获取等级列表
+        function getUpList() {
+
+            var params = {};
+            SLNetwork('get', '/api/partner/getLevelList', params, function (data) {
+                if (data.code == 1) {
+                    var list = data.data || [];
+                    levelSourse = list;
+
+                    var tmodel = {
+                        list: list,
+                        curLevel: pageData.partner.categroy
+                    }
+                    var eleHtml = template('tp_id_level', tmodel)
+                    $('.levels').html(eleHtml);
+                    initLevelChoose();
+                } else {
+                    Comm.message(data.msg);
+                }
+            });
+        }
+
+
+        //初始化等级点击事件
+        function initLevelChoose() {
+            meauChooseClick('.meauList', '.meauItem', function (o, idx) {
+                requestParms.categroy = levelSourse[idx].level;
+            });
+
+            meauChooseClick('footer', '.agree', function (o, idx) {
+                isAgree = !isAgree;
+            });
+        }
+
+
+        function regAddImgEvent() {
+            var am = $('.upimgContent .addimg');
+            am.each(function () {
+                var id = $(this).attr('id');
+                id = id.replace('_id', '');
+                $(this).attr('id', id);
+                model[id] = {};
+                model[id].uploader = new imgUploader(id);
+                model[id].uploader.id = id;
+                model[id].uploader.success = function () {
+                    var id = this.id;
+                    var cimgUrl = this.imgList.length > 0 ? this.imgList[0] : 'img/error.png';
+                    var imgUrl = Comm.OSS.getImgUrl(cimgUrl, 's');
+                    var imgEle = '<img src="' + imgUrl + '" class="coverImg">'
+                    $('#' + id + ' .imgContent').html(imgEle);
+                    requestParms[id] = cimgUrl;
+                }
+            });
+        }
+
+
+        var hasGetArtical = false;
+
+        function getArtical(show) {
+
+            var parms = {
+                title: '合伙人协议'
+            };
+            SLNetwork('post', '/api/article/getArticle', parms, function (a) {
+
+                if (a.code == 1) {
+                    hasGetArtical = true;
+                    var str = a.data.content;
+                    var x = /&lt;/g;
+                    var d = /&gt;/g;
+                    str = str.replace(x, '<');
+                    str = str.replace(d, '>');
+
+                    $('.alertTt').text(a.data.title);
+                    $('.alertContent').html(str);
+                    if (show) {
+                        Comm.showWindow('articalWindow');
+                    }
+                }
+
+            });
+        }
+
+
+
+        function showArtical() {
+            Comm.go('artical.html?aid=hhrRzxy');
+            // if (!hasGetArtical){
+            //     getArtical(true);
+            //     return;
+            // }
+            // Comm.showWindow('articalWindow');
+            // Comm.go('artical.html?aid=hhrRzxy')
+        }
+    </script>
+
+
+    <script type="text/html" id="tp_id_level">
+        {{each $data.list model i}}
+        <div
+            class="meauItem {{if i+1 != $data.list.length}}bottomBorder{{/if}} marl15 flex_start bg_white {{if model.level == curLevel}}active{{/if}}">
+            <div class="check m10 lIcon cellSel"></div>
+            <div class="">
+                <div class="col_title bold f16">{{model.p}}</div>
+                <div class="col_sub f12 mart5" style="color:#999999">
+                    佣金{{model.commission}}%，加盟费{{priceTp(model.money)||0}}元
+                </div>
+            </div>
+        </div>
+        {{/each}}
+    </script>
+
+
+    <script type="text/html" id="tp_id_ct">
+        <div class="slAddClass bg_white mart10">
+
+
+            <div class="cellContent  bottomBorder">
+                <div class="label f16 icon_pre icon_name ">*姓名</div>
+                <input type="text" id="headName" placeholder="请填写姓名" value="{{partner.headName||''}}" />
+            </div>
+
+
+            <div class="cellContent  bottomBorder">
+                <div class="label f16 icon_pre icon_name ">*联系电话</div>
+                <input type="tel" id="headPhone" placeholder="请填写联系电话" value="{{partner.headphone||''}}"
+                    maxlength="11" />
+            </div>
+
+        </div>
+
+
+        <div class="mt5">
+
+
+            <div class="idCardPic bg_white">
+                <div class="f16 bold pl15 pt10">*身份证照片</div>
+
+                <div class="imgCt flex_around p10" style="padding-left:15px;padding-right:15px">
+
+                    <div id="cardZ_id" class="addimg zp1 xu"
+                        style="margin-right:7px;padding-top:10px;padding-bottom:10px;">
+                        <div class="wrap">
+                            <div class="wrap_ct flex flexItem_v flex_center imgContent">
+                                {{if cardz}}
+                                <img src="{{OSS(cardz,'m')}}" class="coverImg" onerror="app.errorimg(this)">
+                                {{else}}
+                                <img src="img/tbmain/tjsfz.png" height="50%">
+                                <div class="col_theme mt10">身份证正面照</div>
+                                {{/if}}
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div id="cardF_id" class="addimg zp2 xu"
+                        style="margin-left:7px;padding-top:10px;padding-bottom:10px;">
+                        <div class="wrap">
+                            <div class="wrap_ct flex flexItem_v flex_center imgContent">
+                                {{if cardf}}
+                                <img src="{{OSS(cardf,'m')}}" class="coverImg" onerror="app.errorimg(this)">
+                                {{else}}
+                                <img src="img/tbmain/tjsfz.png" height="50%">
+                                <div class="col_theme mt10">身份证反面照</div>
+                                {{/if}}
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+
+
+        <div id="idHand" class="cellContent mb5 indicator bg_white mt5" style="height: unset">
+            <div class="label f16 icon_pre icon_name">*手持身份证半身照</div>
+
+            <div id="handCard_id" class="f16 addimg zp3 ml10">
+                <div class="wrap" style="padding-top:35%">
+                    <div class="wrap_ct flexItem_v flex flex_center imgContent" style="align-items:flex-end">
+                        {{if cards}}
+                        <img src="{{OSS(cards,'m')}}" class="coverImg" onerror="app.errorimg(this)">
+                        {{else}}请上传{{/if}}
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+
+        <div class="slAddClass bg_white">
+
+            <div class="cellContent  bottomBorder">
+                <div class="label f16 icon_pre icon_name ">推荐人电话</div>
+                <input type="tel" id="rePhone" data-reg="m" data-nocheck placeholder="请填写联系人电话"
+                    value="{{partner.refPhone||''}}" maxlength="11" />
+            </div>
+
+            <div class="cellContent  bottomBorder indicator">
+                <div class="label f16 icon_pre icon_name ">所在区域</div>
+                <input id="cityId" placeholder="选择区域" readonly onclick="model.showAddress()"
+                    value="{{getFullName(partner.cityId)}}" />
+            </div>
+
+        </div>
+    </script>
+
+
+</body>
+
+</html>

@@ -1,0 +1,147 @@
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width,initial-scale=1.0,user-scalable=no" name="viewport">
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+    <meta name="format-detection" content="telephone=no,email=no,adress=no"/>
+
+    
+    <title>添加账户</title>
+
+    <link rel="stylesheet" href="css/g.css">
+    <link rel="stylesheet" href="css/comm.css">
+
+    <style>
+        .bind{
+            padding: 0px 10px;
+            margin-top: 20px;
+        }
+        .input{
+            height: 40px;
+            font-size: 15px;
+            line-height: 40px;
+            margin-left: 10px;
+        }
+
+        .submit{
+            border-radius: 5px;
+        }
+
+    </style>
+
+</head>
+
+<!--******************************************************************************-->
+<body>
+
+<header>
+    <div class="navBar bottomShadow">
+        <div class="navBackIcon" onclick="Comm.close()"></div>
+        <div class="navTitle">添加账户</div>
+    </div>
+</header>
+<!--******************************************************************************-->
+
+<section class="bg_lgray">
+
+
+
+</section>
+
+<!--******************************************************************************-->
+<footer></footer>
+
+<script src="js/z.js"></script>
+<script src="js/g.js"></script>
+<script src="js/comm.js"></script>
+<script src="js/api.js"></script>
+<script src="js/art-template.js"></script>
+
+<script>
+
+    var model = {
+        type:Comm.query('type')||0,
+        account:Comm.query('act')||''
+    };
+
+    var userinfo = Comm.db('userinfo')||{};
+
+    function pageload(){
+        var html = template('tp_id',model);
+        $('section').html(html);
+    }
+
+
+
+
+    function submitClicked() {
+        var apistr = '';
+        if (model.type == 1){
+            apistr = '/api/customer/bindAli';//支付宝
+        }
+        // else if (model.type == 2){
+        //     apistr = '/api/customer/bindWx';//微信
+        // }
+
+        var parms = {
+            openId:$('.input').get(0).value,
+            alipayId:$('.input').get(0).value||''
+        }
+
+        if (!parms.alipayId || !parms.alipayId.length){
+            Comm.message('请填写支付宝账号');
+            return;
+        }
+
+        console.log(parms);
+
+        Comm.loading('正在保存...');
+        SLNetwork('post',apistr,parms,function (data) {
+            Comm.loading();
+            if (data.code==1) {
+                nslog(data);
+                if (model.type == 1){
+                    userinfo.aliyunId = parms.alipayId;
+                }
+                // else if (model.type == 2){
+                //     userinfo.wxId = parms.wxId;
+                // }
+                Comm.db('userinfo',userinfo);
+
+                Comm.alert('保存成功',function () {
+                   Comm.close();
+                });
+            } else {
+                Comm.message(data.msg);
+            }
+        });
+
+    }
+
+
+
+
+</script>
+
+
+<script type="text/html" id="tp_id">
+
+    <div class="flex_start lh50 bg_white bind">
+        {{if type == 1}}
+        <div>支付宝账号</div>
+        <input class="input" type="text" placeholder="请输入支付宝账号" value="">
+        {{else if type == 2}}
+        <div>微信账号</div>
+        <input class="input" type="text" placeholder="请输入微信账号" value="">
+        {{/if}}
+    </div>
+
+    <div class="m20 lh40 center bg_trans col_white submit f16" onclick="submitClicked();">保  存</div>
+
+</script>
+
+
+</body>
+
+</html>

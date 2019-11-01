@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>新增收货地址</title>
+    <meta content="width=device-width,initial-scale=1.0,user-scalable=no" name="viewport">
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="format-detection" content="telephone=no,email=no,adress=no" />
+    <link href="css/g.css" type="text/css" rel="stylesheet">
+    <link href="css/comm.css" type="text/css" rel="stylesheet">
+    <style>
+        section {
+            background: #F4F4F4;
+        }
+
+        .boldb {
+            border-bottom: 1px solid #eee;
+            line-height: 50px;
+            width: 100%;
+        }
+
+        .boldb span {
+            width: 24%;
+            display: inline-block;
+        }
+
+        .boldb img,
+        .boldb span {
+            vertical-align: middle;
+        }
+
+        .boldb img.right {
+            margin-top: 19px;
+        }
+
+        .boldb input {
+            text-align: left;
+            font-size: 15px;
+            height: 30px;
+            width: 65%;
+        }
+
+        .boldb input[type=button] {
+            color: #CCCCCC;
+            background-color: white;
+            margin-right: 15px;
+            margin-top: 10px;
+            float: right;
+        }
+
+        #loadingbox {
+            display: none;
+        }
+
+        .default {
+            background-image: url("img/address/uncheck.png");
+        }
+
+        .default.active {
+            background-image: url("img/address/sel_yes.png");
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <div class="navBar bottomShadow">
+            <div class="navBackIcon" onclick="Comm.close()"></div>
+            <div class="navItem f16 mr10" id="edit" onclick="update()">保存</div>
+            <div class="navTitle">添加收货地址</div>
+        </div>
+    </header>
+    <section>
+        <div class="bg_white" id="addressCtId">
+
+        </div>
+    </section>
+</body>
+
+<script src="js/g.js"></script>
+<script src="js/z.js"></script>
+<script src="js/comm.js"></script>
+<script src="js/area.js"></script>
+<script src="js/picker.min.js"></script>
+<script src="js/art-template.js"></script>
+
+<script type="text/javascript">
+    var choosedAddr = Comm.db('choosedAddr') || {};
+    var aid = Comm.query('id') || '';
+    var userinfo = Comm.db("userinfo");
+    var parms = {};
+    parms.customerId = userinfo.customerId;
+    parms.defaultAddr = choosedAddr.defaultAddr;
+
+
+    function pageload() {
+        console.log(choosedAddr);
+        AJAX.POST("/api/customerAddr/query", function (a) {
+            console.log(a.data);
+        });
+        Area.init(function () {
+            if (aid) {
+                choosedAddr.areaName = Area.getFullName(choosedAddr.addrId);
+            }
+            $('#addressCtId').html(template('tp_id', choosedAddr));
+            Comm.db('choosedAddr', null);
+
+            //初始化picker
+            areaPicker = new Areapicker("选择地区", function (obj, name, sid) {
+                choosedAddr.areaName = name;
+
+                $("#area").val(name).attr("data", sid);
+            });
+        });
+        $('#area').val(choosedAddr.areaName);
+    }
+
+
+    function chooseOrNot(o) {
+        if ($(o).hasClass('active')) {
+            $(o).removeClass('active');
+           // parms.defaultAddr = 0;
+        } else {
+            $(o).addClass('active');
+           // parms.defaultAddr = 1;
+        }
+    }
+
+
+
+    //手机号验证
+    function checkphone(t) {
+        var reg = /^1\d{10}$/;
+        if (!reg.test(t)) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    function update() {
+        var type = Comm.query('type');
+        parms.userName = document.querySelector("#name").value;
+        parms.phone = document.querySelector("#phone").value;
+        parms.cityId = document.querySelector("#area").getAttribute("data");
+        if (type != 1) {
+            parms.customerAddrId = document.querySelector("#area").getAttribute("data");
+        }
+        parms.address = document.querySelector("#baseaddr").value;
+        parms.addressId = aid;
+
+        if (!parms.userName || !parms.phone || !parms.address) {
+            Comm.message("请将信息填写完整");
+            return;
+        }
+
+        if (!checkphone(parms.phone || '')) {
+            Comm.message('手机号码输入错误！');
+            return;
+        }
+        parms.customerAddrId = choosedAddr.customerAddrId;
+        if (parms.cityId == '' || parms.cityId == null) {
+            parms.cityId = $('#cityId').val();
+        }
+        Comm.loading(true);
+        AJAX.POST("/api/customerAddr/add", parms, function (a) {
+            Comm.loading();
+            if (a.code == 1) {
+                Comm.message(a.msg);
+                if (Comm.query('insert') == 1) {
+                    Comm.close();
+                } else {
+                    setTimeout(function () {
+                        Comm.close();
+                    }, 500);
+                }
+            } else {
+                a.msg && Comm.message(a.msg);
+            }
+
+        });
+    }
+</script>
+
+
+
+
+<script type="text/html" id="tp_id">
+    <div class="marr10 marl10">
+        <div class="boldb">
+            <span class="f16">收件人</span>
+            <input type="text" id="name" value="{{userName||''}}" placeholder="请输入收件人姓名" />
+        </div>
+
+        <div class="boldb">
+            <span class="f16">手机号</span>
+            <input type="tel" id="phone" maxlength="11" value="{{phone||''}}" placeholder="请输入收件人手机号" />
+        </div>
+
+        <div class="boldb" onclick="areaPicker.show()">
+            <span class="f16">所在地区</span>
+            <input type="text" id="area" readonly="readonly" placeholder="请选择地区" value="{{addrId||''}}"
+                data="{{area||''}}" />
+            <input type="text" id="cityId" readonly="readonly" placeholder="请选择地区" value="{{addrId||''}}"
+                data="{{area||''}}" class="hide" />
+            <img class="right" src="stIconfile/identi.png" height="12" />
+        </div>
+
+        <div class="boldb clearfix">
+            <span class="f16">详细地址</span>
+            <textarea id="baseaddr" class="f14 paddl5 paddr10 paddb10 mart10" placeholder="请填写详细地址"
+                style="padding-left:8px;float:right;width: 76%; height: 70px;box-sizing: border-box; padding-top:8px;">{{address||''}}</textarea>
+        </div>
+
+
+        <!-- <div class="boldb lIcon default {{defaultAddr == 1 ? 'active' : ''}}" style="border: none"
+            onclick="chooseOrNot(this)">
+            <div class="f16">设置为默认</div>
+        </div> -->
+
+    </div>
+    <!-- <div class="linebod" style="margin-top: 30px;background: #F4F4F4"></div> -->
+</script>
+
+
+
+</html>

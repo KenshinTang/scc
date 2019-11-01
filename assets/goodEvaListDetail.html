@@ -1,0 +1,209 @@
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width,initial-scale=1.0,user-scalable=no" name="viewport">
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+    <meta name="format-detection" content="telephone=no,email=no,adress=no"/>
+
+    <title>商品评论列表</title>
+
+    <link rel="stylesheet" href="css/g.css">
+    <link rel="stylesheet" href="css/comm.css">
+    <link rel="stylesheet" href="inc/mescroll/mescroll.min.css">
+
+    <style>
+        .checkMore {
+            background-image: url("img/tbmall/ckgd.png");
+            background-size: 6px auto;
+            background-position: right;
+            padding-right: 10px;
+        }
+
+        .evaImg {
+            width: 70px;
+            height: 70px;
+        }
+
+        .star {
+            width: 50px;
+            height: 10px;
+            background: url("img/tbshop/Star_n.png") repeat-x center center;
+            background-size: 10px auto;
+        }
+
+        .star_get {
+            width: 60%;
+            height: 100%;
+            background: url("img/tbshop/Star.png") repeat-x left center;
+            background-size: 10px auto;
+        }
+
+    </style>
+
+</head>
+
+<!--******************************************************************************-->
+<body>
+
+<header>
+    <div class="navBar bottomShadow">
+        <div class="navBackIcon" onclick="Comm.close()"></div>
+        <div class="navTitle">商品评论</div>
+    </div>
+</header>
+<!--******************************************************************************-->
+
+<section class="mescroll" id="refresh">
+
+    <div class="p15 mt10 bg_white goodsEva">
+        <div class="ev_head"></div>
+        <div class="ev_list evaluatList" id="list"></div>
+    </div>
+
+</section>
+
+<!--******************************************************************************-->
+<footer></footer>
+
+<script src="js/z.js"></script>
+<script src="js/g.js"></script>
+<script src="js/comm.js"></script>
+<script src="js/api.js"></script>
+<script src="js/art-template.js"></script>
+<script src="inc/mescroll/mescroll.min.js"></script>
+<script src="inc/imageView/imageview.js"></script>
+
+<script>
+
+    var gid = Comm.query('gid');
+
+    function pageload() {
+        getCommentList();
+    }
+
+
+
+    function getCommentList() {
+
+        var merefresh = new MERefresh();
+        //网络请求参数
+
+        merefresh.refreshOption.refreshUrl = '/api/shoppingMall/comment/getEvaluateList';
+        merefresh.refreshOption.refreshParm = {
+            goodsId:gid,
+        }
+
+        //页面 <刷新> 的回调
+        merefresh.refreshOption.refresh_cb = function (refresh, data) {
+
+
+            if (data.code == 1) {
+
+                var tmodel = data.data;
+                tmodel.gid = gid;
+                var list = tmodel.goodsEvaluateList||[];
+
+                refresh.successEndRef(list.length, data.totalCount);
+
+
+                list.forEach(function (a) {
+                    a.imgs = [];
+                    if (a.imgurl && a.imgurl.length){
+                        a.imgs = a.imgurl.split(',');
+                    }
+                });
+
+
+                // var evaEleHead = template('tp_id_EvaHead',tmodel);
+                // $('.ev_head').html(evaEleHead);
+
+                var evaEle = template('tp_id_Eva',tmodel);
+                merefresh.appendHtml(evaEle);
+
+            } else {
+                refresh.successEndRef(0, 0);
+                refresh.MeRefScroll.endUpScroll(true);
+            }
+        };
+        merefresh.configurationDone('refresh', 'list');
+    }
+
+
+
+    function addPhotoBroswer(i) {
+        var imgs = document.getElementById("showImgId_"+i);
+        ImageView.show({
+            pattern: 'default',
+            selector: 'img',
+            initDisplaySize: 'contain',
+            initDisplayPositionX: 'center',
+            initDisplayPositionY: 'center',
+        });
+    }
+
+
+</script>
+
+
+
+<script type="text/html" id="tp_id_EvaHead">
+
+    <div class="flex_between marg_v5">
+        <div class="bold f18">商品评价（{{goodsEvaluateCount.allevaluate}}）</div>
+        <div class="col_theme" onclick="Comm.go('goodEvaListDetail.html?gid={{gid}}')">
+            <span class="rIcon checkMore">查看更多</span>
+        </div>
+    </div>
+
+</script>
+
+
+<script type="text/html" id="tp_id_Eva">
+
+    {{each $data.goodsEvaluateList model i}}
+
+    <div class="bg_white evaCell pad_v10">
+        <div class="flex flex_item_center flex_between">
+            <div class="flex flex_item_center">
+                <span class="marr10">
+                    <img src="{{OSS(model.userFace,'s')}}" onerror="app.herrorimg(this)" width="30px" height="30px" style="border-radius: 15px"/>
+                </span>
+                <div>
+                    <div>{{model.nickName||''}}</div>
+                    <div class="star">
+                        <div class="star_get" style="width: {{widthPer(model.score)}}%"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="f12 col_lgray">{{formatDate(model.evaluateTime,'Y-m-d H:i')}}</div>
+        </div>
+        <div class="marl10 marr10 mart15">
+            <div class="marb10">{{model.evaluateDs||''}}</div>
+            <div class="paddb20 bottomBorder" id="showImgId_{{model.goodsEvaluateId}}" onclick="addPhotoBroswer({{model.goodsEvaluateId}})" style="border-color:#EBEBEB;margin-right: -30px;">
+
+                {{each model.imgs img j}}
+                <img src="{{OSS(img,'m')}}" big="{{OSS(img,'l')}}" onerror="app.errorimg(this);" class="marr10 mt10 evaImg"/>
+                {{/each}}
+
+            </div>
+
+            {{if model.replyDs}}
+            <div class="f10 col_lgray mart15">
+                卖家回复：{{model.replyDs||''}}
+            </div>
+            {{/if}}
+
+        </div>
+    </div>
+    {{/each}}
+
+</script>
+
+<script>
+
+</script>
+
+</body>
+
+</html>

@@ -1,0 +1,593 @@
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width,initial-scale=1.0,user-scalable=no" name="viewport">
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+    <meta name="format-detection" content="telephone=no,email=no,adress=no"/>
+
+    <title>首页</title>
+
+    <link rel="stylesheet" href="css/g.css">
+    <link rel="stylesheet" href="css/comm.css">
+    <link rel="stylesheet" href="inc/side/side.css">
+
+    <style>
+
+        header, .navBar {
+            position: relative;
+        }
+
+        .navTitle {
+            width: 40%;
+            margin: 0;
+            background: url("img/tbhome/logo.png") center center no-repeat;
+            background-size: auto 20px;
+            box-sizing: initial;
+            position: absolute;
+            bottom: 0px;
+            left: 30%;
+            right: 30%;
+            z-index: 1;
+        }
+
+        .navItemIcon.msg {
+            background-image: url("img/tbhome/xiaoxi.png");
+            background-size: auto 19px;
+        }
+
+        .iconData {
+            background-image: url("img/tbhome/ptsj.png");
+        }
+
+        .fourthIcon {
+            margin-top: 20px;
+        }
+
+        .breakLine_v {
+            width: 1px;
+            height: 16px;
+            background-color: #EBEBEB;
+        }
+
+        .account {
+            background-image: url("img/tbhome/account.png");
+        }
+
+        .account, .iconData {
+            background-size: auto 18px;
+            padding-left: 30px;
+        }
+
+        .halfless {
+            width: 47%;
+        }
+
+        .halfless > img {
+            width: 100%;
+            object-fit: cover;
+        }
+
+        .position {
+            background-image: url("img/tbhome/position.png");
+        }
+
+        .close_btn {
+            height: 25px;
+            width: 25px;
+            background-image: url("img/Invitation/close.png");
+            background-size: 25px 25px;
+            float: right;
+            margin-top: -45px;
+        }
+
+        .clickBgImg {
+            background-image: url("img/login/Registered.png");
+            background-repeat: no-repeat;
+            background-size: 320px 340px;
+            height: 340px;
+            width: 320px;
+        }
+
+        .kdbg {
+            background-image: url('img/tbhome/shop.png');
+            background-repeat: no-repeat;
+            background-size: 100% 100%;
+            height: 81px;
+        }
+
+        .hhrbg {
+            background-image: url('img/tbhome/business.png');
+            background-repeat: no-repeat;
+            background-size: 100% 100%;
+            height: 81px;
+        }
+
+        .hasNew {
+            line-height: 30px;
+            float: right;
+            font-size: 20px;
+        }
+
+        .iconService {
+            background-image: url('img/tbmine/hbBg.png');
+            background-size: 5px 50%;
+            padding-left: 20px;
+        }
+
+
+    </style>
+
+</head>
+
+<!--******************************************************************************-->
+
+<body>
+
+<header>
+    <div class="navBar clearfix">
+        <div class="navBack rIcon position marl10" onclick="Comm.go('choosePosition.html')"></div>
+        <div class="navItemIcon msg marr10" onclick="if (needLoginCheck(true)) return;Comm.go('msg.html')">
+            <div class="hasNew col_red hide">•</div>
+        </div>
+        <div class="navTitle"></div>
+
+    </div>
+</header>
+<!--******************************************************************************-->
+
+<section class="scroll-y">
+
+    <div class="p15 paddb5 pt0">
+
+        <div class="wrap  br5">
+            <div class="wrap_ct">
+                <!--轮播-->
+
+                <div class="mainW mainH br5 ohide bg_lgray" id="id_banner">
+                    <ul class="list fullImg side_ul br5 ohide" id="id_side">
+
+                    </ul>
+                </div>
+
+            </div>
+        </div>
+
+
+        <div class="flex_around paddt10">
+            <div id="sk" class="hide p15 center" onclick="scanCode(1);">
+                <img src="img/tbhome/sk.png" alt="" width="30">
+                <div class="f12 mart10">收款</div>
+            </div>
+            <div class="p15 center" id="scanQRCode1" onclick="scanCode();">
+                <img src="img/tbhome/sys.png" alt="" width="30">
+                <div class="f12 mart10">扫一扫</div>
+            </div>
+            <div class="p15 center" onclick="scanCode(2);">
+                <img src="img/tbhome/fk.png" alt="" width="30">
+                <div class="f12 mart10">付款</div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="bg_lgray">
+
+        <div class="p15">
+            <div class="bg_white br5">
+                <div class="lIcon iconData p10 marl10">平台数据</div>
+
+                <div class="flex_around">
+                    <div class="space"></div>
+                    <div class="fourth center">
+                        <img src="img/tbhome/vip.png" alt="" width="15" class="fourthIcon">
+                        <div id="members" class="f22 mart20 marb15">0</div>
+                        <div class="col_sub f12 paddb15">会员数</div>
+                    </div>
+
+                    <div class="breakLine_v"></div>
+
+                    <!--<div class="fourth center">-->
+                    <!--<img src="img/tbhome/frs.png" alt="" width="15" class="fourthIcon">-->
+                    <!--<div id="rebateMoney" class="f22 mart20 marb15">0</div>-->
+                    <!--<div class="col_sub f12 paddb15">分润总数</div>-->
+                    <!--</div>-->
+
+                    <!--<div class="breakLine_v"></div>-->
+
+                    <div class="fourth center">
+                        <img src="img/tbhome/kds.png" alt="" width="15" class="fourthIcon">
+                        <div id="stores" class="f22 mart20 marb15">0</div>
+                        <div class="col_sub f12 paddb15">开店数</div>
+                    </div>
+
+                    <div class="breakLine_v"></div>
+
+                    <div class="fourth center">
+                        <img src="img/tbhome/hhr.png" alt="" width="15" class="fourthIcon">
+                        <div id="parteners" class="f22 mart20 marb15">0</div>
+                        <div class="col_sub f12 paddb15">合伙人</div>
+                    </div>
+                    <div class="space"></div>
+
+
+                </div>
+            </div>
+        </div>
+
+
+        <!--平台数据 / 我的账户-->
+        <div id="ptsj" class="p15 hide" style="padding-top: 0px">
+            <div class="bg_white br5">
+                <div class="lIcon account p10 marl10">我的账户</div>
+
+                <div class="flex_around">
+                    <div class="space"></div>
+                    <div class="fourth center" onclick="Comm.go('wallet.html')">
+                        <img src="img/tbhome/xjq.png" alt="" width="15" class="fourthIcon">
+                        <div id="balance" class="f22 mart20 marb15">0</div>
+                        <div class="col_sub f12 paddb15">余额</div>
+                    </div>
+
+                    <div class="breakLine_v"></div>
+
+                    <div class="fourth center" onclick="Comm.go('coupon.html?type=hbq')">
+                        <img src="img/tbhome/hbq.png" alt="" width="15" class="fourthIcon">
+                        <div id="packets" class="f22 mart20 marb15">0</div>
+                        <div class="col_sub f12 paddb15">红包券</div>
+                    </div>
+
+                    <!--<div class="breakLine_v"></div>-->
+
+                    <!--<div class="fourth center" onclick="Comm.go('redBag.html')">-->
+                    <!--<img src="img/tbhome/hb.png" alt="" width="15" class="fourthIcon">-->
+                    <!--<div id="points" class="f22 mart20 marb15">0</div>-->
+                    <!--<div class="col_sub f12 paddb15">HB</div>-->
+                    <!--</div>-->
+
+                    <!--<div class="breakLine_v"></div>-->
+
+                    <!--<div class="fourth center" onclick="Comm.go('redBag.html')">-->
+                    <!--<img src="img/tbhome/zq.png" alt="" width="15" class="fourthIcon">-->
+                    <!--<div id="hbmoney" class="f22 mart20 marb15">0</div>-->
+                    <!--<div class="col_sub f12 paddb15">赚钱</div>-->
+                    <!--</div>-->
+                    <div class="space"></div>
+
+
+                </div>
+            </div>
+        </div>
+
+
+        <!--常用服务-->
+        <div class="bg_white">
+            <div class="lIcon iconService p10 marl15 f18">常用服务</div>
+
+            <div class="flex_between p15">
+                <div id="store" class="paddt15 f16 col_white kdbg halfless" style="padding-left:18px;"
+                     onclick="goStore();">
+                </div>
+                <div id="hhr" class="paddt15 f16 col_white hhrbg halfless" style="padding-left:18px;"
+                     onclick="getPartnerState(true);">
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</section>
+
+<div id="sinbox" wtd="sinboxTemp" class="clickBgImg">
+    <div class="close_btn" onclick="Comm.db('firstLogin',false);Comm.showWindow();"></div>
+    <div class="f16 col_lgray" style="padding-top:220px">
+        <span class="f18" style="color:#E30008"><span id="registGetPId"></span>元红包券</span>已放入你的钱包
+    </div>
+    <div class="flex_center">
+        <div id="fText" class="col_white flex_center flex_item_center"
+             style="margin-top:30px;height:40px;width:190px;border-radius:20px;background: linear-gradient(#FB5E3D, #E30008);font-size:16px;"
+             onclick="Comm.db('firstLogin',false);Comm.go('coupon.html?type=hbq');">点击查看
+        </div>
+    </div>
+</div>
+
+<!--******************************************************************************-->
+<footer class="shared"></footer>
+
+<script src="js/z.js"></script>
+<script src="js/g.js"></script>
+<script src="js/comm.js"></script>
+<script src="js/api.js"></script>
+<script src="js/art-template.js"></script>
+<script src="inc/side/side.js"></script>
+<script src="js/wx.js"></script>
+<script src="http://res.wx.qq.com/open/js/jweixin-1.1.0.js"></script>
+
+
+<script>
+
+    Foot.init();
+    var userinfo = Comm.db('userinfo') || {};
+
+    function pageresume() {
+
+        if (!app.isLogin()) {
+            clearUserData();
+        }
+        getLatestInfo();
+        getPosition();
+    }
+
+    function goStore() {
+        if (needLoginCheck(true)) return;
+        preventRepeadClickDeal(function () {
+            SLNetwork('get', 'api/store/myStoreState', userinfo, function (a) {
+                if (a.data.code == 4 || a.data.code == 5) {
+                    Comm.go('storeMain.html');
+                } else if (a.data.code == 7){
+                    Comm.message(a.data.msg);
+                } else {
+                    getStoreState(true);
+                }
+            })
+        }, 1)
+
+    }
+
+    function pageload() {
+
+        var openid = Comm.db('openid');
+        // if (Comm.isweixin() && !openid) {
+        //     var url = config.SLShareBase + "/wxlogin.html?to=" + location.href;
+        //     url = "https://open.weixin.qq.com/connect/oauth2/authorize?" +
+        //         "appid=wx3d060683cbc1cbb7" +
+        //         "&redirect_uri=" + encodeURIComponent(url) +
+        //         "&response_type=code&scope=snsapi_userinfo&state=123#wechat_redirect";
+        //     Comm.go(url);
+        //     return;
+        // }
+
+        if (app.isLogin()) {
+            $('#ptsj').removeClass('hide');
+        }
+        getLatestInfo();
+
+        if (Comm.db('firstLogin') == true) {
+
+            SLNetwork('get','/api/sysconfig/getconfig', {keys:'register_reward'}, function (data) {
+                if (data.code == 1) {
+                    nslog(data);
+                    var money = data.data.register_reward;
+                    $('#registGetPId').text(app.price(money));
+                    Comm.showWindow('sinboxTemp', false);
+                } else {
+                    Comm.message(data.msg);
+                }
+            });
+        }
+
+        getPTInfo();
+        getBannerInfo();
+        getPosition();
+        Comm.storage('startApp',function (d) {
+            if (d == 1) {
+                Comm.db('startApp',1);
+                getPosition();
+                Comm.storageValue('startApp',2)
+            }
+        });
+    }
+
+
+    function getPosition(cb) {
+
+        var aaa = Comm.db('showArea');
+        Comm.db('showArea', null);
+
+        if (aaa) {
+            var position = UserJWD.JWD();
+            position.dis = aaa.text;
+            position.aid = aaa.i;
+            Comm.db('JWD', position);
+        }
+
+
+        var startStatus = Comm.db('startApp')||1;
+
+        if (!UserJWD.hasGetPosition() || startStatus == 1) {
+            Comm.loading(1);
+            Comm.position(function (a) {
+                Comm.loading();
+                if (a.code == 1) {
+
+                    if (!UserJWD.hasGetPosition() || startStatus == 1) {
+                        Comm.db('startApp',2);
+                        UserJWD.saveJWDValue(a);
+                    } else {
+                        UserJWD.updateJWDValue(a);
+                    }
+                }
+                $('.position').text(UserJWD.dis());
+                cb && cb();
+            })
+        } else {
+            $('.position').text(UserJWD.dis());
+            cb && cb();
+        }
+
+
+    }
+
+
+    function getLatestInfo() {
+
+        $('#balance').text(app.price(userinfo.balance || 0))
+
+        getStoreState(false, function (storeState) {
+            if (storeState == 6 || !storeState) {
+                $('#store').html('我要开店');
+            } else { // if ((storeState >= 1 && storeState <= 5) || storeState == 7)
+                $('#store').html('我的店铺');
+            }
+            if (storeState == 1 || storeState == 4 || storeState == 5) {
+                $('#sk').removeClass('hide');
+            } else {
+                $('#sk').addClass('hide');
+            }
+        });
+        getPartnerState(false, function (partnerState) {
+
+            if (partnerState == 2 || !partnerState) {
+                $('#hhr').html('我要创业');
+            } else {
+                $('#hhr').html('合伙人中心');
+            }
+        });
+        hasNewMessage();
+    }
+
+
+    //获取广告banner
+    function getBannerInfo() {
+        var oo = {};
+        oo.postion = 28;
+        AJAX.POST('/api/advert/apiList', oo, function (a) {
+            if (a.code == 1) {
+                var showArr = a.data || [];
+                if (!showArr.length) {
+                    $('.banner').addClass('hide');
+                    return;
+                }
+                $('.banner').removeClass('hide');
+                showArr.sort(function (a, b) {
+                    return a.orderIndex - b.orderIndex;
+                });
+
+                var banner = template('tp_bannerId', showArr);
+                $('#id_side').html(banner);
+                new Side('id_banner', true);
+
+            }
+        });
+    }
+
+
+    //获取平台数据
+    function getPTInfo() {
+        AJAX.POST('/api/customer/headPageDetail', userinfo, function (a) {
+            if (a.code == 1) {
+                var data = a.data;
+                for (x in data) {
+                    if (x == 'rebateMoney') {
+                        $('#' + x).html(app.price(data[x]));
+                    } else {
+                        $('#' + x).html(data[x]);
+                    }
+                }
+                var customerData = a.data.customer;
+                for (i in customerData) {
+                    if (i == 'balance' || i == 'ticket' || i == 'packets' || i == 'hbbalance' || i == 'hbmoney' || i ==
+                        'points') {
+                        $('#' + i).html(app.price(customerData[i]));
+                    } else {
+                        $('#' + i).html(customerData[i]);
+                    }
+                }
+            }
+        });
+    }
+
+
+    function hasNewMessage() {
+
+        if (app.isLogin()) {
+            AJAX.GET('/api/message/messIsRead', function (a) {
+                console.log(a);
+                if (a.code == 1) {
+                    if (a.data > 0) {
+                        $('.hasNew').removeClass('hide');
+                    } else {
+                        $('.hasNew').addClass('hide');
+                    }
+                }
+            })
+        }
+    }
+
+
+
+    bindClickedScanf('#scanQRCode1');
+
+    function bindClickedScanf(bindQuery) {
+        if (Comm.isweixin()) {
+            WXMethod.sign(function (d) {
+                wx.config({
+                    debug: false, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
+                    appId: d.appId, // 必填，公众号的唯一标识
+                    timestamp: d.timestamp, // 必填，生成签名的时间戳
+                    nonceStr: d.nonceStr, // 必填，生成签名的随机串
+                    signature: d.signature, // 必填，签名，见附录1
+                    jsApiList: ['qrCode','scanQRCode'] // 必填，需要使用的JS接口列表，所有JS接口列表见附录2
+                });
+
+
+                wx.ready(function () {
+                    // 9.1.2 扫描二维码并返回结果
+                    document.querySelector(bindQuery).onclick = function () {
+                        wx.scanQRCode({
+                            needResult: 1,
+                            desc: 'scanQRCode desc',
+                            success: function (res) {
+
+                                Comm.db('testRes',res);
+
+                                var a = JSON.parse(res.resultStr);
+
+                                var uid = a.uid || '';
+                                var sid = a.sid || '';
+
+                                if (sid) { //扫描了商家的二维码
+                                    Comm.go('codeScanPay.html?sid=' + sid + '&type=FK');
+                                } else if (uid) { //扫描了用户的二维码
+                                    //获取用户id
+                                    //如果当前用户是商家 则 商家收款 否则不处理 给用户提示
+                                    if (userinfo && userinfo.myStoreId) { //商家
+                                        //商家收款
+                                        Comm.go('codeScanPay.html?sid=' + userinfo.myStoreId + '&uid=' + uid + '&type=SK');
+                                    } else { //用户、或没有用户信息
+                                        Comm.message('您不是商家，不能发起收款');
+                                    }
+                                } else {
+                                    Comm.message('不能识别的二维码');
+                                }
+                            }
+                        });
+                    };
+                });
+
+
+                //初始化jsapi接口 状态
+                wx.error(function (res) {
+                    alert("调用微信jsapi返回的状态:" + res.errMsg);
+                });
+            })
+        }
+    }
+
+
+
+
+</script>
+
+
+<script type="text/html" id="tp_bannerId">
+    {{each $data model i}}
+    <li class="imgCt_cover br5 ohide" onclick="showAdver('{{model.advertId}}');">
+        <img src="{{OSS(model.falce,'l')}}" class="bannerImg" alt="" onerror="app.errorimg(this);">
+    </li>
+    {{/each}}
+</script>
+
+</body>
+
+</html>

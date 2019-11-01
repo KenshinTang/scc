@@ -1,0 +1,493 @@
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width,initial-scale=1.0,user-scalable=no" name="viewport">
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="format-detection" content="telephone=no,email=no,adress=no" />
+
+    <title>商家列表</title>
+
+    <link rel="stylesheet" href="css/g.css">
+    <link rel="stylesheet" href="css/comm.css">
+    <link rel="stylesheet" href="inc/mescroll/mescroll.min.css">
+
+    <style>
+        /*头部*/
+        .navTitle {
+            margin: 0px 80px;
+            background: url("img/tbhome/logo.png") center center no-repeat;
+            background-size: auto 20px;
+        }
+
+        .navItemIcon.msg {
+            background-image: url("img/tbhome/xiaoxi.png");
+        }
+
+        .position {
+            background-image: url("img/tbhome/position.png");
+        }
+
+        /*快捷入口*/
+        .quickItem {
+            width: 50px;
+            height: 50px;
+        }
+
+        .nearbyShop {
+            padding-top: 60%;
+            background: url("img/tbshop/shop.png") center center no-repeat;
+            background-size: 100% auto;
+        }
+
+        .nearbyShop .quickItem {
+            width: 60% !important;
+        }
+
+        /*附近店铺*/
+        .threeItem {
+            min-width: 30%;
+            max-width: 32%;
+        }
+
+        .m5 {
+            margin: 5px;
+        }
+
+        .m5h {
+            margin-left: 5px;
+            margin-right: 5px;
+        }
+
+        .threeItemIcon {
+            padding-top: 100%;
+            margin-top: 17px;
+            margin-bottom: 13px;
+        }
+
+
+        /*附近店铺列表*/
+        .recommentShop {
+            padding: 15px 0px;
+        }
+
+        .headTt {
+            padding-left: 15px;
+        }
+
+        .cell {
+            padding: 20px 15px;
+            background-color: white;
+            margin-bottom: 10px;
+        }
+
+        .cellIcon {
+            height: 90px;
+            width: 90px;
+            flex-basis: 90px;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        .cellRight {
+            height: 90px;
+            padding: 0px 10px;
+            flex: 1;
+        }
+
+        .breakLine_v {
+            width: 1px;
+            height: 16px;
+            background-color: #EBEBEB;
+        }
+
+        .star {
+            width: 50px;
+            height: 10px;
+            background: url("img/tbshop/Star_n.png") repeat-x center center;
+            background-size: 10px auto;
+        }
+
+        .star_get {
+            width: 60%;
+            height: 100%;
+            background: url("img/tbshop/Star.png") repeat-x left center;
+            background-size: 10px auto;
+        }
+
+        .benefit {
+            width: auto;
+            border-radius: 10px 1px;
+            padding: 2px 8px;
+        }
+
+        .mv5 {
+            margin: 5px 0px;
+        }
+
+        .lIcon.distance {
+            background-image: url("img/tbhome/position.png");
+        }
+
+
+
+        .headItem {
+            line-height: 44px;
+            height: 44px;
+        }
+
+        .headItem.msg {
+            background-image: url("img/tbhome/xiaoxi.png");
+        }
+
+        .base80 {
+            min-width: 50px;
+            max-width: 100px;
+        }
+
+        .flex1 {
+            flex: 1;
+        }
+
+        .searchBar {
+            height: 30px;
+            margin: 7px 2%;
+            line-height: 30px;
+            border-radius: 15px;
+            text-align: left;
+        }
+
+        .searchBar.lIcon {
+            background-position-x: 15px;
+            padding-left: 35px;
+            background-image: url("img/tbshop/Search.png");
+            color: #A8ADBA;
+        }
+
+        .picker .picker-panel .picker-choose .confirm {
+            right: 0;
+            color: #E30008 !important;
+        }
+
+        .lIcon {
+            padding-left: 25px;
+            background-repeat: no-repeat;
+            background-position: left 10px center;
+            background-size: auto 15px;
+        }
+
+        .fenleiBar {
+            background-position-x: right;
+            background-position-y: center;
+            background-image: url("img/tbshop/fenlei.png");
+            background-size: 8px;
+            background-repeat: no-repeat;
+        }
+
+        .fenleiBar2 {
+            background-position-x: right;
+            background-position-y: center;
+            background-image: url("img/tbshop/fenleim.png");
+            background-size: 8px;
+            background-repeat: no-repeat;
+        }
+
+        .PriceBar {
+            background-position-x: 65px;
+            background-image: url("img/tbshop/Price.png");
+            background-size: 8px;
+        }
+
+        .ShopPicBar {
+            background-position-x: 90px;
+            background-image: url("img/tbshop/Shop-pic.png");
+        }
+
+        .qqIcon {
+            padding-left: 25px;
+            background-repeat: no-repeat;
+            background-position: left 5px center;
+            background-size: auto 15px;
+        }
+
+        .bg_g_jb {
+            background: linear-gradient(to right, #7ACC52, #68AF47)
+        }
+
+        .bgG {
+            background: url('img/tbshop/Certification.png');
+            background-repeat: no-repeat;
+            background-size: 100% 100%;
+        }
+
+        .benefit2 {
+            width: auto;
+            padding: 3px 10px;
+        }
+
+        .tyc {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            width: 70%;
+        }
+    </style>
+
+</head>
+
+<!--******************************************************************************-->
+
+<body>
+
+    <header>
+
+        <div class="navBar flex_between udLine">
+            <div class="headItem" onclick="">
+                <div class="navBackIcon" onclick="Comm.close()"></div>
+            </div>
+            <div class="headItem flex1 f18">
+                商家列表
+            </div>
+            <div class="headItem searchBar lIcon" onclick="Comm.go('searchPage.html?type=shop')"></div>
+        </div>
+        <div id="nav" class="center flex_between udLine">
+            <div id="fl" class="headItem flex1 col_red fenleiBar lIcon">全部分类</div>
+            <div id="fj" class="headItem flex1">附近</div>
+            <div id="hp" class="headItem flex1">好评</div>
+            <div id="jg" class="headItem flex1 PriceBar rIcon">价格</div>
+        </div>
+
+    </header>
+    <section id="section" class="mescroll bg_lgray scroll-y">
+        <!-- <span class="f12 col_white bgG benefit2"><span class="marl10">连锁认证</span></span> -->
+        <div class="bg_white">
+            <div id="storeList" class="cellList bg_lgray">
+            </div>
+        </div>
+
+
+    </section>
+
+    <script src="js/z.js"></script>
+    <script src="js/g.js"></script>
+    <script src="js/comm.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/picker.min.js"></script>
+    <script src="js/area.js"></script>
+    <script src="js/dict.js"></script>
+    <script src="inc/mescroll/mescroll.min.js"></script>
+
+    <script type="text/javascript">
+        //获取分类的dictId
+        var type = Comm.query('type');
+        _suppliers = [{
+            i: "-111",
+            text: "全部分类"
+        }]
+        var requestPamrm = {};
+        var merefresh;
+        var html = '';
+
+        function addRefresh() {
+            if (type) requestPamrm.category = type;
+            requestPamrm.lng = UserJWD.lng();
+            requestPamrm.lat = UserJWD.lat();
+            requestPamrm.areaId = UserJWD.aid();
+            if (!merefresh) {
+                merefresh = new MERefresh();
+                //网络请求参数
+                merefresh.refreshOption.refreshUrl = '/api/store/storeList';
+                merefresh.refreshOption.refreshParm = requestPamrm;
+
+                //页面 <刷新> 的回调
+                merefresh.refreshOption.refresh_cb = function (refresh, d) {
+                    if (d.code == 1) {
+                        d = d ||{data:[]};
+                        if (typeof (requestPamrm.orderIndex) != 'undefined') html = '';
+                        if (typeof (requestPamrm.category) != 'undefined') html = '';
+                        addrData = d.data || [];
+                        refresh.successEndRef(addrData.length, d.totalCount);
+                        refresh.appendHtml(model.getStoreList(d));
+                    } else {
+                        refresh.successEndRef(0, 0);
+                        refresh.MeRefScroll.endUpScroll(true);
+                    }
+                };
+                merefresh.configurationDone('section', 'storeList');
+            } else {
+                merefresh.refreshFunction(merefresh);
+            }
+        }
+
+        function pageload() {
+            addRefresh();
+            var p = {};
+            p.id = type;
+            //获取商铺列表
+            var o = {};
+            o.pageno = 1;
+            o.pagesize = 10;
+            if (type != 100) {
+                o.category = type;
+                AJAX.POST('/api/dict/getitem', p, function (a) {
+                    if (a.code == 1 && a.data) {
+                        $('#fl').html(a.data.dictname);
+                    }
+                });
+            }
+            //model.getStoreList(o);
+            model.do = o;
+            //按钮点击事件
+            model.loadButtom();
+            //获取当前分类
+            GDict.init(function () {
+                var arr = GDict.get('storeCategory');
+                var data = arr;
+                for (var i = 0; i < data.length; i++) {
+                    var d = data[i];
+                    _suppliers.push({
+                        i: d.dictId,
+                        text: d.dictname
+                    });
+                }
+                suppliers = new Commpicker("选择供应商类别", [_suppliers], function (obj, name, sid) {
+                    $('#fl').text(name);
+                    //对应分类展示对应店铺
+                    if (sid == -111) {
+                        type = ''
+                        requestPamrm.category = undefined;
+                    } else {
+                        requestPamrm.category = sid;
+                        type = sid;
+                    }
+                    html = '';
+                    addRefresh();
+                })
+            });
+        }
+        var model = {
+            //重新获取店铺列表钱获取的当前获取的参数
+            do: {},
+            //获取店铺列表
+            getStoreList: function (d) {
+                if (d.code == 1) {
+
+                    var data = d.data||[];
+                    if (data.length == 0) {
+                        $('#storeList').append(
+                            '<div class="flex_center col_lgray" style="margin-top:50%">当前分类暂时没有店铺</div>'
+                        );
+                        return;
+                    }
+                    html = '';
+                    for (var i = 0; i < data.length; i++) {
+                        var d = data[i];
+                        Area.init(function () {
+                            var ad = Area.getFullName(d.addrId);
+                            d.addr = ad + '  ' + d.addr;
+                        });
+                        var re;
+                        if (d.rebate == 0) {
+                            re = '';
+                        } else {
+                            // re = '<span class="f12 col_white bg_g_jb benefit">让利' +
+                            //     d.rebate/100 +
+                            //     '%</span>'
+                            re = '<span class="f12 col_white bg_g_jb benefit">付款返红包券</span>'
+                        }
+                        if (d.isChain == 1) {
+                            rr = '<span class="marl5 f12 col_white bgG benefit2"><span class="marl10">连锁认证</span></span>'
+                        } else {
+                            rr = ''
+                        }
+                        var withPer = Number(d.score) / 5 * 100;
+                        html += '<div class="cell flex_start" onclick="Comm.go(' +
+                            "'" +
+                            'store.html?storeId=' + d
+                            .storeId + "'" +
+                            ')"><div class="imgContain cellIcon" style="width:40%"><img src="' +
+                            Comm.OSS
+                            .getImgUrl(d.doorPic) +
+                            '"></div><div class="cellRight" style="width:60%"><div class="f16 bold">' + d
+                            .storeName +
+                            '</div><div class="mv5">' + re + rr +
+                            '</div><div class="evaluate flex_start"><div class="star bg_place"><div class="star_get" style="width: ' +
+                            withPer +
+                            '%"></div></div><div class="f12 lineSpan"><span class="col_red ml5">' +
+                            d.score +
+                            '分</span><span class="col_lgray f14">丨</span><span class="col_sub">' +
+                            app.price(d.consumption) +
+                            '</span><span class="col_sub">/人</span></div></div><div class="f12 col_sub flex_between mt5"><div class="tyc">地点：' +
+                            d.addr + '</div><div class="lIcon distance">' + Math.round(d
+                                .distance / 1000 *
+                                100) / 100 +
+                            'km</div></div></div></div>';
+                    }
+                    return html;
+                }
+
+            },
+            loadButtom: function () {
+                $('#nav').children().click(function (e) { // 在页面任意位置点击而触发此事件
+                    if ($(e.target).attr("id") == "fl") {
+                        suppliers.show();
+                    }
+                    if ($(e.target).attr("id") != "fl") {
+                        $("#fl").removeClass("fenleiBar");
+                        $("#fl").addClass("fenleiBar2");
+                    } else {
+                        $("#fl").removeClass("fenleiBar2");
+                        $("#fl").addClass("fenleiBar");
+                    }
+                    if ($(e.target).attr("id") != "fj") {} else {
+                        //以距离升序排序的店铺列表
+                        html = '';
+                        requestPamrm.orderIndex = 4;
+                        addRefresh();
+                    }
+                    if ($(e.target).attr("id") != "hp") {} else {
+                        //以评价分数升序排序的店铺列表
+                        html = '';
+                        requestPamrm.orderIndex = 3;
+                        addRefresh();
+                    }
+                    if ($(e.target).attr("id") == "jg") {
+                        var str = $("#jg").css("background-image");
+                        var i = str.lastIndexOf("/img");
+                        str = str.substring(i + 1, str.length);
+                        str = 'url("(' + str;
+                        if (str ==
+                            'url("(img/tbshop/Price.png")') {
+                            html = '';
+                            //第一次点击价格时以价格降序排序
+                            requestPamrm.orderIndex = 1;
+                            addRefresh();
+                            $("#jg").css("background-image", 'url("img/tbshop/Price_low.png")');
+                            return;
+                        }
+                        if ($("#jg").css("background-image") == 'url("img/tbshop/Price_low.png")') {
+                            html = '';
+                            //价格为升序的店铺列表
+                            requestPamrm.orderIndex = 2;
+                            addRefresh();
+                            $("#jg").css("background-image", 'url("img/tbshop/Price_up.png")');
+                            return;
+                        }
+                        if ($("#jg").css("background-image") == 'url("img/tbshop/Price_up.png")') {
+                            html = '';
+                            //价格为降序的店铺列表
+                            requestPamrm.orderIndex = 1;
+                            addRefresh();
+                            $("#jg").css("background-image", 'url("img/tbshop/Price_low.png")');
+                            return;
+                        }
+                    }
+                    $('#nav').children().removeClass("col_red");
+                    $(e.target).addClass("col_red");
+                })
+            }
+        }
+    </script>
+</body>
+
+</html>

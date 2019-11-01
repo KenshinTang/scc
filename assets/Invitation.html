@@ -1,0 +1,281 @@
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width,initial-scale=1.0,user-scalable=no" name="viewport">
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="format-detection" content="telephone=no,email=no,adress=no" />
+
+    <title>邀请好友</title>
+
+    <link rel="stylesheet" href="css/g.css">
+    <link rel="stylesheet" href="css/comm.css">
+
+    <style>
+        .mart60 {
+            margin-top: 60px
+        }
+
+        .sectionBgImg {
+            background-color: #F93108;
+            background-image: url("img/Invitation/yqhy.png");
+            background-repeat: no-repeat;
+            background-size: 100% auto;
+        }
+
+        .col_1 {
+            color: #7D1B00;
+        }
+
+        .col_2 {
+            color: #E30008;
+        }
+
+
+        .h {
+            width: 25px;
+            background-color: white;
+            height: 1px;
+        }
+
+        .yqBox {
+            width: 345px;
+            background-color: white;
+            border-radius: 8px;
+            color: #E30008;
+            padding-bottom: 10px;
+        }
+
+        ul {
+            line-height: 24px;
+        }
+
+        .btn {
+            height: 50px;
+            width: 345px;
+            background: linear-gradient(#FFFD34, #FFC62E);
+            border-radius: 5px;
+            color: #771A00;
+        }
+
+        .white_kuang {
+            margin-top: 42%;
+            margin-bottom: 10%;
+            margin-left: 18px;
+            margin-right: 18px;
+            background-color: #FFF4ED;
+            height: 55px;
+            border-radius: 8px;
+            font-size: 17px;
+        }
+
+        .tit {
+            /* position: absolute; */
+            padding-top: 1%;
+            width: 100%;
+            /*padding-left: 35px;*/
+            /*padding-right: 35px;*/
+            font-size: 18px;
+            font-weight: bold;
+            color: #872705;
+        }
+
+        .topt {
+            padding-top: 6%;
+            padding-bottom: 6%;
+            width: 100%;
+            font-size: 32px;
+            /* position: absolute; */
+            color: #FFFFFF;
+            text-shadow: 0px 3px #ED5006;
+        }
+
+        @media (device-height:568px) and (-webkit-min-device-pixel-ratio:2) {
+
+            /* 兼容iphone5 */
+
+
+            .white_kuang {
+                margin-top: 42%;
+                margin-bottom: 10%;
+                margin-left: 18px;
+                margin-right: 18px;
+                background-color: #FFF4ED;
+                height: 55px;
+                border-radius: 8px;
+                font-size: 14px;
+            }
+
+
+            .yqBox {
+                font-size: 12px;
+                width: 345px;
+                margin-left: 18px;
+                margin-right: 18px;
+                background-color: white;
+                border-radius: 8px;
+                color: #E30008;
+            }
+
+            .q {
+                margin: 0px 18px;
+            }
+
+            .topt {
+                padding-top: 6%;
+                padding-bottom: 6%;
+                width: 100%;
+                font-size: 26px;
+                /* position: absolute; */
+                color: #FFFFFF;
+                text-shadow: 0px 3px #ED5006;
+            }
+        }
+    </style>
+
+</head>
+
+<!--******************************************************************************-->
+
+<body>
+
+    <header>
+        <div class="navBar">
+            <div class="navBackIcon" onclick="Comm.close()"></div>
+            <div class="navTitle f17">邀请好友</div>
+        </div>
+    </header>
+    <section>
+        <div class="sectionBgImg">
+
+            <div class="wrap" style="padding-top: 25%">
+                <div class="wrap_ct flex flexItem_v flexItem_between">
+
+                    <div class="topt flex_center">邀请成功&nbsp;&nbsp;各得红包券</div>
+
+                </div>
+            </div>
+
+            <div class="">
+
+            </div>
+
+            <div class="wrap" style="padding-top: 10%;margin: auto;width: 80%">
+                <div class="wrap_ct flex_center">
+
+                    <div class="tit flex_center">
+                        <span>每邀请1位好友奖励红包券<span id="perMoneyId">0</span>元</span>
+                    </div>
+
+                </div>
+            </div>
+
+
+
+
+            <div id="text" class="bold flex_center white_kuang marttext" onclick="Comm.go('myInv.html')">
+            </div>
+            <div class="flex_center col_white marb25">
+                <span class="h marr10"></span>
+                <span class="f15">邀请规则</span>
+                <span class="h marl10"></span>
+            </div>
+            <div class="flex_center">
+                <div class="yqBox">
+                    <ul id="title" class="mart10 paddl10 f12">
+                    </ul>
+                </div>
+            </div>
+            <div class="flex flex_center mart30 paddb30" onclick="invitationFriend();">
+                <div class="btn flex q flex_item_center flex_center f17 bold">立即邀请</div>
+            </div>
+        </div>
+    </section>
+
+    <script src="js/z.js"></script>
+    <script src="js/g.js"></script>
+    <script src="js/comm.js"></script>
+    <script src="js/api.js"></script>
+
+    <script type="text/javascript">
+        var referece = Comm.db('userinfo').customerId;
+        var shareM = {
+            get:0,
+            shareGet:0,
+        }
+
+        function pageload() {
+            AJAX.GET('/api/customer/inviteMoney', function (a) {
+                $('#text').html('<div class="col_1">已成功邀请</div><div class="col_2">' + a.data.inviteCount +
+                    '人</div><div class="col_1">，累计获得奖励</div><div class="col_2">' + a.data.inviteMoney/100 +
+                    '红包券</div>');
+            })
+            var o = {};
+            o.title = '邀请规则';
+            AJAX.POST('/api/article/getArticle', o, function (a) {
+                var str = a.data.content;
+                var x = /&lt;/g;
+                var d = /&gt;/g;
+                var k = /%26nbsp;/g;
+                str = str.replace(x, '<');
+                str = str.replace(d, '>');
+                str = str.replace(k, ' ');
+                $('#title').html(str);
+            })
+
+
+
+            SLNetwork('get','/api/sysconfig/getconfig', {keys:'recommend_reward'}, function (data) {
+                if (data.code == 1) {
+                    nslog(data);
+                    var money = data.data.recommend_reward;
+                    $('#perMoneyId').text(app.price(money));
+                    shareM.shareGet = app.price(money)||'';
+                } else {
+                    Comm.message(data.msg);
+                }
+            });
+
+            SLNetwork('get','/api/sysconfig/getconfig', {keys:'register_reward'}, function (data) {
+                if (data.code == 1) {
+                    nslog(data);
+                    var money = data.data.register_reward;
+                    shareM.get = app.price(money)||'';
+                } else {
+                    Comm.message(data.msg);
+                }
+            });
+
+        }
+
+
+
+
+
+        function invitationFriend() {
+
+            if (!shareM.get || !shareM.shareGet){
+                return;
+            }
+
+            var model = {
+                pic: config.SLShareBase + 'img/appLogoIcon.png',//分享图片路径
+                title: "【水车车】你有"+shareM.get+"元红包券待领取",//分享标题
+                desc: '邀请好友再得'+shareM.shareGet+'元',//分享描述
+                url: config.SLShareBase + 'regInv.html?share=1&referece='+referece,//分享路径
+            };
+            console.log(model);
+            Comm.shareUrl(model, function (d) {//回调
+                if (d == 1) {
+                    Comm.message("分享成功");
+                }
+            });
+            //Comm.go('regInv.html?referece='+referece);
+        }
+
+
+
+    </script>
+</body>
+
+</html>

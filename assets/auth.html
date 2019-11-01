@@ -1,0 +1,30 @@
+<!doctype html>
+<html>
+<head><meta charset="utf-8">
+<meta content="width=device-width,initial-scale=1.0,user-scalable=no" name="viewport">
+<script>
+	function todo(url){
+		url="http://whpb.yingheyezi.com/wh/api/customer/wechatInLogin?to="+url;
+		url="https://open.weixin.qq.com/connect/oauth2/authorize?"
+			+"appid=wx3975062a5561f6d1"
+			+"&redirect_uri="+encodeURIComponent(url)
+			+"&response_type=code&scope=snsapi_base&state=123#wechat_redirect";
+		go(url);
+	}
+	function go(url){
+		window.location.href=url;
+	}
+	window.onload=function(){
+		var url = location.search;
+		if(url.length>3){
+			todo(url.substr(1));
+		}else{
+			document.write('<h3>参数错误</h3>');
+		}
+	}
+</script>
+</head>
+<body>
+</body>
+</html>
+

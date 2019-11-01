@@ -1,0 +1,166 @@
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width,initial-scale=1.0,user-scalable=no" name="viewport">
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="format-detection" content="telephone=no,email=no,adress=no" />
+
+    <title>红包详情</title>
+
+    <link rel="stylesheet" href="css/g.css">
+    <link rel="stylesheet" href="css/comm.css">
+
+    <style>
+        .top {
+            padding: 30px 15px;
+        }
+
+        .headIcon {
+            width: 100px;
+            height: 100px;
+            margin: 10px auto;
+        }
+
+        .name {
+            margin-top: 20px;
+        }
+
+        .cell {
+            padding: 10px 20px;
+        }
+
+        .cellIcon {
+            height: 40px;
+            width: 40px;
+            margin-right: 10px;
+            border-radius: 50%;
+            overflow: hidden;
+        }
+
+        .maxH40 {
+            max-height: 40px;
+        }
+
+        .circleImg {
+            border-radius: 100%;
+        }
+    </style>
+
+</head>
+
+<!--******************************************************************************-->
+
+<body>
+
+    <header>
+        <div class="navBar bottomBorder">
+            <div class="navBackIcon" onclick="Comm.close()"></div>
+            <div class="navTitle">红包详情</div>
+        </div>
+    </header>
+    <!--******************************************************************************-->
+
+    <section class="bg_lgray scroll-y">
+
+
+
+    </section>
+
+    <!--******************************************************************************-->
+    <footer></footer>
+
+    <script src="js/z.js"></script>
+    <script src="js/g.js"></script>
+    <script src="js/comm.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/art-template.js"></script>
+
+    <script>
+        var rid = Comm.query('rid');
+
+
+        function pageload() {
+            getRedBagDetail(rid);
+        }
+
+
+        function getRedBagDetail(id) {
+
+            var params = {
+                rpacketId:id
+            }
+            Comm.loading(1);
+            var apiStr = '/api/rpacket/rpacketDetail';
+            SLNetwork('post', apiStr, params, function (data) {
+                Comm.loading();
+                if (data.code == 1) {
+                    var model = data.data || {};
+                    model.rpacketId = rid || '';
+                    var htmlEle = template('tp_id_page', model);
+                    $('section').html(htmlEle);
+                } else {
+                    Comm.message(data.msg);
+                }
+            });
+        }
+    </script>
+
+    <script type="text/html" id="tp_id_page">
+        <div>
+
+
+            <div class="top bg_white">
+                <div class="center">
+                    <div class="headIcon imgContain">
+                        <img class="circleImg" src="{{OSS(fece,'s')}}" onerror="app.herrorimg(this)" alt="">
+                    </div>
+
+                    <div class="flex_center f16 name">
+                        <div class="">{{partnerName}}</div>
+                    </div>
+
+                    <div class="f36 bold m10">{{priceTp(totalmoney)}}</div>
+                </div>
+            </div>
+
+
+
+            <div class="mt10 p15 bg_white" onclick="Comm.go('redBagAdDetail.html?rid={{rpacketId}}')">
+                <div class="col_title">{{title||''}}</div>
+                <div class="col_sub f12 lh20 maxH40 wordW2">{{ds||''}}</div>
+            </div>
+
+
+            <div class="tableList mt10 bg_white">
+
+                <div class="p15 col_sub bottomBorder">{{robList.length||0}}人已领取</div>
+
+                {{each robList model i}}
+                <div class="cell flex_between bottomBorder">
+
+                    <div class="flex">
+                        <div class="cellIcon imgContain">
+                            <img class="circleImg" src="{{OSS(model.face,'s')}}" alt="" onerror="app.herrorimg(this);">
+                        </div>
+                        <div>
+                            <div class="bold f16 baseWH">{{model.nickName}}</div>
+                            <div class="f12 col_sub baseWH">{{formatDate(model.addTime,'Y-m-d H:i')}}</div>
+                        </div>
+                    </div>
+
+                    <div class="tRight">
+                        <div class="f14">{{priceTp(model.money)||'0.00'}}元</div>
+                    </div>
+                </div>
+                {{/each}}
+
+            </div>
+        </div>
+    </script>
+
+
+
+</body>
+
+</html>

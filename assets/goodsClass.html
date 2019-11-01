@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width,initial-scale=1.0,user-scalable=no" name="viewport">
+    <title>商品分类</title>
+    <link rel="stylesheet" href="css/comm.css">
+    <link rel="stylesheet" href="css/g.css">
+    <style>
+
+        /*.searchRadiu {*/
+            /*border-radius: 15px;*/
+            /*overflow: hidden;*/
+        /*}*/
+
+        /*.searchBar {*/
+            /*height: 100%;*/
+            /*position: relative;*/
+            /*background: url("img/generalIcon/searchgray.png") no-repeat left center;*/
+            /*background-size: 18px;*/
+            /*background-position-x: 5px;*/
+            /*height: 30px;*/
+            /*overflow: hidden;*/
+            /*color: #888888;*/
+            /*text-align: left;*/
+            /*background-position: 10px center;*/
+        /*}*/
+
+        /*.searchBar > input {*/
+            /*height: 100%;*/
+            /*margin-left: 30px;*/
+            /*position: absolute;*/
+            /*top: 0px;*/
+            /*width: 80%;*/
+        /*}*/
+
+        .searchBar {
+            height: 30px;
+            margin: 7px 2%;
+            line-height: 30px;
+            border-radius: 15px;
+            text-align: left;
+        }
+
+        .searchBar.lIcon {
+            background-position-x: 15px;
+            padding-left: 35px;
+            background-image: url("img/tbshop/Search.png");
+            color: #A8ADBA;
+        }
+
+
+        .leftV {
+            width: 22.5%;
+            float: left;
+            height: 100%;
+            overflow-y: scroll;
+            padding-top: 20px;
+        }
+
+        .lItem {
+            width: 100%;
+            text-align: center;
+            line-height: 45px;
+            height: 45px;
+            /*padding: 15px 0px;*/
+            box-sizing: unset;
+        }
+
+        .leftV > .active {
+            background-color: white;
+        }
+
+        .active::before {
+            background-color: #E30008;
+            float: left;
+            width: 2px;
+            height: 100%;
+            content: ' ';
+        }
+
+        .rightV {
+            margin-left: 22.5%;
+            height: 100%;
+            background-color: white;
+            overflow-y: scroll;
+        }
+
+        .rItem {
+            width: 25%;
+            padding: 2px;
+            float: left;
+            text-align: center;
+            height: 127px;
+        }
+
+        .rItem > .imgContain {
+            height: 65px;
+            margin: auto;
+            margin-top: 20px;
+        }
+
+        .class {
+            margin-top: 10px;
+            margin-bottom: 10px;
+            height: 20px;
+        }
+
+        .bg_left {
+            background-color: #F5F7FA;
+        }
+
+
+    </style>
+</head>
+<body>
+<header>
+
+
+    <div class="navBar flex_between">
+        <div class="navBackIcon" onclick="Comm.gotop();"></div>
+        <!--<div class="flex1 mr10 bg_lgray searchRadiu">-->
+            <!--<div class="searchBar">-->
+                <!--<input type="text" id="searchBar" class="bg_lgray" placeholder="搜索关键字" onkeyup="textChanged(event)">-->
+            <!--</div>-->
+        <!--</div>-->
+        <div class="headItem flex1" onclick="Comm.go('searchPage.html?type=goods')">
+            <div class="searchBar bg_lgray lIcon">
+                请输入商品名称
+            </div>
+        </div>
+        <!--<div class="navItem marg_h10 col_red">搜索</div>-->
+    </div>
+
+</header>
+
+<section>
+
+    <div class="leftV bg_left firstFl">
+
+        <!--<div class="lItem active" tid="1">-->
+        <!--<div class="row1">推荐</div>-->
+        <!--</div>-->
+
+        <!--<div class="lItem" tid="2">-->
+        <!--<div class="row1">女装</div>-->
+        <!--</div>-->
+
+        <!--<div class="lItem" tid="2">-->
+        <!--<div class="row1">男装</div>-->
+        <!--</div>-->
+
+        <!--<div class="lItem" tid="2">-->
+        <!--<div class="row1">女鞋</div>-->
+        <!--</div>-->
+
+        <!--<div class="lItem" tid="2">-->
+        <!--<div class="row1">男鞋</div>-->
+        <!--</div>-->
+
+    </div>
+
+
+    <div class="rightV secondFl">
+        <!---->
+        <!--<div class="rItem">-->
+        <!--<div class="imgContain">-->
+        <!--<img src="stIconfile/placeholderImage.png" alt="">-->
+        <!--</div>-->
+        <!--<div class="class">T恤</div>-->
+        <!--</div>-->
+
+        <!--<div class="rItem">-->
+        <!--<div class="imgContain">-->
+        <!--<img src="stIconfile/placeholderImage.png" alt="">-->
+        <!--</div>-->
+        <!--<div class="class">背心</div>-->
+        <!--</div>-->
+
+        <!--<div class="rItem">-->
+        <!--<div class="imgContain">-->
+        <!--<img src="stIconfile/placeholderImage.png" alt="">-->
+        <!--</div>-->
+        <!--<div class="class">工装裤</div>-->
+        <!--</div>-->
+
+        <!--<div class="rItem">-->
+        <!--<div class="imgContain">-->
+        <!--<img src="stIconfile/placeholderImage.png" alt="">-->
+        <!--</div>-->
+        <!--<div class="class">牛仔</div>-->
+        <!--</div>-->
+
+        <!--<div class="rItem">-->
+        <!--<div class="imgContain">-->
+        <!--<img src="stIconfile/placeholderImage.png" alt="">-->
+        <!--</div>-->
+        <!--<div class="class">防晒衣</div>-->
+        <!--</div>-->
+
+
+    </div>
+
+</section>
+
+</body>
+
+
+<script src="js/g.js"></script>
+<script src="js/z.js"></script>
+<script src="js/dict.js"></script>
+<script src="js/comm.js"></script>
+<script src="js/api.js"></script>
+<script src="js/art-template.js"></script>
+
+
+<script type="text/html" id="tp_id_first">
+
+    {{each $data model i}}
+    <div class="lItem" tid="1">
+        <div class="row1">{{model.dictname}}</div>
+    </div>
+    {{/each}}
+
+
+</script>
+
+<script type="text/html" id="tp_id_second">
+
+    {{each $data model i}}
+    <div class="rItem">
+        <div class="imgContain">
+            <img src="{{OSS(model.remark,'s')}}" alt="" onerror="app.errorimg(this);">
+        </div>
+        <div class="class f12">{{model.dictname}}</div>
+    </div>
+    {{/each}}
+
+</script>
+
+
+<script>
+    var pageModel = {};
+
+    function pageload() {
+
+        GDict.init(function () {
+            fillWithClassfication();
+            $($('.lItem')[0]).addClass('active');
+            clickedLeftIndex(0);
+        });
+
+    };
+
+
+    //填充顶部分类
+    function fillWithClassfication() {
+        var arr = GDict.get('goodsCategory');
+        pageModel.list = arr;
+        var list = template('tp_id_first', arr);
+        $('.firstFl').html(list);
+
+        //点击一级分类
+        meauChooseClick('.leftV', '.lItem', function (t, idx) {
+            clickedLeftIndex(idx);
+        });
+
+    }
+
+    //一级分类事件处理
+    function clickedLeftIndex(idx) {
+
+        var tModel = pageModel.list[idx];
+        pageModel.firstM = GDict.getItem(tModel.dictId);
+
+        var arr = GDict.get(tModel.dictcode);
+        var list = template('tp_id_second', arr);
+        $('.secondFl').html(list);
+
+
+        //点击二级分类
+        clickList('.rightV', '.rItem', function (t, idx) {
+            pageModel.secondM = pageModel.firstM.cs[idx];
+
+            var parm = {
+                type: 'PT',
+                ftid: pageModel.firstM.dictId,
+                stid: pageModel.secondM.dictId,
+            };
+
+
+            Comm.go(appendApi('goodsList.html', parm));
+            console.log(pageModel);
+        });
+    }
+
+    //input输入内容
+    function textChanged(e, n) {
+
+    }
+
+
+</script>
+</html>

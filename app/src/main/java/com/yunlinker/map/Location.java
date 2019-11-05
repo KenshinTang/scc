@@ -13,6 +13,7 @@ import android.webkit.WebView;
 import com.baidu.location.BDLocationListener;
 import com.baidu.location.LocationClient;
 import com.baidu.location.LocationClientOption;
+
 import org.json.JSONObject;
 
 import java.util.HashMap;
@@ -90,6 +91,9 @@ public class Location {
 
 
     private void showGPSSetting(final Activity ac) {
+        if (ac.isFinishing()) {
+            return;
+        }
         if(!checkGPSIsOpen(ac)) {
             ac.runOnUiThread(new Runnable() {
                 @Override

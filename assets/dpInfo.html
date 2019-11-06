@@ -232,8 +232,12 @@
     <script src="inc/upimg/upload.js"></script>
     <script src="js/picker.min.js"></script>
 
+
+    <script src="inc/ewm/jquery-1.11.1.js"></script>
+    <script src="inc/keyboard/slKeyboard.js"></script>
+
     <script>
-        var uploader;
+        var uploader,d1={};
 
         function pageload() {
             uploader = new imgUploader('dpImg', 5, 'addimg');
@@ -298,6 +302,7 @@
         }
 
         function save() {
+
             d1.storeId = Comm.db('userinfo').storeId;
             d1.storeds = $('#storeds').val();
             d1.consumption = $('#consumption').val();
@@ -305,7 +310,14 @@
             if (uploader.imgList.length) {
                 d1.imgs = uploader.imgList.join(',');
             }
+
+            if (!regPrice(d1.consumption,true)){
+                return;
+            }
+
             d1.consumption = d1.consumption * 100;
+
+
             AJAX.POST('/api/store/storeUpdate', d1, function (d) {
                 if (d.code == 1) {
                     var data = d.data;
@@ -319,6 +331,8 @@
                 }
             })
         }
+
+
     </script>
 
 </body>

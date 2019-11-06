@@ -196,6 +196,9 @@
     <script src="js/g.js"></script>
     <script src="js/comm.js"></script>
     <script src="js/api.js"></script>
+    <script src="http://res.wx.qq.com/open/js/jweixin-1.2.0.js"></script>
+    <script src="js/wx.js"></script>
+
 
     <script type="text/javascript">
         var referece = Comm.db('userinfo').customerId;
@@ -231,6 +234,8 @@
                     var money = data.data.recommend_reward;
                     $('#perMoneyId').text(app.price(money));
                     shareM.shareGet = app.price(money)||'';
+
+                    invitationFriend(1);
                 } else {
                     Comm.message(data.msg);
                 }
@@ -241,6 +246,7 @@
                     nslog(data);
                     var money = data.data.register_reward;
                     shareM.get = app.price(money)||'';
+                    invitationFriend(1);
                 } else {
                     Comm.message(data.msg);
                 }
@@ -252,7 +258,7 @@
 
 
 
-        function invitationFriend() {
+        function invitationFriend(iswx) {
 
             if (!shareM.get || !shareM.shareGet){
                 return;
@@ -264,7 +270,15 @@
                 desc: '邀请好友再得'+shareM.shareGet+'元',//分享描述
                 url: config.SLShareBase + 'regInv.html?share=1&referece='+referece,//分享路径
             };
-            console.log(model);
+
+            if (iswx){
+                wxShareObj(model)
+                return;
+            } else if (Comm.isweixin()){
+                showWXMenu(model);
+                return;
+            }
+
             Comm.shareUrl(model, function (d) {//回调
                 if (d == 1) {
                     Comm.message("分享成功");
@@ -272,6 +286,25 @@
             });
             //Comm.go('regInv.html?referece='+referece);
         }
+
+
+        // // 当微信内置浏览器完成内部初始化后会触发WeixinJSBridgeReady事件。
+        // document.addEventListener('WeixinJSBridgeReady', function onBridgeReady() {
+        //     alert('ready');
+        //     // 发送给好友
+        //     WeixinJSBridge.on('menu:share:appmessage', function(argv){
+        //
+        //         alert('发给好友');
+        //     });
+        //     // 分享到朋友圈
+        //     WeixinJSBridge.on('menu:share:timeline', function(argv){
+        //         alert('发给朋友圈');
+        //     });
+        //     // 分享到微博
+        //     WeixinJSBridge.on('menu:share:weibo', function(argv){
+        //         alert('发给微博');
+        //     });
+        // }, false);
 
 
 

@@ -202,8 +202,8 @@
 
         </div>
 
-        <div class="mainW p15 bg_white FPShow hide">
-            <div class="wrap adver" onclick="Comm.go('goodsList.html?type=FP')">
+        <div class="mainW p15 bg_white FPShow">
+            <div class="wrap adver" onclick="if (needLoginCheck(true))return;Comm.go('goodsList.html?type=FP')">
                 <div class="wrap_ct">
                     <img id="id_img_fp" class="mainH mainW" onerror="this.src='img/tbmall/huich.png';onerror=null;">
                 </div>
@@ -295,6 +295,7 @@
             merefresh;
         var userinfo = Comm.db('userinfo') || {};
 
+
         function pageload() {
             getPageNetWork();
             addRefresh();
@@ -372,8 +373,8 @@
                 }
             });
 
-            if (userinfo.isPoor == 1) {
-                $('.FPShow').removeClass('hide');
+            if (userinfo.isPoor == 0) {
+                $('.FPShow').addClass('hide');
             }
         }
 

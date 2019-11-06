@@ -104,12 +104,12 @@
 
 
     <style>
-        .testArea{
+        .testArea {
             height: 200px;
             width: 100%;
         }
 
-        .testArea textarea{
+        .testArea textarea {
             width: 100%;
             height: 100%;
             font-size: 15px;
@@ -118,9 +118,8 @@
     </style>
 
     <!--<div class="p10 testArea">-->
-        <!--<textarea placeholder="这里会显示请求的参数" id="testId"></textarea>-->
+    <!--<textarea placeholder="这里会显示请求的参数" id="testId"></textarea>-->
     <!--</div>-->
-
 
 
     <div class="p15 f15 bold bottomBorder">选择支付方式</div>
@@ -170,8 +169,6 @@
 <script>
 
 
-
-
     /*
     1.确认订单过来的支付（商城购买商品）
     2.订单列表过来的支付（订单列表）
@@ -210,6 +207,19 @@
     }
 
     function pageload() {
+
+
+        var App_enable = Comm.db('App_enable');
+
+        if (App_enable.iOSAPP) {
+            if (!App_enable.wx_enable) {
+                $('#pay1').remove();
+            }
+            if (!App_enable.zfb_enable) {
+                $('#pay2').remove();
+            }
+
+        }
 
         getNewestCustomerInfo();
 
@@ -301,7 +311,7 @@
             return;
         } else if (type == 1) {
             if (Comm.isweixin()) {
-                onlinePay(1, 3,true);
+                onlinePay(1, 3, true);
             } else {
                 onlinePay(1, 3);
             }
@@ -315,7 +325,7 @@
     }
 
 
-    function onlinePay(payTp, tp,isWx) {
+    function onlinePay(payTp, tp, isWx) {
 
         var toPayInfo;
         if (pageType == 'shop') {
@@ -335,7 +345,7 @@
             toPayInfo.url = config.root + '/api/shoppingMall/order/aliPay';
         }
 
-        if (isWx){
+        if (isWx) {
             var opId = Comm.db('openid');
             if (opId) {
                 toPayInfo.openId = opId;
@@ -345,8 +355,8 @@
         }
 
         if (toPayInfo) {
-            Comm.pay(toPayInfo,function (d) {
-                if (d.code == 1){
+            Comm.pay(toPayInfo, function (d) {
+                if (d.code == 1) {
                     Comm.db('payInfo', null);
                     if (pageType == 'shop') {
                         Comm.go('payComplect.html?type=FK');
@@ -358,8 +368,6 @@
                 }
             });
         }
-
-
 
 
     }

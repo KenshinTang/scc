@@ -210,6 +210,8 @@ function _w9_wcallback(data, code) {
                 Comm._pageinfo.resume(bd);
                 Comm._pageinfo.resume = null;
             }
+        } else if (data === 'startApp') {
+            localStorage.setItem('startApp',1);
         }
     }
     //原生事件
@@ -561,6 +563,9 @@ var Comm = new function () {
     	cb：【非】【仅原生支持】当页面重新返回后需要执行的方法，执行顺序在resume之后	
     */
     z.go = function (url, cb) {
+
+        url += (url.indexOf('?') > 0 ? '&' : '?') + 'markT=' + 1018;
+
         if (z._pageinfo.test)
             url = AJAX.WebRoot() + url;
         if (z.w9()) {
@@ -1013,6 +1018,7 @@ var Comm = new function () {
         } else {
             localStorage[t] = enData(v);
         }
+
     };
     /*相当于sessionStorage,用于会话存储，不可作为持久存储*/
     z.sdb = function (t, v) {
@@ -1044,7 +1050,6 @@ var Comm = new function () {
     //计算框架高度
     z.resizeSection = function () {
 
-        // return;
         var headSel = '.navBar';
         var isX = Comm.db('isX');
         //判断安卓还是ios
@@ -1059,16 +1064,8 @@ var Comm = new function () {
             s = Comm.$1('body >section');
         if (s) {
             s.style.height = (window.innerHeight - (h ? h.offsetHeight : 0) - (f ? f.offsetHeight : 0)) + 'px';
+            // Comm.message('window = '+window.innerHeight + '\n h = ' + h.offsetHeight + '\n f =' + f.offsetHeight);
         }
-
-        // Comm.storage("isX", function (d) {
-        //     if (parseInt(d) == 1) {
-        //         Comm.db('isX',true);
-        //         $("headSel").css("padding-top", "0px");
-        //         s.style.height = (window.innerHeight - (h ? h.offsetHeight : 0) - (f ? f.offsetHeight : 0)) + 'px';
-        //     }
-        // })
-
     };
     /*
         跳转第三方地图导航
@@ -1157,6 +1154,7 @@ var Comm = new function () {
     };
     //判断是否是微信
     z.isweixin = function () {
+
         var ua = navigator.userAgent.toLowerCase(); //获取判断用的对象
         if (ua.match(/MicroMessenger/i) == "micromessenger") {
             return true;
@@ -1282,10 +1280,12 @@ function resumeAndroidKeyboard() {
         window.androidKb.section.style.transform = "translate(0px,0px)";
 }
 
-//加载成功，刷新高度
-if (document.addEventListener) {
-    document.addEventListener("DOMContentLoaded", Comm.resizeSection, false);
-}
+// //加载成功，刷新高度
+// if (document.addEventListener) {
+//     document.addEventListener("DOMContentLoaded", Comm.resizeSection, false);
+// }
+
+
 //初始化页面
 window.onload = function () {
     if (window['config'] && config['isTest'] != null) Comm._pageinfo.test = config['isTest'];
@@ -1301,17 +1301,6 @@ window.onload = function () {
     Comm.exec("pageload");
     Comm.iosInput();
 };
-//解决弹出键盘遮挡输入框
-window.addEventListener("resize", function () {
-    if (document.activeElement.tagName == "INPUT" || document.activeElement.tagName == "TEXTAREA") {
-        window.setTimeout(function () {
-            document.activeElement.scrollIntoView(true);
-            document.activeElement.scrollIntoViewIfNeeded(true);
-        }, 100);
-    }
-    Comm.resizeSection();
-    window.onresize = Comm.resizeSection;
-})
 
 
 var flagKeyBoardShow = false;

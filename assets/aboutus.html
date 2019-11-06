@@ -73,7 +73,7 @@
 
     <section class="body">
         <div class="center marb30" style="margin: 60px auto;">
-            <div class="flex_center">
+            <div class="flex_center" onclick="showVersionDebug();">
                 <div class="p15 border" style="width:80px;height:80px;border-radius:11px;border-color: #eee;"><img src="img/appLogoIcon.png" width="50"></div>
             </div>
             <span style="color: #737373;display: block;padding-top: 10px" id="id_version">V1.1.0</span>
@@ -100,12 +100,26 @@
 <script src="js/dict.js"></script>
 <script>
 
+    var dModel = {
+        count:0,
+        version:'',
+    }
+-
+
     function pageload(){
         Comm.getVersion(function (versionInfo) {
-            $('#id_version').text(versionInfo.versionName);
+            $('#id_version').text('V' + versionInfo.versionName.toFixed(2));
+            dModel.version = versionInfo.versionCode;
         })
-
     }
+
+
+    // function showVersionDebug() {
+    //     dModel.count += 1;
+    //     if (dModel.count > 5){
+    //         Comm.alert('开发打包版本号：' + dModel.version + '')
+    //     }
+    // }
 
 </script>
 

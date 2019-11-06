@@ -379,6 +379,9 @@
     <script src="inc/imageView/imageview.js"></script>
     <script src="inc/mescroll/mescroll.min.js"></script>
 
+    <script src="http://res.wx.qq.com/open/js/jweixin-1.2.0.js"></script>
+    <script src="js/wx.js"></script>
+
     <script type="text/javascript">
         var tModel, tempParms;
         var requestPamrm = {};
@@ -621,6 +624,11 @@
                     if (data.open == 0) {
                         $('#storeName').append('(未营业)');
                     }
+
+                    if (Comm.isweixin()){
+                        shopShare();
+                    }
+
                 }
             })
             $('#list').removeClass('hide');
@@ -843,12 +851,20 @@
                 var sid = Comm.query('storeId');
                 var pic = Comm.OSS.getImgUrl(tModel.doorPic,'s');
                 console.log(pic);
-                Comm.shareUrl({
+
+                var shareM = {
                     pic: pic, //分享图片路径
                     title: "水车车，一个心系农村的电商平台", //分享标题
                     desc: tModel ? tModel.storeName : '来店里坐坐', //分享描述
                     url: config.SLShareBase + 'store.html?share=1&storeId=' + sid, //分享路径
-                }, function (d) { //回调
+                };
+
+                if (Comm.isweixin()){
+                    wxShareObj(shareM);
+                    return;
+                }
+
+                Comm.shareUrl(shareM, function (d) { //回调
                     if (d == 1) {
                         Comm.message("分享成功");
                     }

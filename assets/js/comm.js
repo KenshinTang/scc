@@ -1,10 +1,7 @@
 
-
-
-
 var config = {
     root: 'http://api.shuicheche.com/', //服务器
-    // root: 'http://192.168.0.14:8080/', //服务器
+    // root: 'http://192.168.0.65:8080/', //服务器
 
     webroot: "", //网址地址(调试模式下的地址前缀)
     base: '', //线上
@@ -1513,14 +1510,18 @@ function canSendRB() {
     return true;
 }
 
+
+var ts = new Date().getTime();
+var downLoadUrl = '';
+
 function showDownLoad() {
-    Comm.openUrlStr('https://fir.im/ShuiCheche');
+    Comm.openUrlStr(downLoadUrl);
 
 }
 
-var ts = new Date().getTime();
 
-var footCt = '<div class="flex_start m10" onclick="window.open(\'https://fir.im/ShuiCheche?v='+ts+'\')">\n' +
+
+var footCt = '<div class="flex_start m10" onclick="window.open(\''+downLoadUrl+'\')">\n' +
     '        <img src="img/appLogoIcon.png" width="50px" alt="">\n' +
     '        <div class="ml10 lh25 flex_between flex1">\n' +
     '            <div class="grow3">水车车,一个心系农村的电商平台</div>\n' +

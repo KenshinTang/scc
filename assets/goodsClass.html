@@ -227,6 +227,14 @@
 
 <script type="text/html" id="tp_id_second">
 
+
+    {{if !$data.length}}
+    <div class="noData flex_center" style="height:300px;line-height: 35px;">
+        <div style="max-width: 80%;" class="center">没有发现相关的数据哦！！看看其他分类</div>
+    </div>
+    {{/if}}
+
+
     {{each $data model i}}
     <div class="rItem">
         <div class="imgContain">

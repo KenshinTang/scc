@@ -219,19 +219,23 @@ var Share = {
         }
     },
     config: function(o, success, error) {
-        var c = {
-            title: o.title, // 分享标题
-            desc: o.desc, // 分享描述
-            link: o.link, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
-            imgUrl: o.pic, // 分享图标
-            success: function() { success && success(); },
-            cancel: function() { error && error(); }
-        };
-        wx.onMenuShareAppMessage(c);
-        wx.onMenuShareQQ(c);
-        wx.onMenuShareWeibo(c);
-        wx.onMenuShareQZone(c);
-        Share.start();
+
+        WXMethod.sign(function (d) {
+            var c = {
+                title: o.title, // 分享标题
+                desc: o.desc, // 分享描述
+                link: o.link, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+                imgUrl: o.pic, // 分享图标
+                success: function() { success && success(); },
+                cancel: function() { error && error(); }
+            };
+            wx.onMenuShareAppMessage(c);
+            wx.onMenuShareQQ(c);
+            wx.onMenuShareWeibo(c);
+            wx.onMenuShareQZone(c);
+            Share.start();
+        });
+
     }
 };
 
@@ -241,3 +245,66 @@ if (navigator.userAgent.toLocaleLowerCase().indexOf('micromessenger') < 0) {
         if (typeof WXMethod[i] === "function") WXMethod[i] = function() {};
     }
 }
+
+
+
+
+
+function wxShareObj(shareModel) {
+    if (Comm.isweixin()) {
+        {
+            WXMethod.sign(function (d) {
+                wx.config({
+                    debug: false, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
+                    appId: d.appId, // 必填，公众号的唯一标识
+                    timestamp: d.timestamp, // 必填，生成签名的时间戳
+                    nonceStr: d.nonceStr, // 必填，生成签名的随机串
+                    signature: d.signature, // 必填，签名，见附录1
+                    jsApiList: ['checkJsApi',
+                        'onMenuShareTimeline',
+                        'onMenuShareAppMessage',
+                        'onMenuShareQQ',
+                        'onMenuShareWeibo',
+                        'onMenuShareQZone',
+                        'hideMenuItems',
+                        'showMenuItems',] // 必填，需要使用的JS接口列表，所有JS接口列表见附录2
+                });
+
+                wx.ready(function () {
+                    var o = shareModel;
+                    var c = {
+                        title: o.title, // 分享标题
+                        desc: o.desc, // 分享描述
+                        link: o.url, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+                        imgUrl: o.pic, // 分享图标
+                        success: function() { success && success(); },
+                        cancel: function() { error && error(); },
+                        fail: function(res) { alert(JSON.stringify(res)); }
+                    };
+
+                    wx.onMenuShareAppMessage(c);
+                    wx.onMenuShareTimeline(c);
+                    wx.onMenuShareQQ(c);
+                    wx.onMenuShareWeibo(c);
+                    wx.onMenuShareQZone(c);
+                });
+
+                //初始化jsapi接口 状态
+                wx.error(function (res) {
+                    alert("调用微信jsapi返回的状态:" + res.errMsg);
+                });
+            })
+        }
+
+        return true;
+    } else {
+        return false;
+    }
+
+}
+
+function showWXMenu() {
+    alert('请点击右上角按钮进行分享');
+}
+
+

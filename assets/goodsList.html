@@ -239,13 +239,29 @@
             list: [], //所有分类
         }
 
+
+        function filterDisableItem(arrayList) {
+            var newArr = [];
+            arrayList = arrayList || [];
+            arrayList.forEach(function (a) {
+                if (a.enable){
+                    newArr.push(a);
+                }
+            })
+            return newArr;
+        }
+
+
         function pageload() {
 
             if (type == 'FP') { //扶贫商品
                 $('.FP').show();
                 GDict.init(function () {
-                    var arr = GDict.get('poorCategory');
-                    if (!pageModel.stid) pageModel.activeStid = arr[0].dictId;
+                    var arr = GDict.get('poorCategory')||[];
+
+                    if (!pageModel.stid) {
+                        pageModel.activeStid = arr[0] ? arr[0].dictId : '0';
+                    }
                     fillWithClassfication(arr);
                 });
 
@@ -255,7 +271,8 @@
                 $('.PT').show();
                 GDict.init(function () {
                     if (pageModel.ftid) {
-                        var arr = GDict.getItem(pageModel.ftid).cs;
+                        var arr = filterDisableItem(GDict.getItem(pageModel.ftid).cs);
+
                         if (arr && arr.length) {
                             if (!pageModel.stid) {
                                 pageModel.stid = pageModel.activeStid = arr[0].dictId;
@@ -270,7 +287,7 @@
 
                         fillWithClassfication(arr);
                     } else {
-                        var arr = GDict.get('goodsCategory');
+                        var arr = filterDisableItem(GDict.get('goodsCategory'));
                         var tmodel = arr[0] || {};
                         var subArr = GDict.getItem(tmodel.dictId).cs;
                         var subTmodel = subArr[0] || {};
@@ -408,8 +425,8 @@
 
     <script type="text/html" id="tp_id_class">
         {{each $data.list model i}}
-        {{if model.enable!=0}}<div class="topBarOpt {{activeStid==model.dictId?'active':''}}" stid="{{model.dictId}}">
-            {{model.dictname}}</div>
+        {{if model.enable!=0}}
+        <div class="topBarOpt {{activeStid==model.dictId?'active':''}}" stid="{{model.dictId}}">{{model.dictname}}</div>
         {{/if}}
         {{/each}}
     </script>

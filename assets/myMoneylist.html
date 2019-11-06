@@ -284,7 +284,7 @@
                 model.mere.refreshOption.refreshParm = model.data;
                 //页面 <刷新> 的回调
                 model.mere.refreshOption.refresh_cb = function (refresh, d) {
-                    var list = data.data || [];
+                    var list = d.data || [];
                     refresh.successEndRef(list.length||0, d.totalCount||0);
                     var h = template('listTpl', d.data);
                     refresh.appendHtml(h);

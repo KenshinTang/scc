@@ -285,7 +285,7 @@
                 pageData.partner = pageData.partner || {};
                 getUpList();
                 var ctHtml = template('tp_id_ct', pageData);
-                $('.content').html(ctHtml);
+                $('.upimgContent').html(ctHtml);
                 regAddImgEvent();
                 return;
             } else {
@@ -299,7 +299,7 @@
                         setRequestParmData();
 
                         var ctHtml = template('tp_id_ct', pageData);
-                        $('.content').html(ctHtml);
+                        $('.upimgContent').html(ctHtml);
                         regAddImgEvent();
                         getUpList();
                     } else {

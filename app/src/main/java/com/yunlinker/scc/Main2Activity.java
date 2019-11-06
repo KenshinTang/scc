@@ -6,36 +6,28 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.location.LocationManager;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
-import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.baidu.mapapi.SDKInitializer;
-import com.hjq.permissions.OnPermission;
-import com.hjq.permissions.Permission;
-import com.hjq.permissions.XXPermissions;
 import com.yunlinker.adapter.TabFragmentPagerAdapter;
 import com.yunlinker.fragment.FragmentA;
 import com.yunlinker.fragment.FragmentB;
 import com.yunlinker.fragment.FragmentC;
 import com.yunlinker.fragment.FragmentD;
 import com.yunlinker.fragment.FragmentE;
+import com.yunlinker.myApp;
 import com.yunlinker.ulit.NoScrollViewPager;
 import com.yunlinker.view.BottomBar;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static com.yunlinker.config.WebConfig.saveKey;
@@ -342,6 +334,7 @@ public class Main2Activity extends AppCompatActivity  {
             exitTime = System.currentTimeMillis();
         } else{
             this.finish();
+            myApp.firstStart = true;
         }
     }
 

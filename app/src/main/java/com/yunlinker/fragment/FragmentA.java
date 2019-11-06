@@ -10,8 +10,6 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
@@ -21,14 +19,12 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.TextView;
 import android.widget.Toast;
-
 
 import com.umeng.socialize.ShareAction;
 import com.umeng.socialize.UMShareListener;
@@ -46,7 +42,6 @@ import com.yunlinker.scc.WebviewActivity;
 import com.yunlinker.shell.ShellCallBack;
 import com.yunlinker.shell.ShellWebView;
 import com.yunlinker.shell.ThirdTool;
-
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -97,7 +92,6 @@ public class FragmentA extends BaseFragment  {
     protected void initView() {
         init(webView);
         webView.loadUrl("file:///android_asset/tabPage1.html");
-
     }
 
     @Override
@@ -131,7 +125,6 @@ public class FragmentA extends BaseFragment  {
         }
 
         //shellCallBack.storageValue();
-
     }
 
     WebChromeClient webChromeClient = new WebChromeClient() {
@@ -155,6 +148,15 @@ public class FragmentA extends BaseFragment  {
             setHasLoaded(true);
             view.getSettings().setJavaScriptEnabled(true);
             super.onPageFinished(view, url);
+            if (myApp.firstStart) {
+                Log.i("kenshin", "onPageFinished set startApp = 1");
+                webView.loadUrl("javascript:_w9_wcallback('startApp',0)");
+                Log.i("kenshin", "javascript:_w9_wcallback('startApp',0)");
+//                webView.loadUrl("javascript:localStorage.setItem('startApp','1')");
+//                Log.e("kenshin", "javascript:localStorage.setItem('startApp',1);");
+//                webView.loadUrl("javascript:getPosition()");
+                myApp.firstStart = false;
+            }
             setmyNoticeValue("getMsg",ThirdTool.getInstance().sNotice+","+ThirdTool.getInstance().mNotice);
         }
     };

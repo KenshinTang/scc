@@ -3,7 +3,6 @@ package com.yunlinker;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Application;
-import android.app.Notification;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -13,11 +12,10 @@ import android.net.Uri;
 import android.os.Handler;
 import android.text.TextUtils;
 import android.util.Log;
-import android.widget.RemoteViews;
 
 import com.baidu.mapapi.CoordType;
 import com.baidu.mapapi.SDKInitializer;
-
+import com.lzy.imagepicker.ImagePicker;
 import com.qiyukf.unicorn.api.SavePowerConfig;
 import com.qiyukf.unicorn.api.StatusBarNotificationConfig;
 import com.qiyukf.unicorn.api.UICustomization;
@@ -26,22 +24,15 @@ import com.umeng.analytics.MobclickAgent;
 import com.umeng.commonsdk.UMConfigure;
 import com.umeng.message.IUmengRegisterCallback;
 import com.umeng.message.PushAgent;
-import com.umeng.message.UmengMessageHandler;
 import com.umeng.message.UmengNotificationClickHandler;
 import com.umeng.message.entity.UMessage;
 import com.umeng.socialize.Config;
 import com.umeng.socialize.PlatformConfig;
 import com.umeng.socialize.UMShareAPI;
-
-import com.yunlinker.baseclass.BaseActivity;
-import com.yunlinker.fragment.FragmentA;
-import com.yunlinker.scc.Main2Activity;
-import com.yunlinker.scc.R;
+import com.yunlinker.scc.MainActivity;
 import com.yunlinker.scc.WebviewActivity;
 import com.yunlinker.shell.ToastUtil;
-import com.yunlinker.scc.MainActivity;
 import com.yunlinker.upimage.GlideImageLoader;
-import com.lzy.imagepicker.ImagePicker;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -64,6 +55,7 @@ import static com.yunlinker.config.WebConfig.saveKey;
 
 public class myApp extends Application {
     public static boolean hasCheckedUpdate = false;
+    public static boolean firstStart = true;
     private static myApp sInstance;
     public static JSONObject newPush = new JSONObject();
     static public String currentMode = "sun";

@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.location.LocationManager;
 import android.provider.Settings;
 import android.text.TextUtils;
+import android.util.Log;
 import android.webkit.WebView;
 
 import com.baidu.location.BDLocationListener;
@@ -56,6 +57,7 @@ public class Location {
 
 
     public void position(final Activity ac, final WebView bsw,final String code) {
+        Log.e("kenshin", "position");
         setInsCode("position",code);
         mbsw = bsw;
         Location.getInstance().locationEvent = new Location.LocBack() {

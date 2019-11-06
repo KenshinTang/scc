@@ -2,10 +2,8 @@ package com.yunlinker.fragment;
 
 
 import android.annotation.SuppressLint;
-import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
@@ -26,7 +24,6 @@ import android.webkit.WebViewClient;
 import android.widget.TextView;
 import android.widget.Toast;
 
-
 import com.umeng.socialize.ShareAction;
 import com.umeng.socialize.UMShareListener;
 import com.umeng.socialize.bean.SHARE_MEDIA;
@@ -34,8 +31,8 @@ import com.umeng.socialize.media.UMImage;
 import com.umeng.socialize.media.UMWeb;
 import com.yunlinker.auth.WebPermissionManager;
 import com.yunlinker.baseclass.BaseFragment;
-import com.yunlinker.manager.HttpManager;
 import com.yunlinker.map.Location;
+import com.yunlinker.myApp;
 import com.yunlinker.scc.Main2Activity;
 import com.yunlinker.scc.R;
 import com.yunlinker.scc.WebviewActivity;
@@ -43,12 +40,10 @@ import com.yunlinker.shell.ShellCallBack;
 import com.yunlinker.shell.ShellWebView;
 import com.yunlinker.shell.ThirdTool;
 
-
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 
@@ -143,6 +138,15 @@ public class FragmentC extends BaseFragment{
             setHasLoaded(true);
             view.getSettings().setJavaScriptEnabled(true);
             super.onPageFinished(view, url);
+            if (myApp.firstStart) {
+                Log.i("kenshin", "onPageFinished set startApp = 1");
+                webView.loadUrl("javascript:_w9_wcallback('startApp',0)");
+                Log.i("kenshin", "javascript:_w9_wcallback('startApp',0)");
+//                webView.loadUrl("javascript:localStorage.setItem('startApp','1')");
+//                Log.e("kenshin", "javascript:localStorage.setItem('startApp',1);");
+//                webView.loadUrl("javascript:getPosition()");
+                myApp.firstStart = false;
+            }
             setmyNoticeValue("getMsg",ThirdTool.getInstance().sNotice+","+ThirdTool.getInstance().mNotice);
         }
     };

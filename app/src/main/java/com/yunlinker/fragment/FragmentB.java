@@ -9,8 +9,6 @@ import android.graphics.Point;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.os.Message;
-import android.support.annotation.IdRes;
 import android.support.annotation.Nullable;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -18,8 +16,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -28,7 +24,6 @@ import com.baidu.location.BDLocation;
 import com.baidu.location.BDLocationListener;
 import com.baidu.location.LocationClient;
 import com.baidu.location.LocationClientOption;
-
 import com.baidu.mapapi.SDKInitializer;
 import com.baidu.mapapi.map.BaiduMap;
 import com.baidu.mapapi.map.BitmapDescriptor;
@@ -45,24 +40,15 @@ import com.baidu.mapapi.map.MyLocationData;
 import com.baidu.mapapi.map.OverlayOptions;
 import com.baidu.mapapi.map.UiSettings;
 import com.baidu.mapapi.model.LatLng;
-
-import com.baidu.mapapi.search.route.PlanNode;
 import com.baidu.mapapi.utils.CoordinateConverter;
-import com.baidu.mapapi.utils.DistanceUtil;
 import com.google.gson.Gson;
-
 import com.sunfusheng.marqueeview.MarqueeView;
 import com.yunlinker.baseclass.BaseFragment;
 import com.yunlinker.model.Addres;
 import com.yunlinker.model.Notice;
-import com.yunlinker.model.Studio;
-import com.yunlinker.myApp;
-import com.yunlinker.scc.Main2Activity;
-import com.yunlinker.ulit.MyOrientationListener;
-import com.yunlinker.ulit.xUtilsImageUtils;
 import com.yunlinker.scc.R;
 import com.yunlinker.scc.WebviewActivity;
-
+import com.yunlinker.ulit.xUtilsImageUtils;
 
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -553,7 +539,10 @@ public class FragmentB extends BaseFragment{
                 Point pt = new Point();
                 pt.x = 0;
                 pt.y = 0;
-                LatLng upLeft = mBaiduMap.getProjection().fromScreenLocation(pt);
+                LatLng upLeft = new LatLng(0, 0);
+                if (mBaiduMap != null && mBaiduMap.getProjection() != null) {
+                    upLeft = mBaiduMap.getProjection().fromScreenLocation(pt);
+                }
                 //获取到左上角的经纬度
                 Uplongitude1 = upLeft.longitude;
                 Uplatitude1 = upLeft.latitude;
@@ -563,7 +552,10 @@ public class FragmentB extends BaseFragment{
                 Point pty = new Point();
                 pty.x = dm.widthPixels;
                 pty.y = dm.heightPixels;
-                LatLng downRight = mBaiduMap.getProjection().fromScreenLocation(pty);
+                LatLng downRight = new LatLng(0, 0);
+                if (mBaiduMap != null && mBaiduMap.getProjection() != null) {
+                    downRight = mBaiduMap.getProjection().fromScreenLocation(pty);
+                }
                 //获取到右下角的经纬度
                 downlongitude1 = downRight.longitude;
                 downlatitude1 = downRight.latitude;

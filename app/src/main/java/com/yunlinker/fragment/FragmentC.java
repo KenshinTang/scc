@@ -142,9 +142,7 @@ public class FragmentC extends BaseFragment{
                 Log.i("kenshin", "onPageFinished set startApp = 1");
                 webView.loadUrl("javascript:_w9_wcallback('startApp',0)");
                 Log.i("kenshin", "javascript:_w9_wcallback('startApp',0)");
-//                webView.loadUrl("javascript:localStorage.setItem('startApp','1')");
-//                Log.e("kenshin", "javascript:localStorage.setItem('startApp',1);");
-//                webView.loadUrl("javascript:getPosition()");
+                webView.loadUrl("javascript:getPosition()");
                 myApp.firstStart = false;
             }
             setmyNoticeValue("getMsg",ThirdTool.getInstance().sNotice+","+ThirdTool.getInstance().mNotice);

@@ -3,19 +3,13 @@ package com.yunlinker.scc;
 import android.app.Dialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.hjq.permissions.OnPermission;
-import com.hjq.permissions.Permission;
-import com.hjq.permissions.XXPermissions;
-
-import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -66,35 +60,6 @@ public class HomepageActivity extends AppCompatActivity implements View.OnClickL
 
             }
         }, 2000);//延迟3S后发送handler信息
-
-
-
-        XXPermissions.with(this)
-                //.constantRequest() //可设置被拒绝后继续申请，直到用户授权或者永久拒绝
-                //.permission(Permission.SYSTEM_ALERT_WINDOW, Permission.REQUEST_INSTALL_PACKAGES) //支持请求6.0悬浮窗权限8.0请求安装权限
-                .permission(Permission.Group.LOCATION) //不指定权限则自动获取清单中的危险权限
-                .request(new OnPermission() {
-
-                    @Override
-                    public void hasPermission(List<String> granted, boolean isAll) {
-                        if (isAll) {
-                          //  Toast.makeText(HomepageActivity.this, "获取权限成功", Toast.LENGTH_SHORT).show();
-                        }else {
-                         //   Toast.makeText(HomepageActivity.this, "获取权限成功，部分权限未正常授予", Toast.LENGTH_SHORT).show();
-                        }
-                    }
-
-                    @Override
-                    public void noPermission(List<String> denied, boolean quick) {
-                        if(quick) {
-                          //  Toast.makeText(HomepageActivity.this, "被永久拒绝授权，请手动授予权限", Toast.LENGTH_SHORT).show();
-                            //如果是被永久拒绝就跳转到应用权限系统设置页面
-                            XXPermissions.gotoPermissionSettings(HomepageActivity.this);
-                        }else {
-                          //  Toast.makeText(HomepageActivity.this, "获取权限失败", Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                });
 
     }
     private void initViews() {

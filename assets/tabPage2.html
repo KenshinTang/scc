@@ -326,46 +326,66 @@
             if (!app.isLogin()){
                 clearUserData();
             }
-            getPosition();
+            setTimeout(function () {
+                getPosition();
+            },100);
+
         }
 
 
         function getPosition(cb) {
             hasNewMessage();
 
-            var aaa = Comm.db('showArea');
+            var choosedAddr = Comm.db('showArea');
             Comm.db('showArea', null);
 
-            if (aaa) {
+            if (choosedAddr) {
                 var position = UserJWD.JWD();
-                position.dis = aaa.text;
-                position.aid = aaa.i;
-                Comm.db('JWD', position);
+                position.dis = choosedAddr.text;
+                position.aid = choosedAddr.i;
+                position.code = 2;
+                UserJWD.saveJWDValue(position);
                 getNearByShop();
             }
 
+            $('.position').text(UserJWD.dis());
+
             var startStatus = Comm.db('startApp')||1;
 
-            if (!UserJWD.hasGetPosition() || startStatus == 1) {
-                Comm.loading(1);
-                Comm.position(function (a) {
-                    Comm.loading();
-                    if (a.code == 1) {
+            // var model = {
+            //     aaa:choosedAddr||'',
+            //     startStatus:startStatus,
+            //     hasgetP : UserJWD.hasGetPosition,
+            //     userJwd : UserJWD.JWD(),
+            // }
+            //
+            //
+            // debugAlert(model);
 
-                        if (!UserJWD.hasGetPosition() || startStatus == 1) {
-                            Comm.db('startApp',2);
-                            UserJWD.saveJWDValue(a);
-                        } else {
-                            UserJWD.updateJWDValue(a);
-                        }
+
+            if (!UserJWD.hasGetPosition() || startStatus == 1) {
+
+                Comm.position(function (a) {
+
+                    Comm.db('startApp',2);
+
+                    if (a.code == 1) {
+                        UserJWD.saveJWDValue(a);
+                        debugAlert('重新定位-成功');
+                    } else {
+                        var defaultAddr = UserJWD.defaultJWD();
+                        defaultAddr.code = 1;
+                        UserJWD.saveJWDValue(defaultAddr);
+                        debugAlert('重新定位-失败');
                     }
+
                     $('.position').text(UserJWD.dis());
                     cb && cb();
                 })
             } else {
-                $('.position').text(UserJWD.dis());
                 cb && cb();
             }
+
             addRefresh();
         }
 
@@ -399,20 +419,23 @@
         }
 
         function pageload() {
+
             getPosition(function () {
                 addRefresh();
             });
 
             getBanner();
+
             getCatogoryClass();
+
             getNearByShop();
-            Comm.storage('startApp',function (d) {
-                if (d == 1) {
-                    Comm.db('startApp',1);
-                    getPosition();
-                    Comm.storageValue('startApp',2)
-                }
-            });
+            // Comm.storage('startApp',function (d) {
+            //     if (d == 1) {
+            //         Comm.db('startApp',1);
+            //         getPosition();
+            //         Comm.storageValue('startApp',2)
+            //     }
+            // });
         }
 
 

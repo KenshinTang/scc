@@ -75,7 +75,7 @@ var UserJWD = new function () {
 
     this.hasGetPosition = function () {
         var JWD = this.JWD();
-        if (JWD.code == 1) {
+        if (JWD.code == 1 || JWD.code == 2) {
             return true;
         }
         return false;
@@ -94,11 +94,20 @@ var UserJWD = new function () {
 
     this.JWD = function () {
         var JWD = Comm.db('JWD') || {};
-        JWD.lat = 30.632531;
-        JWD.lng = 104.044401;
+        JWD.lat = JWD.lat || this.defaultJWD().lat;
+        JWD.lng = JWD.lng || this.defaultJWD().lng;
+        JWD.dis = JWD.dis || this.defaultJWD().dis;
 
-        // 30.632531,104.044409//能获取数据
-        // 30.632540,104.044401//不能获取数据
+        return JWD;
+    }
+
+
+    this.defaultJWD = function () {
+        var JWD =  {};
+        JWD.lat = JWD.lat || 30.632531;
+        JWD.lng = JWD.lng || 104.044401;
+        JWD.dis = JWD.dis || '武侯区';
+
         return JWD;
     }
 

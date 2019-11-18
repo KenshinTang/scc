@@ -315,7 +315,9 @@
             clearUserData();
         }
         getLatestInfo();
-        getPosition();
+        setTimeout(function () {
+            getPosition();
+        },100);
     }
 
     function goStore() {
@@ -337,15 +339,6 @@
     function pageload() {
 
         var openid = Comm.db('openid');
-        // if (Comm.isweixin() && !openid) {
-        //     var url = config.SLShareBase + "/wxlogin.html?to=" + location.href;
-        //     url = "https://open.weixin.qq.com/connect/oauth2/authorize?" +
-        //         "appid=wx3d060683cbc1cbb7" +
-        //         "&redirect_uri=" + encodeURIComponent(url) +
-        //         "&response_type=code&scope=snsapi_userinfo&state=123#wechat_redirect";
-        //     Comm.go(url);
-        //     return;
-        // }
 
         if (app.isLogin()) {
             $('#ptsj').removeClass('hide');
@@ -367,51 +360,65 @@
         }
 
         getPTInfo();
+
         getBannerInfo();
+
         getPosition();
-        Comm.storage('startApp',function (d) {
-            if (d == 1) {
-                Comm.db('startApp',1);
-                getPosition();
-                Comm.storageValue('startApp',2)
-            }
-        });
+
     }
 
 
     function getPosition(cb) {
 
-        var aaa = Comm.db('showArea');
+        var choosedAddr = Comm.db('showArea');
         Comm.db('showArea', null);
 
-        if (aaa) {
+        if (choosedAddr) {
             var position = UserJWD.JWD();
-            position.dis = aaa.text;
-            position.aid = aaa.i;
-            Comm.db('JWD', position);
+            position.dis = choosedAddr.text;
+            position.aid = choosedAddr.i;
+            position.code = 2;
+            UserJWD.saveJWDValue(position);
         }
+
+        $('.position').text(UserJWD.dis());
 
 
         var startStatus = Comm.db('startApp')||1;
 
-        if (!UserJWD.hasGetPosition() || startStatus == 1) {
-            Comm.loading(1);
-            Comm.position(function (a) {
-                Comm.loading();
-                if (a.code == 1) {
 
-                    if (!UserJWD.hasGetPosition() || startStatus == 1) {
-                        Comm.db('startApp',2);
-                        UserJWD.saveJWDValue(a);
-                    } else {
-                        UserJWD.updateJWDValue(a);
-                    }
+        // var model = {
+        //     aaa:choosedAddr||'',
+        //     startStatus:startStatus,
+        //     hasgetP : UserJWD.hasGetPosition,
+        //     userJwd : UserJWD.JWD(),
+        // }
+        //
+        //
+        // debugAlert(model);
+
+
+        if (!UserJWD.hasGetPosition() || startStatus == 1) {
+
+            Comm.position(function (a) {
+
+                Comm.db('startApp',2);
+
+                if (a.code == 1) {
+                    UserJWD.saveJWDValue(a);
+                    debugAlert('重新定位-成功');
+                } else {
+                    var defaultAddr = UserJWD.defaultJWD();
+                    defaultAddr.code = 1;
+                    UserJWD.saveJWDValue(defaultAddr);
+                    debugAlert('重新定位-失败');
                 }
+
                 $('.position').text(UserJWD.dis());
                 cb && cb();
             })
+
         } else {
-            $('.position').text(UserJWD.dis());
             cb && cb();
         }
 

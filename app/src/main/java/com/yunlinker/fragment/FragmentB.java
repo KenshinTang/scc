@@ -1,6 +1,7 @@
 package com.yunlinker.fragment;
 
 
+import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
@@ -20,8 +21,8 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.baidu.location.BDAbstractLocationListener;
 import com.baidu.location.BDLocation;
-import com.baidu.location.BDLocationListener;
 import com.baidu.location.LocationClient;
 import com.baidu.location.LocationClientOption;
 import com.baidu.mapapi.SDKInitializer;
@@ -42,6 +43,9 @@ import com.baidu.mapapi.map.UiSettings;
 import com.baidu.mapapi.model.LatLng;
 import com.baidu.mapapi.utils.CoordinateConverter;
 import com.google.gson.Gson;
+import com.hjq.permissions.OnPermission;
+import com.hjq.permissions.Permission;
+import com.hjq.permissions.XXPermissions;
 import com.sunfusheng.marqueeview.MarqueeView;
 import com.yunlinker.baseclass.BaseFragment;
 import com.yunlinker.model.Addres;
@@ -120,13 +124,13 @@ public class FragmentB extends BaseFragment{
     private Double Uplongitude1, Uplatitude1, downlongitude1, downlatitude1,Uplongitude2, Uplatitude2, downlongitude2, downlatitude2;
 
 
-
+    private Context context;
 
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        context = getActivity();
     }
 
 
@@ -197,8 +201,7 @@ public class FragmentB extends BaseFragment{
             }
 
             @Override
-            public boolean onMapPoiClick(MapPoi mapPoi) {
-                return false;
+            public void onMapPoiClick(MapPoi mapPoi) {
             }
         });
         //统计
@@ -255,6 +258,37 @@ public class FragmentB extends BaseFragment{
         initMarkers();
         getCoordinates();
         getNotice();
+
+        XXPermissions.with((Activity)context)
+                //.constantRequest() //可设置被拒绝后继续申请，直到用户授权或者永久拒绝
+                //.permission(Permission.SYSTEM_ALERT_WINDOW, Permission.REQUEST_INSTALL_PACKAGES) //支持请求6.0悬浮窗权限8.0请求安装权限
+                .permission(Permission.Group.LOCATION) //不指定权限则自动获取清单中的危险权限
+                .request(new OnPermission() {
+
+                    @Override
+                    public void hasPermission(List<String> granted, boolean isAll) {
+                        if (!mLocationClient.isStarted()){
+                            mLocationClient.start();
+                        }
+                        if (isAll) {
+                            //  Toast.makeText(HomepageActivity.this, "获取权限成功", Toast.LENGTH_SHORT).show();
+                        }else {
+                            //   Toast.makeText(HomepageActivity.this, "获取权限成功，部分权限未正常授予", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+
+                    @Override
+                    public void noPermission(List<String> denied, boolean quick) {
+                        if(quick) {
+                            //  Toast.makeText(HomepageActivity.this, "被永久拒绝授权，请手动授予权限", Toast.LENGTH_SHORT).show();
+                            //如果是被永久拒绝就跳转到应用权限系统设置页面
+                            XXPermissions.gotoPermissionSettings(context);
+                        }else {
+                            //  Toast.makeText(HomepageActivity.this, "获取权限失败", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+
         return view;
     }
 
@@ -383,7 +417,7 @@ public class FragmentB extends BaseFragment{
     /**
      * 获取定位
      */
-    private class MyLocationListeners implements BDLocationListener{
+    private class MyLocationListeners extends BDAbstractLocationListener {
         @Override
         public void onReceiveLocation(BDLocation bdLocation) {
             MyLocationData data = new MyLocationData.Builder()
@@ -457,9 +491,6 @@ public class FragmentB extends BaseFragment{
         //开启定位
         super.onStart();
         mBaiduMap.setMyLocationEnabled(true);
-        if (!mLocationClient.isStarted()){
-            mLocationClient.start();
-        }
         //开启方向传感器
         //myOrientationListener.start();
 
@@ -497,7 +528,6 @@ public class FragmentB extends BaseFragment{
         // activity 恢复时同时恢复地图控件
         mMapView.onResume();
         getNotice();
-        mLocationClient.start();
 
     }
 

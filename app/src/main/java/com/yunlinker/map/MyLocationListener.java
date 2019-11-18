@@ -1,8 +1,8 @@
 package com.yunlinker.map;
 
 
+import com.baidu.location.BDAbstractLocationListener;
 import com.baidu.location.BDLocation;
-import com.baidu.location.BDLocationListener;
 import com.baidu.location.LocationClient;
 
 import org.json.JSONException;
@@ -12,7 +12,7 @@ import org.json.JSONObject;
  * Created by lemon on 2017/8/15.
  */
 
-public class MyLocationListener implements BDLocationListener {
+public class MyLocationListener extends BDAbstractLocationListener {
 
     @Override
     public void onReceiveLocation(BDLocation location) {

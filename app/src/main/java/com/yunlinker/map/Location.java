@@ -11,7 +11,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.webkit.WebView;
 
-import com.baidu.location.BDLocationListener;
+import com.baidu.location.BDAbstractLocationListener;
 import com.baidu.location.LocationClient;
 import com.baidu.location.LocationClientOption;
 
@@ -50,7 +50,7 @@ public class Location {
 
     //获取位置信息
     private LocationClient mLocationClient = null;
-    private BDLocationListener myListener = null;
+    private BDAbstractLocationListener myListener = null;
     private LocationClientOption option = null;
     private Timer locTimer = null;
     private WebView mbsw = null;
@@ -64,6 +64,7 @@ public class Location {
             @Override
             public void getSuccess(JSONObject jb) {
                 if(jb.has("lat") && jb.has("lng")) {
+                    Log.w("kenshin", "get position success:" + jb.toString());
                     locTimer.cancel();
                     mLocationClient.stop();
                     setValue("position", jb.toString());
@@ -74,11 +75,12 @@ public class Location {
         locTimer.schedule(new TimerTask() {
             @Override
             public void run() {
-                setValue("position", "{code:0,msg:\"获取定位失败\"}");
+                Log.e("kenshin", "get position failed(timeout), use default location.");
+                setValue("position", "{\"lat\":30.67,\"lng\":104.07,\"pro\":\"四川省\",\"city\":\"成都市\",\"dis\":\"武侯区\",\"code\":\"1\"}");
                 mLocationClient.stop();
                 showGPSSetting(ac);
             }
-        },5000);
+        },3000);
         //声明LocationClient类
         if(mLocationClient == null)
             mLocationClient = new LocationClient(ac.getApplicationContext());
@@ -158,6 +160,8 @@ public class Location {
         option.setWifiCacheTimeOut(5*60*1000);
         //可选，7.2版本新增能力，如果您设置了这个接口，首次启动定位时，会先判断当前WiFi是否超出有效期，超出有效期的话，会先重新扫描WiFi，然后再定位
         mLocationClient.setLocOption(option);
+
+        Log.i("kenshin", "location version: " + mLocationClient.getVersion());
     }
 
 

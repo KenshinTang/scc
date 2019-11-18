@@ -57,8 +57,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
-
-import static vi.com.gdi.bgl.android.java.EnvDrawText.bmp;
+import static mapsdkvi.com.gdi.bgl.android.java.EnvDrawText.bmp;
 
 /**
  * 外壳
